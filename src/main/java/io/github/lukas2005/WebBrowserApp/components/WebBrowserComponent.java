@@ -1,6 +1,7 @@
 package io.github.lukas2005.WebBrowserApp.components;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;

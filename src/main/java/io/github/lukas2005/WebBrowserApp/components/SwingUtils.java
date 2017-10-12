@@ -2,6 +2,7 @@ package io.github.lukas2005.WebBrowserApp.components;
 
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.GridBagLayout;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
@@ -26,7 +27,8 @@ public class SwingUtils {
 	 */
 	public static void init() {
 		frame = new JFrame();
-		panel = new JPanel();
+		frame.setLayout(new GridBagLayout());
+		panel = new JPanel(new GridBagLayout());
 		frame.add(panel);
 		initialized = true;
 	}
@@ -58,7 +60,7 @@ public class SwingUtils {
 		
 		c.paint(g);
 		
-		frame.setVisible(false);
+		//frame.setVisible(false);
 		
 		ResourceLocation rc = mc.getTextureManager().getDynamicTextureLocation(" ", new DynamicTexture(img));
 		

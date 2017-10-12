@@ -35,7 +35,7 @@ public class ApplicationWebBrowser extends Application {
 		Layout main = new Layout();
 		this.setCurrentLayout(main);
 		
-		main.addComponent(new WebBrowserComponent(0, 0, 100, 100));
+		main.addComponent(new WebBrowserComponent(0, 0, main.width, main.height));
 		
 		//b.loadURL("https://google.com");
 	}
