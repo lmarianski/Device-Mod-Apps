@@ -14,6 +14,7 @@ import com.mrcrayfish.device.api.utils.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
+import scala.actors.threadpool.Arrays;
 
 public class SwingUtils {
 
@@ -54,14 +55,12 @@ public class SwingUtils {
 		
 		prev_width = width;
 		prev_height = height;
-		
-		try {
-			@SuppressWarnings("unused")
-			Component tmp = panel.getComponents()[0];
-		} catch (IndexOutOfBoundsException e) {
+
+		if (!Arrays.asList(panel.getComponents()).contains(c)) {
+			System.out.println("Added component:"+c.getName());
 			panel.add(c, BorderLayout.CENTER);
 			frame.setVisible(true);
-		}
+		}	
 		
 		if (!frame.isVisible()) frame.setVisible(true);
 		

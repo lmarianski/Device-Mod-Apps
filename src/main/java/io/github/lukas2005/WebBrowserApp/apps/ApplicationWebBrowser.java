@@ -7,6 +7,7 @@ import com.mrcrayfish.device.api.app.Layout;
 import com.teamdev.jxbrowser.chromium.Browser;
 import com.teamdev.jxbrowser.chromium.BrowserContext;
 import com.teamdev.jxbrowser.chromium.BrowserContextParams;
+import com.teamdev.jxbrowser.chromium.swing.BrowserView;
 
 import io.github.lukas2005.WebBrowserApp.Reference;
 import io.github.lukas2005.WebBrowserApp.components.WebBrowserComponent;
@@ -15,8 +16,10 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class ApplicationWebBrowser extends Application {
 
+	File dataDir = new File(Minecraft.getMinecraft().mcDataDir.getPath()+"\\mods\\WebBrowserAppData");	
+	
 	Browser b;
-	File dataDir = new File(Minecraft.getMinecraft().mcDataDir.getPath()+"\\mods\\WebBrowserAppData");
+	BrowserView view;
 	BrowserContextParams bcp;
 	BrowserContext bc;
 	
@@ -28,23 +31,23 @@ public class ApplicationWebBrowser extends Application {
 	public void init() {
 		
 		dataDir.mkdirs();
-		//bcp = new BrowserContextParams(dataDir.getPath(), "en-us");
-		//bc = new BrowserContext(bcp);
-		//b = new Browser(BrowserType.LIGHTWEIGHT, bc);
+		BrowserContextParams bcp = new BrowserContextParams(dataDir.getAbsolutePath());
+		BrowserContext bc = new BrowserContext(bcp);
+		b = new Browser(bc);
 		
 		Layout main = new Layout();
 		this.setCurrentLayout(main);
 		
-		main.addComponent(new WebBrowserComponent(0, 0, main.width, main.height));
+		main.addComponent(new WebBrowserComponent(0, 0, main.width, main.height, b));
 		
-		//b.loadURL("https://google.com");
+		b.loadURL("https://google.com");
 	}
 	
 	@Override
 	public void onClose() {
 		super.onClose();
 		
-		//b.dispose();
+		b.dispose();
 	}
 	
 	@Override

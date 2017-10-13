@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 @Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, dependencies = "required-after:cdm@[0.0.3,]")
 public class Main {
 
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent e) {
 		SwingUtils.init();
