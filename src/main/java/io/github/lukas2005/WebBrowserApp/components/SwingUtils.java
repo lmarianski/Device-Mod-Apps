@@ -12,6 +12,7 @@ import com.mrcrayfish.device.api.utils.RenderUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 
 public class SwingUtils {
@@ -64,8 +65,9 @@ public class SwingUtils {
 		
 		ResourceLocation rc = mc.getTextureManager().getDynamicTextureLocation(" ", new DynamicTexture(img));
 		
-		Minecraft.getMinecraft().getRenderManager().renderEngine.bindTexture(rc);
+		mc.getRenderManager().renderEngine.bindTexture(rc);
 		RenderUtil.drawRectWithTexture(x, y, 0, 0, width, height, width, height);
+		mc.getTextureManager().deleteTexture(rc);
 	}
 	
 }
