@@ -1,4 +1,4 @@
-package io.github.lukas2005.WebBrowserApp.components;
+package io.github.lukas2005.WebBrowserApp.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -25,7 +25,7 @@ public class SwingUtils {
 	private static Minecraft mc = Minecraft.getMinecraft();
 	
 	/**
-	 * Call this before any other method in this class
+	 * Call this before any other method in this class or new Swingwrapper();
 	 */
 	public static void init() {
 		frame = new JFrame();
@@ -42,6 +42,10 @@ public class SwingUtils {
 	static int prev_height = 0;
 	static BufferedImage img;
 	
+	@Deprecated
+	/**
+	 * use new SwingWrapper() now
+	 */
 	public static void drawSwingComponent(int x, int y, int width, int height, Component c) {
 		if (!initialized) throw new IllegalStateException("SwingUtils not initalized!");
 		
@@ -57,7 +61,7 @@ public class SwingUtils {
 		prev_height = height;
 
 		if (!Arrays.asList(panel.getComponents()).contains(c)) {
-			System.out.println("Added component:"+c.getName());
+			System.out.println("Added component:"+c.toString());
 			panel.add(c, BorderLayout.CENTER);
 			frame.setVisible(true);
 		}	
@@ -69,7 +73,7 @@ public class SwingUtils {
 		c.paint(g);
 		img.flush();
 		
-		frame.setSize(0, 0);
+		frame.setSize(width, 0);
 		
 		//frame.setVisible(false);
 		
