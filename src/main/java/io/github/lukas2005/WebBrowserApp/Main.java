@@ -3,7 +3,7 @@ package io.github.lukas2005.WebBrowserApp;
 import com.mrcrayfish.device.api.ApplicationManager;
 
 import io.github.lukas2005.WebBrowserApp.apps.ApplicationWebBrowser;
-import io.github.lukas2005.WebBrowserApp.components.SwingUtils;
+import io.github.lukas2005.WebBrowserApp.swing.SwingUtils;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
