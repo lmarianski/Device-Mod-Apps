@@ -3,7 +3,6 @@ package io.github.lukas2005.WebBrowserApp.swing;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.image.BufferedImage;
 
 import com.mrcrayfish.device.api.utils.RenderUtil;
@@ -71,12 +70,8 @@ public class SwingWrapper {
 	
 	public void handleMouseClick(int xPosition, int yPosition, int mouseX, int mouseY, int mouseButton) {
 		if (mouseX >= xPosition && mouseY >= yPosition && mouseX < xPosition + this.width && mouseY < yPosition + this.height) {
-			System.out.println("Clicked on a warpper!");
-			Point whereToClick = new Point(mouseX-xPosition, mouseY-yPosition);
-
-			System.out.println(whereToClick);
 			
-			SwingUtils.click(c, Math.round(SwingUtils.map(whereToClick.x, 0, width, 0, c.getWidth())), Math.round(SwingUtils.map(whereToClick.y, 0, height, 0, c.getHeight())));
+			SwingUtils.click(c, Math.round(SwingUtils.map(mouseX-xPosition, 0, width, 0, c.getWidth())), Math.round(SwingUtils.map(mouseY-yPosition, 0, height, 0, c.getHeight())));
 		}
 	}
 	//int i = 0;
