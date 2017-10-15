@@ -1,13 +1,10 @@
 package io.github.lukas2005.WebBrowserApp.swing;
 
-import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Graphics;
-import java.awt.event.MouseEvent;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import com.mrcrayfish.device.api.utils.RenderUtil;
 
@@ -22,10 +19,10 @@ public class SwingWrapper {
 	
 	public Component c;
 
-	private BufferedImage img;
+	private volatile BufferedImage img;
 	private Graphics g;
 	
-	private volatile ResourceLocation rc;
+	private ResourceLocation rc;
 	private Thread paintThread;
 	
 	public SwingWrapper(final int width, final int height, final Component c) {
@@ -52,14 +49,12 @@ public class SwingWrapper {
 				while(!Thread.interrupted()) {
 					if (!SwingUtils.frame.isVisible()) SwingUtils.frame.setVisible(true);
 					
-					SwingUtils.frame.setSize(width, height);
+					SwingUtils.frame.setSize(width-18, height-12);
 					
 					c.paint(g);
 					img.flush();
 					
-					SwingUtils.frame.setSize(width, 0);
-					
-					rc = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation(c.toString(), new DynamicTexture(img));
+					//SwingUtils.frame.setSize(width, 0);
 				}
 			}
 		};
@@ -75,24 +70,18 @@ public class SwingWrapper {
 	}
 	
 	public void handleMouseClick(int xPosition, int yPosition, int mouseX, int mouseY, int mouseButton) {
-		if ((mouseX > xPosition && mouseX < width) && (mouseY < yPosition && mouseY > height)) {
+		if (mouseX >= xPosition && mouseY >= yPosition && mouseX < xPosition + this.width && mouseY < yPosition + this.height) {
 			System.out.println("Clicked on a warpper!");
-			@SuppressWarnings("unchecked")
-			Class<Component> class1 = (Class<Component>) c.getClass();
-			try {
-				Method m = class1.getDeclaredMethod("processEvent", AWTEvent.class);
-				m.invoke(c, new MouseEvent(c, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, mouseX, mouseY, mouseX, mouseY, 1, false, mouseButton));
-			} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			Point whereToClick = new Point(mouseX-xPosition, mouseY-yPosition);
+
+			System.out.println(whereToClick);
+			
+			SwingUtils.click(c, Math.round(SwingUtils.map(whereToClick.x, 0, width, 0, c.getWidth())), Math.round(SwingUtils.map(whereToClick.y, 0, height, 0, c.getHeight())));
 		}
 	}
-	
+	//int i = 0;
 	public void render(int x, int y) {
-		
-		//frame.setVisible(false);
-		
+		rc = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation(c.toString(), new DynamicTexture(img));
 		
 		Minecraft.getMinecraft().getRenderManager().renderEngine.bindTexture(rc);
 		RenderUtil.drawRectWithTexture(x, y, 0, 0, width, height, width, height);

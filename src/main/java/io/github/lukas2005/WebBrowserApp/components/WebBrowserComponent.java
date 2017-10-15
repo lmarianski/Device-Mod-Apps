@@ -1,5 +1,8 @@
 package io.github.lukas2005.WebBrowserApp.components;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
 
 import com.mrcrayfish.device.api.app.Component;
@@ -15,21 +18,23 @@ public class WebBrowserComponent extends Component {
 	private BrowserView view;
 	private SwingWrapper wrapper;
 	
-	private int width;
-	private int height;
-	
 	public WebBrowserComponent(int x, int y, int width, int height, Browser b) {
 		super(x, y);
 		
 		this.view = new BrowserView(b);
-		this.wrapper = new SwingWrapper(width, height, new JButton("Hello"));
-		
-		this.width = width;
-		this.height = height;
+		JButton jb = new JButton("Hello");
+		jb.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Hello from JButton!");
+			}
+		});
+		this.wrapper = new SwingWrapper(width, height, jb);
 	}
 	
 	@Override
 	public void handleMouseClick(int mouseX, int mouseY, int mouseButton) {
+		if(!this.visible || !this.enabled)
+			return;
 		wrapper.handleMouseClick(xPosition, yPosition, mouseX, mouseY, mouseButton);
 	}
 	

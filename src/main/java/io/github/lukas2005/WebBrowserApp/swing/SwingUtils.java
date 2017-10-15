@@ -3,10 +3,13 @@ package io.github.lukas2005.WebBrowserApp.swing;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import com.mrcrayfish.device.api.utils.RenderUtil;
@@ -82,6 +85,30 @@ public class SwingUtils {
 		mc.getRenderManager().renderEngine.bindTexture(rc);
 		RenderUtil.drawRectWithTexture(x, y, 0, 0, width, height, width, height);
 		mc.getTextureManager().deleteTexture(rc);
+	}
+	
+	public static void click(Component target, int x, int y)
+	{
+	   MouseEvent press, release, click;
+	   Point point;
+	   long time;
+
+	   point = new Point(x, y);
+
+	   SwingUtilities.convertPointToScreen(point, target);
+
+	   time    = System.currentTimeMillis();
+	   press   = new MouseEvent(target, MouseEvent.MOUSE_PRESSED,  time, 0, x, y, point.x, point.y, 1, false, MouseEvent.BUTTON1);
+	   release = new MouseEvent(target, MouseEvent.MOUSE_RELEASED, time, 0, x, y, point.x, point.y, 1, false, MouseEvent.BUTTON1);
+	   click   = new MouseEvent(target, MouseEvent.MOUSE_CLICKED,  time, 0, x, y, point.x, point.y, 1, false, MouseEvent.BUTTON1);
+
+	   target.dispatchEvent(press);
+	   target.dispatchEvent(release);
+	   target.dispatchEvent(click);
+	}
+	
+	static public final float map(float value, float istart, float istop, float ostart, float ostop) {
+	      return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
 	}
 	
 }
