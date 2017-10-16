@@ -6,6 +6,7 @@ import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
+import com.mrcrayfish.device.api.app.component.Slider;
 import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.teamdev.jxbrowser.chromium.Browser;
@@ -65,6 +66,9 @@ public class ApplicationWebBrowser extends Application {
 			}
 		});
 		main.addComponent(goButton);
+		
+		//final Slider scrollBar = new Slider(main.width-5, 10, 100);
+		//main.addComponent(scrollBar);
 		
         b.addLoadListener(new LoadAdapter() {
             @Override
