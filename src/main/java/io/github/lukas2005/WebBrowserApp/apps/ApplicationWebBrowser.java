@@ -3,11 +3,17 @@ package io.github.lukas2005.WebBrowserApp.apps;
 import java.io.File;
 
 import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
+import com.mrcrayfish.device.api.app.component.Button;
+import com.mrcrayfish.device.api.app.component.TextField;
+import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.teamdev.jxbrowser.chromium.Browser;
 import com.teamdev.jxbrowser.chromium.BrowserContext;
 import com.teamdev.jxbrowser.chromium.BrowserContextParams;
 import com.teamdev.jxbrowser.chromium.BrowserType;
+import com.teamdev.jxbrowser.chromium.events.FinishLoadingEvent;
+import com.teamdev.jxbrowser.chromium.events.LoadAdapter;
 import com.teamdev.jxbrowser.chromium.swing.BrowserView;
 
 import io.github.lukas2005.WebBrowserApp.Reference;
@@ -21,8 +27,11 @@ public class ApplicationWebBrowser extends Application {
 	
 	Browser b;
 	BrowserView view;
+	WebBrowserComponent deviceModView;
 	BrowserContextParams bcp;
 	BrowserContext bc;
+	
+	
 	
 	public ApplicationWebBrowser() {
 		super(Reference.MOD_ID, "Mineium Web Browser");
@@ -36,12 +45,36 @@ public class ApplicationWebBrowser extends Application {
 		BrowserContext bc = new BrowserContext(bcp);
 		b = new Browser(BrowserType.LIGHTWEIGHT, bc);
 		
-		Layout main = new Layout();
-		this.setCurrentLayout(main);
+		Layout main = new Layout(300,150);
+		setCurrentLayout(main);
 		
-		main.addComponent(new WebBrowserComponent(0, 0, main.width, main.height, b));
-		
+		deviceModView = new WebBrowserComponent(0, 0, main.width, main.height, b);
 		b.loadURL("https://google.com");
+		
+		main.addComponent(deviceModView);
+		
+		final TextField addressBar = new TextField(10, 5, main.width-30);
+		addressBar.setText("https://google.com");
+		main.addComponent(addressBar);
+		
+		Button goButton = new Button("Go!", main.width-17, 5, 15, 15);
+		goButton.setClickListener(new ClickListener() {
+			@Override
+			public void onClick(Component c, int mouseButton) {
+				b.loadURL(addressBar.getText());
+			}
+		});
+		main.addComponent(goButton);
+		
+        b.addLoadListener(new LoadAdapter() {
+            @Override
+            public void onFinishLoadingFrame(FinishLoadingEvent event) {
+                if (event.isMainFrame()) {
+                	addressBar.setText(event.getValidatedURL());
+                    event.getBrowser().executeJavaScript("document.body.style.overflow = 'hidden';");
+                }
+            }
+        });
 	}
 	
 	@Override
@@ -49,6 +82,7 @@ public class ApplicationWebBrowser extends Application {
 		super.onClose();
 		
 		b.dispose();
+		deviceModView.dispose();
 	}
 	
 	@Override

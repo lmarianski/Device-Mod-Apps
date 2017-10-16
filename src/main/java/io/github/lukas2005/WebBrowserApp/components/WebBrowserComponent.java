@@ -1,10 +1,5 @@
 package io.github.lukas2005.WebBrowserApp.components;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
 import com.teamdev.jxbrowser.chromium.Browser;
@@ -22,13 +17,21 @@ public class WebBrowserComponent extends Component {
 		super(x, y);
 		
 		this.view = new BrowserView(b);
-		JButton jb = new JButton("Hello");
-		jb.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.out.println("Hello from JButton!");
-			}
-		});
-		this.wrapper = new SwingWrapper(width, height, jb);
+//		JButton jb = new JButton("Hello");
+//		jb.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				System.out.println("Hello from JButton!");
+//			}
+//		});
+		
+		this.wrapper = new SwingWrapper(width, height, 1000, 450, view);
+	}
+	
+	/*
+	 * Call at the closing of the app
+	 */
+	public void dispose() {
+		this.wrapper.dispose();
 	}
 	
 	@Override
