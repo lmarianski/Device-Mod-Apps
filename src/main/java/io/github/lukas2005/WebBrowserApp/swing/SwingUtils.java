@@ -3,6 +3,8 @@ package io.github.lukas2005.WebBrowserApp.swing;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -110,5 +112,45 @@ public class SwingUtils {
 	static public final float map(float value, float istart, float istop, float ostart, float ostop) {
 	      return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
 	}
+	
+	/**
+	 * Compares two images pixel by pixel.
+	 *
+	 * @param imgA the first image.
+	 * @param imgB the second image.
+	 * @return whether the images are both the same or not.
+	 */
+	public static boolean compareImages(BufferedImage imgA, BufferedImage imgB) {
+	  // The images must be the same size.
+	  if (imgA.getWidth() == imgB.getWidth() && imgA.getHeight() == imgB.getHeight()) {
+	    int width = imgA.getWidth();
+	    int height = imgA.getHeight();
+
+	    // Loop over every pixel.
+	    for (int y = 0; y < height; y++) {
+	      for (int x = 0; x < width; x++) {
+	        // Compare the pixels for equality.
+	        if (imgA.getRGB(x, y) != imgB.getRGB(x, y)) {
+	          return false;
+	        }
+	      }
+	    }
+	  } else {
+	    return false;
+	  }
+
+	  return true;
+	}
+
+	public static BufferedImage resize(BufferedImage img, int newW, int newH) { 
+	    Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+	    BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
+
+	    Graphics2D g2d = dimg.createGraphics();
+	    g2d.drawImage(tmp, 0, 0, null);
+	    g2d.dispose();
+
+	    return dimg;
+	} 
 	
 }

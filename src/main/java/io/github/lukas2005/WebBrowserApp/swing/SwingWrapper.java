@@ -5,10 +5,12 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
-import com.mrcrayfish.device.api.utils.RenderUtil;
-
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 
 public class SwingWrapper {
@@ -16,23 +18,34 @@ public class SwingWrapper {
 	public int width = 0;
 	public int height = 0;
 	
+	public int renderWidth;
+	public int renderHeight;
+
 	public Component c;
 
-	private volatile BufferedImage img;
-	private Graphics g;
+	protected BufferedImage img;
+	//private BufferedImage imgOld;
+	protected Graphics g;
 	
-	private ResourceLocation rc;
-	private Thread paintThread;
+	protected Thread paintThread;
 	
-	public SwingWrapper(final int width, final int height, final Component c) {
+	protected Minecraft mc = Minecraft.getMinecraft();
+	protected TextureManager txt = mc.getTextureManager();
+	
+	public SwingWrapper(int width, int height, int renderWidth, int renderHeight, Component c) {
 		if (!SwingUtils.initialized) throw new IllegalStateException("SwingUtils not initalized!");
 		//if (!c.isLightweight()) throw new IllegalArgumentException("Heavyweight components are not currently supported!"); 
 		
 		this.width = width;
 		this.height = height;
+		
+		this.renderWidth = renderWidth;
+		this.renderHeight = renderHeight;
+		
 		this.c = c;
 		
-		img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		img = new BufferedImage(renderWidth, renderHeight, BufferedImage.TYPE_INT_RGB);
+		//imgOld = new BufferedImage(img.getWidth(), img.getHeight(), img.getType());
 		g = img.createGraphics();
 		System.out.println("Creating new img");
 		
@@ -42,30 +55,28 @@ public class SwingWrapper {
 		
 		if (c.getName() == null) c.setName("Component");
 		
-		paintThread = new Thread("Swing Wraper Painitng Thread for "+c.getName()) {
-			@Override
-			public void run() {
-				while(!Thread.interrupted()) {
-					if (!SwingUtils.frame.isVisible()) SwingUtils.frame.setVisible(true);
-					
-					SwingUtils.frame.setSize(width-18, height-12);
-					
-					c.paint(g);
-					img.flush();
-					
-					//SwingUtils.frame.setSize(width, 0);
-				}
-			}
-		};
+		paintThread = new ComponentPaintingThread(renderWidth, renderHeight, c, g);
 		
-		paintThread.start();
+		paintThread.start();	
+	}
+	
+	public SwingWrapper(int width, int height, Component c) {
+		this(width, height, width, height, c);
 	}
 	
 	@Override
 	protected void finalize() throws Throwable {
 		super.finalize();
-		
+		dispose();
+	}
+	
+	/**
+	 * call when this object is no longer needed
+	 */
+	public void dispose() {
 		paintThread.interrupt();
+		SwingUtils.panel.remove(this.c);
+		c.setVisible(false);
 	}
 	
 	public void handleMouseClick(int xPosition, int yPosition, int mouseX, int mouseY, int mouseButton) {
@@ -75,12 +86,31 @@ public class SwingWrapper {
 		}
 	}
 	//int i = 0;
+	ResourceLocation rc;
+	boolean isTheSameOld = true;
 	public void render(int x, int y) {
-		rc = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation(c.toString(), new DynamicTexture(img));
+		//boolean isTheSame = SwingUtils.compareImages(img, imgOld);
+		/*if (rc == null || !isTheSame)*/ rc = txt.getDynamicTextureLocation(c.toString(), new DynamicTexture(img));
 		
-		Minecraft.getMinecraft().getRenderManager().renderEngine.bindTexture(rc);
-		RenderUtil.drawRectWithTexture(x, y, 0, 0, width, height, width, height);
-		Minecraft.getMinecraft().getTextureManager().deleteTexture(rc);
+		if (rc != null) {
+			mc.getRenderManager().renderEngine.bindTexture(rc);
+			drawRectWithFullTexture(x, y, 0, 0, width, height);
+			/*if (rc != null || !isTheSame && isTheSameOld)*/ txt.deleteTexture(rc);
+		}
+		//isTheSameOld = isTheSame;
+	}
+
+	protected static void drawRectWithFullTexture(double x, double y, float u, float v, int width, int height) {
+		Tessellator tessellator = Tessellator.getInstance();
+		VertexBuffer buffer = tessellator.getBuffer();
+		buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+		buffer.pos(x, y + height, 0).tex(0, 1).endVertex();
+		buffer.pos(x + width, y + height, 0).tex(1, 1).endVertex();
+		buffer.pos(x + width, y, 0).tex(1, 0).endVertex();
+		buffer.pos(x, y, 0).tex(0, 0).endVertex();
+		tessellator.draw();
 	}
 	
 }
+
+//2005920
