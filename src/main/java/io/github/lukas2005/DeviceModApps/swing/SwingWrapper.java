@@ -1,4 +1,4 @@
-package io.github.lukas2005.WebBrowserApp.swing;
+package io.github.lukas2005.DeviceModApps.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Component;

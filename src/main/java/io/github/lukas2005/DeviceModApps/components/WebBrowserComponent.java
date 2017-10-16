@@ -1,11 +1,11 @@
-package io.github.lukas2005.WebBrowserApp.components;
+package io.github.lukas2005.DeviceModApps.components;
 
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
 import com.teamdev.jxbrowser.chromium.Browser;
 import com.teamdev.jxbrowser.chromium.swing.BrowserView;
 
-import io.github.lukas2005.WebBrowserApp.swing.SwingWrapper;
+import io.github.lukas2005.DeviceModApps.swing.SwingWrapper;
 import net.minecraft.client.Minecraft;
 
 public class WebBrowserComponent extends Component {

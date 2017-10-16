@@ -1,4 +1,4 @@
-package io.github.lukas2005.WebBrowserApp.apps;
+package io.github.lukas2005.DeviceModApps.apps;
 
 import java.io.File;
 
@@ -16,8 +16,8 @@ import com.teamdev.jxbrowser.chromium.events.FinishLoadingEvent;
 import com.teamdev.jxbrowser.chromium.events.LoadAdapter;
 import com.teamdev.jxbrowser.chromium.swing.BrowserView;
 
-import io.github.lukas2005.WebBrowserApp.Reference;
-import io.github.lukas2005.WebBrowserApp.components.WebBrowserComponent;
+import io.github.lukas2005.DeviceModApps.Reference;
+import io.github.lukas2005.DeviceModApps.components.WebBrowserComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 

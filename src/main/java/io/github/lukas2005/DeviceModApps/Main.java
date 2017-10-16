@@ -1,9 +1,9 @@
-package io.github.lukas2005.WebBrowserApp;
+package io.github.lukas2005.DeviceModApps;
 
 import com.mrcrayfish.device.api.ApplicationManager;
 
-import io.github.lukas2005.WebBrowserApp.apps.ApplicationWebBrowser;
-import io.github.lukas2005.WebBrowserApp.swing.SwingUtils;
+import io.github.lukas2005.DeviceModApps.apps.ApplicationWebBrowser;
+import io.github.lukas2005.DeviceModApps.swing.SwingUtils;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
