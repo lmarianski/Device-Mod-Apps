@@ -3,6 +3,7 @@ package io.github.lukas2005.DeviceModApps.swing;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 import net.minecraft.client.Minecraft;
@@ -85,6 +86,11 @@ public class SwingWrapper {
 			SwingUtils.click(c, Math.round(SwingUtils.map(mouseX-xPosition, 0, width, 0, c.getWidth())), Math.round(SwingUtils.map(mouseY-yPosition, 0, height, 0, c.getHeight())));
 		}
 	}
+	
+	public void handleMouse(int xPosition, int yPosition, int mouseX, int mouseY) {
+		c.dispatchEvent(new MouseEvent(c, MouseEvent.MOUSE_MOVED, System.currentTimeMillis(), 0, Math.round(SwingUtils.map(mouseX-xPosition, 0, width, 0, c.getWidth())), Math.round(SwingUtils.map(mouseY-yPosition, 0, height, 0, c.getHeight())), 1, false));
+	}
+	
 	//int i = 0;
 	ResourceLocation rc;
 	boolean isTheSameOld = true;

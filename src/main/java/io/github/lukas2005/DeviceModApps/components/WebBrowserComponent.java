@@ -43,6 +43,7 @@ public class WebBrowserComponent extends Component {
 	
 	@Override
 	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks) {
+		wrapper.handleMouse(xPosition, yPosition, mouseX, mouseY);
 		wrapper.render(x, y);
 	}
 
