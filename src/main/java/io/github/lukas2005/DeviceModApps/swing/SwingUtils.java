@@ -1,6 +1,7 @@
 package io.github.lukas2005.DeviceModApps.swing;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -15,6 +16,13 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import com.mrcrayfish.device.api.utils.RenderUtil;
+import com.teamdev.jxbrowser.chromium.Browser;
+import com.teamdev.jxbrowser.chromium.BrowserKeyEvent.KeyModifiers;
+import com.teamdev.jxbrowser.chromium.BrowserKeyEvent.KeyModifiersBuilder;
+import com.teamdev.jxbrowser.chromium.BrowserMouseEvent.BrowserMouseEventBuilder;
+import com.teamdev.jxbrowser.chromium.BrowserMouseEvent.MouseButtonType;
+import com.teamdev.jxbrowser.chromium.BrowserMouseEvent.MouseEventType;
+import com.teamdev.jxbrowser.chromium.BrowserMouseEvent.MouseScrollType;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
@@ -89,7 +97,7 @@ public class SwingUtils {
 		mc.getTextureManager().deleteTexture(rc);
 	}
 	
-	public static void click(Component target, int x, int y)
+	public static void click(Component target, int x, int y, int mouseButton)
 	{
 	   MouseEvent press, release, click;
 	   Point point;
@@ -97,12 +105,16 @@ public class SwingUtils {
 
 	   point = new Point(x, y);
 
+	   Graphics g = target.getGraphics();
+	   g.setColor(mouseButton == 1 ? Color.RED : Color.BLUE);
+	   g.drawRoundRect(x, y, 5, 5, 5, 5);
+	   
 	   SwingUtilities.convertPointToScreen(point, target);
 
 	   time    = System.currentTimeMillis();
-	   press   = new MouseEvent(target, MouseEvent.MOUSE_PRESSED,  time, 0, x, y, point.x, point.y, 1, false, MouseEvent.BUTTON1);
-	   release = new MouseEvent(target, MouseEvent.MOUSE_RELEASED, time, 0, x, y, point.x, point.y, 1, false, MouseEvent.BUTTON1);
-	   click   = new MouseEvent(target, MouseEvent.MOUSE_CLICKED,  time, 0, x, y, point.x, point.y, 1, false, MouseEvent.BUTTON1);
+	   press   = new MouseEvent(target, MouseEvent.MOUSE_PRESSED,  time, 0, x, y, point.x, point.y, 1, false, mouseButton);
+	   release = new MouseEvent(target, MouseEvent.MOUSE_RELEASED, time, 0, x, y, point.x, point.y, 1, false, mouseButton);
+	   click   = new MouseEvent(target, MouseEvent.MOUSE_CLICKED,  time, 0, x, y, point.x, point.y, 1, false, mouseButton);
 
 	   target.dispatchEvent(press);
 	   target.dispatchEvent(release);
@@ -152,5 +164,51 @@ public class SwingUtils {
 
 	    return dimg;
 	} 
+	
+
+	public static void forwardMousePressEvent(Browser browser, MouseButtonType buttonType, int x, int y, int globalX, int globalY) {
+		BrowserMouseEventBuilder builder = new BrowserMouseEventBuilder();
+		builder.setEventType(MouseEventType.MOUSE_PRESSED)
+		.setButtonType(buttonType)
+		.setX(x)
+		.setY(y)
+		.setGlobalX(globalX)
+		.setGlobalY(globalY)
+		.setClickCount(1)
+		.setModifiers(new KeyModifiersBuilder().mouseButton().build());
+		browser.forwardMouseEvent(builder.build());
+	}
+	
+	public static void forwardMouseReleaseEvent(Browser browser, MouseButtonType buttonType, int x, int y, int globalX, int globalY) {
+		BrowserMouseEventBuilder builder = new BrowserMouseEventBuilder();
+		builder.setEventType(MouseEventType.MOUSE_RELEASED)
+		.setButtonType(buttonType)
+		.setX(x)
+		.setY(y)
+		.setGlobalX(globalX)
+		.setGlobalY(globalY)
+		.setClickCount(1)
+		.setModifiers(KeyModifiers.NO_MODIFIERS);
+		browser.forwardMouseEvent(builder.build());
+	}
+	
+	public static void forwardMouseClickEvent(Browser browser, MouseButtonType buttonType, int x, int y, int globalX, int globalY) {
+		forwardMousePressEvent(browser, buttonType, x, y, globalX, globalY);
+		forwardMouseReleaseEvent(browser, buttonType, x, y, globalX, globalY);
+	}
+	
+	public static void forwardMouseScrollEvent(Browser browser, int unitsToScroll, int x, int y) {
+		BrowserMouseEventBuilder builder = new BrowserMouseEventBuilder();
+		builder.setEventType(MouseEventType.MOUSE_WHEEL)
+		.setX(x)
+		.setY(y)
+		.setGlobalX(0)
+		.setGlobalY(0)
+		.setScrollBarPixelsPerLine(25)
+		.setScrollType(MouseScrollType.WHEEL_BLOCK_SCROLL)
+		.setUnitsToScroll(unitsToScroll);
+		browser.forwardMouseEvent(builder.build());
+	}
+
 	
 }

@@ -3,8 +3,13 @@ package io.github.lukas2005.DeviceModApps.swing;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Graphics;
-import java.awt.event.MouseEvent;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
+
+import javax.swing.SwingUtilities;
+
+import com.teamdev.jxbrowser.chromium.BrowserMouseEvent.MouseButtonType;
+import com.teamdev.jxbrowser.chromium.swing.BrowserView;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
@@ -82,13 +87,22 @@ public class SwingWrapper {
 	
 	public void handleMouseClick(int xPosition, int yPosition, int mouseX, int mouseY, int mouseButton) {
 		if (mouseX >= xPosition && mouseY >= yPosition && mouseX < xPosition + this.width && mouseY < yPosition + this.height) {
-			
-			SwingUtils.click(c, Math.round(SwingUtils.map(mouseX-xPosition, 0, width, 0, c.getWidth())), Math.round(SwingUtils.map(mouseY-yPosition, 0, height, 0, c.getHeight())));
+			Point p = new Point(Math.round(SwingUtils.map(mouseX-xPosition, 0, width, 0, c.getWidth())), Math.round(SwingUtils.map(mouseY-yPosition, 0, height, 0, c.getHeight())));
+			Point globalP = p.getLocation();
+			SwingUtilities.convertPointToScreen(globalP, c);
+			if (!(c instanceof BrowserView)) {
+				SwingUtils.click(c, p.x, p.y, mouseButton);
+			} else {
+				BrowserView view = (BrowserView) c;
+				SwingUtils.forwardMouseClickEvent(view.getBrowser(), MouseButtonType.PRIMARY, p.x, p.y, globalP.x, globalP.y);
+			}
 		}
 	}
 	
 	public void handleMouse(int xPosition, int yPosition, int mouseX, int mouseY) {
-		c.dispatchEvent(new MouseEvent(c, MouseEvent.MOUSE_MOVED, System.currentTimeMillis(), 0, Math.round(SwingUtils.map(mouseX-xPosition, 0, width, 0, c.getWidth())), Math.round(SwingUtils.map(mouseY-yPosition, 0, height, 0, c.getHeight())), 1, false));
+		//Point p = new Point(Math.round(SwingUtils.map(mouseX-xPosition, 0, width, 0, c.getWidth())), Math.round(SwingUtils.map(mouseY-yPosition, 0, height, 0, c.getHeight())));
+		//MouseEvent event = new MouseEvent(c, MouseEvent.MOUSE_CLICKED,  System.currentTimeMillis(), 0, Math.round(SwingUtils.map(mouseX-xPosition, 0, width, 0, c.getWidth())), Math.round(SwingUtils.map(mouseY-yPosition, 0, height, 0, c.getHeight())), p.x, p.y, 1, false, 0);
+		//c.dispatchEvent(event);
 	}
 	
 	//int i = 0;
@@ -116,7 +130,7 @@ public class SwingWrapper {
 		buffer.pos(x, y, 0).tex(0, 0).endVertex();
 		tessellator.draw();
 	}
-	
+
 }
 
 //2005920
