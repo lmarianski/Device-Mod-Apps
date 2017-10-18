@@ -6,7 +6,6 @@ import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.api.app.component.Slider;
 import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.teamdev.jxbrowser.chromium.Browser;
@@ -24,15 +23,13 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class ApplicationWebBrowser extends Application {
 
-	File dataDir = new File(Minecraft.getMinecraft().mcDataDir.getPath()+"\\mods\\WebBrowserAppData");	
+	File dataDir = new File(Minecraft.getMinecraft().mcDataDir.getAbsolutePath()+"\\mods\\WebBrowserAppData");	
 	
 	Browser b;
 	BrowserView view;
 	WebBrowserComponent deviceModView;
 	BrowserContextParams bcp;
 	BrowserContext bc;
-	
-	
 	
 	public ApplicationWebBrowser() {
 		super(Reference.MOD_ID, "Mineium Web Browser");
