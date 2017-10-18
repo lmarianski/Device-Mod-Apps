@@ -1,9 +1,5 @@
 package io.github.lukas2005.DeviceModApps.apps;
 
-import java.io.File;
-import java.nio.file.Paths;
-
-import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
@@ -17,29 +13,21 @@ import com.teamdev.jxbrowser.chromium.events.FinishLoadingEvent;
 import com.teamdev.jxbrowser.chromium.events.LoadAdapter;
 import com.teamdev.jxbrowser.chromium.swing.BrowserView;
 
-import io.github.lukas2005.DeviceModApps.Main;
 import io.github.lukas2005.DeviceModApps.components.WebBrowserComponent;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class ApplicationWebBrowser extends Application {
-
-	File appDataDir;	
+public class ApplicationWebBrowser extends ApplicationBase {
 	
 	Browser b;
 	BrowserView view;
 	WebBrowserComponent deviceModView;
 	BrowserContextParams bcp;
 	BrowserContext bc;
-	
-	public ApplicationWebBrowser() {
-		appDataDir = Paths.get(Main.modDataDir.getAbsolutePath(), getInfo().getId().getResourcePath()).toFile();
-		if (!appDataDir.exists()) appDataDir.mkdirs();
-	}
 
 	@Override
 	public void init() {
 		
-		BrowserContextParams bcp = new BrowserContextParams(appDataDir.getAbsolutePath());
+		BrowserContextParams bcp = new BrowserContextParams(getAppDataDir().getAbsolutePath());
 		BrowserContext bc = new BrowserContext(bcp);
 		b = new Browser(BrowserType.LIGHTWEIGHT, bc);
 		
