@@ -20,6 +20,7 @@ import io.github.lukas2005.DeviceModApps.Reference;
 import io.github.lukas2005.DeviceModApps.components.WebBrowserComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 
 public class ApplicationWebBrowser extends Application {
 
@@ -32,7 +33,7 @@ public class ApplicationWebBrowser extends Application {
 	BrowserContext bc;
 	
 	public ApplicationWebBrowser() {
-		super(Reference.MOD_ID, "Mineium Web Browser");
+		super(new ResourceLocation(Reference.MOD_ID, "mwb").toString(), "Mineium Web Browser");
 	}
 
 	@Override
