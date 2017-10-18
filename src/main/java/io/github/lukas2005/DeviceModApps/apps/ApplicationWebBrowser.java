@@ -32,7 +32,7 @@ public class ApplicationWebBrowser extends Application {
 	BrowserContext bc;
 	
 	public ApplicationWebBrowser() {
-		appDataDir = Paths.get(Main.modDataDir.getAbsolutePath(), info.getId().getResourcePath()).toFile();
+		appDataDir = Paths.get(Main.modDataDir.getAbsolutePath(), getInfo().getId().getResourcePath()).toFile();
 		if (!appDataDir.exists()) appDataDir.mkdirs();
 	}
 

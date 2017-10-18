@@ -14,7 +14,7 @@ public class ApplicationMusicPlayer extends Application {
 	File appDataDir;
 	
 	public ApplicationMusicPlayer() {
-		appDataDir = Paths.get(Main.modDataDir.getAbsolutePath(), info.getId().getResourcePath()).toFile();
+		appDataDir = Paths.get(Main.modDataDir.getAbsolutePath(), getInfo().getId().getResourcePath()).toFile();
 		if (!appDataDir.exists()) appDataDir.mkdirs();
 	}
 
