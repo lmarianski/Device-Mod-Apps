@@ -5,9 +5,11 @@ import java.nio.file.Paths;
 
 import com.mrcrayfish.device.api.ApplicationManager;
 
+import io.github.lukas2005.DeviceModApps.apps.ApplicationMusicPlayer;
 import io.github.lukas2005.DeviceModApps.apps.ApplicationWebBrowser;
 import io.github.lukas2005.DeviceModApps.swing.SwingUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -33,6 +35,7 @@ public class Main {
 
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent e) {
-		ApplicationManager.registerApplication(new ApplicationWebBrowser());
+		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "mwb"), ApplicationWebBrowser.class);
+		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "mta"), ApplicationMusicPlayer.class);
 	}
 }

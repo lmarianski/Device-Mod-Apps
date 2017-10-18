@@ -18,7 +18,6 @@ import com.teamdev.jxbrowser.chromium.events.LoadAdapter;
 import com.teamdev.jxbrowser.chromium.swing.BrowserView;
 
 import io.github.lukas2005.DeviceModApps.Main;
-import io.github.lukas2005.DeviceModApps.Reference;
 import io.github.lukas2005.DeviceModApps.components.WebBrowserComponent;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -33,9 +32,7 @@ public class ApplicationWebBrowser extends Application {
 	BrowserContext bc;
 	
 	public ApplicationWebBrowser() {
-		super(Reference.MOD_ID+":mwb", "Mineium Web Browser");
-		
-		appDataDir = Paths.get(Main.modDataDir.getAbsolutePath(), APP_ID.substring(Reference.MOD_ID.length()+1)).toFile();
+		appDataDir = Paths.get(Main.modDataDir.getAbsolutePath(), "mwb").toFile();
 		if (!appDataDir.exists()) appDataDir.mkdirs();
 	}
 

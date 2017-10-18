@@ -19,6 +19,11 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 
+/**
+ * 
+ * @author lukas2005
+ *
+ */
 public class SwingWrapper {
 	
 	public int width = 0;

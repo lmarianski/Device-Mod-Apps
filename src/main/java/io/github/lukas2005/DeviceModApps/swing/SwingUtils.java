@@ -29,6 +29,11 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
 import scala.actors.threadpool.Arrays;
 
+/**
+ * 
+ * @author lukas2005
+ *
+ */
 public class SwingUtils {
 
 	public static JFrame frame = new JFrame();

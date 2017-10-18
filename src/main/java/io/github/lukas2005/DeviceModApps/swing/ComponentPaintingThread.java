@@ -3,6 +3,11 @@ package io.github.lukas2005.DeviceModApps.swing;
 import java.awt.Component;
 import java.awt.Graphics;
 
+/**
+ * 
+ * @author lukas2005
+ *
+ */
 public class ComponentPaintingThread extends Thread {
 	
 	public int width = 0;
