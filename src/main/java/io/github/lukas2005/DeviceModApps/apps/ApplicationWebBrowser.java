@@ -1,6 +1,7 @@
 package io.github.lukas2005.DeviceModApps.apps;
 
 import java.io.File;
+import java.nio.file.Paths;
 
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
@@ -16,14 +17,14 @@ import com.teamdev.jxbrowser.chromium.events.FinishLoadingEvent;
 import com.teamdev.jxbrowser.chromium.events.LoadAdapter;
 import com.teamdev.jxbrowser.chromium.swing.BrowserView;
 
+import io.github.lukas2005.DeviceModApps.Main;
 import io.github.lukas2005.DeviceModApps.Reference;
 import io.github.lukas2005.DeviceModApps.components.WebBrowserComponent;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class ApplicationWebBrowser extends Application {
 
-	File dataDir = new File(Minecraft.getMinecraft().mcDataDir.getAbsolutePath()+"\\mods\\WebBrowserAppData");	
+	File appDataDir;	
 	
 	Browser b;
 	BrowserView view;
@@ -33,13 +34,15 @@ public class ApplicationWebBrowser extends Application {
 	
 	public ApplicationWebBrowser() {
 		super(Reference.MOD_ID+":mwb", "Mineium Web Browser");
+		
+		appDataDir = Paths.get(Main.modDataDir.getAbsolutePath(), APP_ID.substring(Reference.MOD_ID.length()+1)).toFile();
+		if (!appDataDir.exists()) appDataDir.mkdirs();
 	}
 
 	@Override
 	public void init() {
 		
-		dataDir.mkdirs();
-		BrowserContextParams bcp = new BrowserContextParams(dataDir.getAbsolutePath());
+		BrowserContextParams bcp = new BrowserContextParams(appDataDir.getAbsolutePath());
 		BrowserContext bc = new BrowserContext(bcp);
 		b = new Browser(BrowserType.LIGHTWEIGHT, bc);
 		
