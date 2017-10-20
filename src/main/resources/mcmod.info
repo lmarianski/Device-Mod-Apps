@@ -1,14 +1,14 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
+  "modid": "lda",
+  "name": "lukas2005's Device Mod Apps",
+  "description": "Mod that contains all of my apps for the Device Mod",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["lukas2005"],
+  "credits": "Mr Crayfish for the Device Mod and teamdev for the awesome JxBrowser library (https://goo.gl/Ys9cdZ) that Mineuim Web Browser uses",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
