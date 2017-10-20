@@ -101,6 +101,14 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		for (String key : songList.getKeySet()) {
 			playList.addItem(new ListedSong(key, new File(songList.getString(key))));
 		}
+		if (!playList.getItems().containsAll(defaultRecords)) {
+			for (ListedSong e : defaultRecords) {
+				if (!playList.getItems().contains(e)) {
+					playList.addItem(e);
+				}
+			}
+			markDirty();
+		}
 	}
 
 	@Override
@@ -111,7 +119,7 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		}
 		nbt.setTag("songList", songList);
 	}
-
+	
 	public class SoundPlayingThread extends Thread {
 		
 		File audioFile;
