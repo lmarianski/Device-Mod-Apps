@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -17,6 +18,8 @@ import com.mrcrayfish.device.api.app.component.ItemList;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 
 import io.github.lukas2005.DeviceModApps.objects.ListedSong;
+import javazoom.spi.mpeg.sampled.file.MpegAudioFileReader;
+import javazoom.spi.vorbis.sampled.file.VorbisAudioFileReader;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class ApplicationMusicPlayer extends ApplicationBase {
@@ -43,6 +46,14 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		
 		//playList.addItem(new ListedSong("C418 - Cat", new File("")));
 		//markDirty();
+		
+		
+		for (ListedSong e : defaultRecords) {
+			if (!playList.getItems().contains(e)) {
+				playList.addItem(e);
+				markDirty();
+			}
+		}
 		
 		main.addComponent(playList);
 		
@@ -101,14 +112,6 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		for (String key : songList.getKeySet()) {
 			playList.addItem(new ListedSong(key, new File(songList.getString(key))));
 		}
-		if (!playList.getItems().containsAll(defaultRecords)) {
-			for (ListedSong e : defaultRecords) {
-				if (!playList.getItems().contains(e)) {
-					playList.addItem(e);
-				}
-			}
-			markDirty();
-		}
 	}
 
 	@Override
@@ -118,6 +121,15 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 			songList.setString(s.name, s.file.getAbsolutePath());
 		}
 		nbt.setTag("songList", songList);
+	}
+	
+	@Override
+	public void onClose() {
+		if (soundThread != null) {
+			soundThread.close();
+			soundThread.interrupt();
+			soundThread = null;
+		}
 	}
 	
 	public class SoundPlayingThread extends Thread {
@@ -139,10 +151,44 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 			Thread.currentThread().interrupt();
 		}
 		
+		 AudioInputStream createOggMp3(File fileIn) throws IOException, Exception {
+			    AudioInputStream audioInputStream=null;
+			    AudioFormat targetFormat=null;
+			    try {
+			      AudioInputStream in=null;
+			      if(fileIn.getName().endsWith(".ogg")) {
+			        VorbisAudioFileReader vb=new VorbisAudioFileReader();
+			        in=vb.getAudioInputStream(fileIn);
+			      }
+			      else if(fileIn.getName().endsWith(".mp3")) {
+			        MpegAudioFileReader mp=new MpegAudioFileReader();
+			        in=mp.getAudioInputStream(fileIn);
+			      }
+			      AudioFormat baseFormat=in.getFormat();
+			      targetFormat=new AudioFormat(
+			              AudioFormat.Encoding.PCM_SIGNED,
+			              baseFormat.getSampleRate(),
+			              16,
+			              baseFormat.getChannels(),
+			              baseFormat.getChannels() * 2,
+			              baseFormat.getSampleRate(),
+			              false);
+			      audioInputStream=AudioSystem.getAudioInputStream(targetFormat, in);
+			    }
+			    catch(UnsupportedAudioFileException ue) { System.out.println("\nUnsupported Audio"); }
+			    return audioInputStream;
+			  }
+		
 		@Override
 		public void run() {
 	        try {
-                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile.getAbsoluteFile());
+                AudioInputStream audioInputStream;
+				if(audioFile.getName().endsWith(".ogg") || audioFile.getName().endsWith(".mp3")) {
+					audioInputStream = createOggMp3(audioFile);
+				}
+				else { // wav
+					audioInputStream = AudioSystem.getAudioInputStream(audioFile);
+				}
                 clip = AudioSystem.getClip();
                 clip.open(audioInputStream);
                 clip.start();
@@ -152,6 +198,9 @@ public class ApplicationMusicPlayer extends ApplicationBase {
             } catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
             	System.out.println("Error playing sound");
             	e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}

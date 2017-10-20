@@ -50,7 +50,8 @@ public class Main {
 	}
 	
 	public File getResourceAsFile(String resource) throws IOException {
-		return streamToFile(getResourceAsStream(resource), Files.createTempFile("tmp", "").toFile());
+		String[] splitRes = resource.split("[.]");
+		return streamToFile(getResourceAsStream(resource), Files.createTempFile("tmp", "."+splitRes[splitRes.length-1]).toFile());
 	}
 	
 	public InputStream getResourceAsStream(String resource) {
