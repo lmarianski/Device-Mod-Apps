@@ -36,8 +36,16 @@ public class Main {
 		try {
 			ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - Cat", getResourceAsFile("assets/"+Reference.MOD_ID+"/music/c418/cat.ogg")));
 			ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - Blocks", getResourceAsFile("assets/"+Reference.MOD_ID+"/music/c418/blocks.ogg")));
-			ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - 11", getResourceAsFile("assets/"+Reference.MOD_ID+"/music/c418/11.ogg")));
+			//ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - 11", getResourceAsFile("assets/"+Reference.MOD_ID+"/music/c418/11.ogg")));
 			ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - 13", getResourceAsFile("assets/"+Reference.MOD_ID+"/music/c418/13.ogg")));
+			ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - Chirp", getResourceAsFile("assets/"+Reference.MOD_ID+"/music/c418/chirp.ogg")));
+			ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - Far", getResourceAsFile("assets/"+Reference.MOD_ID+"/music/c418/far.ogg")));
+			ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - Mall", getResourceAsFile("assets/"+Reference.MOD_ID+"/music/c418/mall.ogg")));
+			ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - Mellohi", getResourceAsFile("assets/"+Reference.MOD_ID+"/music/c418/mellohi.ogg")));
+			ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - Stal", getResourceAsFile("assets/"+Reference.MOD_ID+"/music/c418/stal.ogg")));
+			ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - Strad", getResourceAsFile("assets/"+Reference.MOD_ID+"/music/c418/strad.ogg")));
+			ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - Wait", getResourceAsFile("assets/"+Reference.MOD_ID+"/music/c418/wait.ogg")));
+			ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - Ward", getResourceAsFile("assets/"+Reference.MOD_ID+"/music/c418/ward.ogg")));
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
