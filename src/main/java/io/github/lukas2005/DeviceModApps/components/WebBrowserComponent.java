@@ -42,6 +42,16 @@ public class WebBrowserComponent extends Component {
 	}
 	
 	@Override
+	public void handleMouseScroll(int mouseX, int mouseY, boolean direction) {
+		wrapper.handleMouseScroll(xPosition, yPosition, mouseX, mouseY, direction);
+	}
+	
+	@Override
+	public void handleKeyTyped(char key, int code) {
+		wrapper.handleKeyTyped(key, code);
+	}
+	
+	@Override
 	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks) {
 		wrapper.handleMouse(xPosition, yPosition, mouseX, mouseY);
 		wrapper.render(x, y);

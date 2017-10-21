@@ -6,8 +6,12 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import org.lwjgl.input.Keyboard;
+
+import com.teamdev.jxbrowser.chromium.BrowserKeyEvent.KeyCode;
 import com.teamdev.jxbrowser.chromium.BrowserMouseEvent.MouseButtonType;
 import com.teamdev.jxbrowser.chromium.swing.BrowserView;
 
@@ -62,7 +66,20 @@ public class SwingWrapper {
 		
 		System.out.println("Added component:"+c.toString());
 		SwingUtils.panel.add(c, BorderLayout.CENTER);
-		SwingUtils.panel.setVisible(true);
+		
+		SwingUtils.frame.setState(JFrame.NORMAL);
+		
+		SwingUtils.frame.setVisible(true);
+		
+		new Thread() {
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(500);
+					SwingUtils.frame.setState(JFrame.ICONIFIED);
+				} catch (InterruptedException e) {}
+			}
+		}.start();
 		
 		if (c.getName() == null) c.setName("Component");
 		
@@ -105,6 +122,31 @@ public class SwingWrapper {
 		}
 	}
 	
+	public void handleMouseScroll(int xPosition, int yPosition, int mouseX, int mouseY, boolean direction) {
+		if (mouseX >= xPosition && mouseY >= yPosition && mouseX < xPosition + this.width && mouseY < yPosition + this.height) {
+			Point p = new Point(Math.round(SwingUtils.map(mouseX-xPosition, 0, width, 0, c.getWidth())), Math.round(SwingUtils.map(mouseY-yPosition, 0, height, 0, c.getHeight())));
+			if (c instanceof BrowserView) {
+				BrowserView view = (BrowserView) c;
+				SwingUtils.forwardMouseScrollEvent(view.getBrowser(), direction ? 5 : -5, p.x, p.y);
+			}
+		}
+	}
+	
+	public void handleKeyTyped(char key, int code) {
+		if (c instanceof BrowserView) {
+			BrowserView view = (BrowserView) c;
+			switch (code) {
+			case(Keyboard.KEY_BACK):
+				System.out.println("DELETE");
+				SwingUtils.forwardKeyTypedEvent(view.getBrowser(), KeyCode.VK_BACK);
+				break;
+			default:
+				SwingUtils.forwardKeyTypedEvent(view.getBrowser(), key);
+				break;
+			}
+		}
+	}
+	
 	public void handleMouse(int xPosition, int yPosition, int mouseX, int mouseY) {
 		//Point p = new Point(Math.round(SwingUtils.map(mouseX-xPosition, 0, width, 0, c.getWidth())), Math.round(SwingUtils.map(mouseY-yPosition, 0, height, 0, c.getHeight())));
 		//MouseEvent event = new MouseEvent(c, MouseEvent.MOUSE_CLICKED,  System.currentTimeMillis(), 0, Math.round(SwingUtils.map(mouseX-xPosition, 0, width, 0, c.getWidth())), Math.round(SwingUtils.map(mouseY-yPosition, 0, height, 0, c.getHeight())), p.x, p.y, 1, false, 0);
@@ -115,15 +157,14 @@ public class SwingWrapper {
 	ResourceLocation rc;
 	boolean isTheSameOld = true;
 	public void render(int x, int y) {
-		//boolean isTheSame = SwingUtils.compareImages(img, imgOld);
-		/*if (rc == null || !isTheSame)*/ rc = txt.getDynamicTextureLocation(c.toString(), new DynamicTexture(img));
+		rc = txt.getDynamicTextureLocation(c.toString(), new DynamicTexture(img));
+		if (!SwingUtils.frame.isVisible()) SwingUtils.frame.setVisible(true);
 		
 		if (rc != null) {
 			mc.getRenderManager().renderEngine.bindTexture(rc);
 			drawRectWithFullTexture(x, y, 0, 0, width, height);
-			/*if (rc != null || !isTheSame && isTheSameOld)*/ txt.deleteTexture(rc);
+			txt.deleteTexture(rc);
 		}
-		//isTheSameOld = isTheSame;
 	}
 
 	protected static void drawRectWithFullTexture(double x, double y, float u, float v, int width, int height) {

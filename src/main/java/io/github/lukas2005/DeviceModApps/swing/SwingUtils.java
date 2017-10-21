@@ -17,6 +17,9 @@ import javax.swing.border.EmptyBorder;
 
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.teamdev.jxbrowser.chromium.Browser;
+import com.teamdev.jxbrowser.chromium.BrowserKeyEvent;
+import com.teamdev.jxbrowser.chromium.BrowserKeyEvent.KeyCode;
+import com.teamdev.jxbrowser.chromium.BrowserKeyEvent.KeyEventType;
 import com.teamdev.jxbrowser.chromium.BrowserKeyEvent.KeyModifiers;
 import com.teamdev.jxbrowser.chromium.BrowserKeyEvent.KeyModifiersBuilder;
 import com.teamdev.jxbrowser.chromium.BrowserMouseEvent.BrowserMouseEventBuilder;
@@ -215,5 +218,14 @@ public class SwingUtils {
 		browser.forwardMouseEvent(builder.build());
 	}
 
+	public static void forwardKeyTypedEvent(Browser browser, char key) {
+		BrowserKeyEvent event = new BrowserKeyEvent(KeyEventType.TYPED, KeyCode.VK_A, key);
+		browser.forwardKeyEvent(event);
+	}
+	
+	public static void forwardKeyTypedEvent(Browser browser, KeyCode key) {
+		BrowserKeyEvent event = new BrowserKeyEvent(KeyEventType.TYPED, key);
+		browser.forwardKeyEvent(event);
+	}
 	
 }
