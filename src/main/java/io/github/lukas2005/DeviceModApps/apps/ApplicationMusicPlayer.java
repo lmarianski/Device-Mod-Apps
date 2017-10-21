@@ -15,6 +15,7 @@ import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.ItemList;
+import com.mrcrayfish.device.api.app.component.ProgressBar;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 
 import io.github.lukas2005.DeviceModApps.objects.ListedSong;
@@ -57,49 +58,76 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		
 		main.addComponent(playList);
 		
-		final Button play = new Button("Play", 130, 10, 20, 20);
+		final Button play = new Button("Play", 100, 10, 20, 20);
 		
 		main.addComponent(play);
 		
-		final Button pause = new Button("Pause", 100, 10, 20, 20);
+		final Button pause = new Button("Pause", 130, 10, 20, 20);
 		pause.setEnabled(false);
 		main.addComponent(pause);
 		
-		final Button stop = new Button("Stop", 140, 10, 20, 20);
-		pause.setEnabled(false);
+		final Button stop = new Button("Stop", 160, 10, 20, 20);
+		stop.setEnabled(false);
 		main.addComponent(stop);
+		
+		final ProgressBar progress = new ProgressBar(100, 50, 80, 10);
+		main.addComponent(progress);
 		
 		play.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {
-				soundThread = new SoundPlayingThread(playList.getSelectedItem().file);
-				soundThread.start();
-				isPlaying = true;
-				pause.setEnabled(isPlaying);
-				stop.setEnabled(true);
-				play.setEnabled(!isPlaying);
+				if (playList.getSelectedItem() != null) {
+					if (soundThread == null) { 
+						soundThread = new SoundPlayingThread(playList.getSelectedItem().file, progress);
+						soundThread.addEndedListener(new Runnable() {
+							@Override
+							public void run() {
+								if (soundThread != null) {
+									soundThread.close();
+									soundThread = null;
+									isPlaying = false;
+									pause.setEnabled(isPlaying);
+									stop.setEnabled(false);
+									play.setEnabled(!isPlaying);
+								}
+							}
+						});
+						soundThread.start();
+					} else if (soundThread != null) {
+						soundThread.play();
+					}
+					isPlaying = true;
+					pause.setEnabled(isPlaying);
+					stop.setEnabled(true);
+					play.setEnabled(!isPlaying);
+				}
 			}
 		});
 		
 		pause.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {
-				soundThread.pause();
-				isPlaying = false;
-				pause.setEnabled(isPlaying);
-				stop.setEnabled(true);
-				play.setEnabled(!isPlaying);
+				if (soundThread != null) {
+					soundThread.pause();
+					isPlaying = false;
+					pause.setEnabled(isPlaying);
+					stop.setEnabled(true);
+					play.setEnabled(!isPlaying);
+				}
 			}
 		});
 		
 		stop.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {
-				soundThread.close();
-				isPlaying = false;
-				pause.setEnabled(isPlaying);
-				stop.setEnabled(false);
-				play.setEnabled(!isPlaying);
+				if (soundThread != null) {
+					soundThread.close();
+					soundThread = null;
+					isPlaying = false;
+					pause.setEnabled(isPlaying);
+					stop.setEnabled(false);
+					play.setEnabled(!isPlaying);
+				}
 			}
 		});
 		
@@ -127,7 +155,6 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 	public void onClose() {
 		if (soundThread != null) {
 			soundThread.close();
-			soundThread.interrupt();
 			soundThread = null;
 		}
 	}
@@ -136,13 +163,38 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		
 		File audioFile;
 		Clip clip;
+		public long time = 0;
+		private ProgressBar progress;
+		
+		private ArrayList<Runnable> listeners = new ArrayList<>();
+		
+		public SoundPlayingThread(File audioFile, ProgressBar progress) {
+			this.audioFile = audioFile;
+			this.progress = progress;
+		}
 		
 		public SoundPlayingThread(File audioFile) {
-			this.audioFile = audioFile;
+			this(audioFile, null);
 		}
 		
 		public void pause() {
+			time = clip.getMicrosecondPosition();
 			clip.stop();
+		}
+		
+		public void play() {
+			clip.start();
+			clip.setMicrosecondPosition(time);
+			if (progress != null) {
+				progress.setMax((int) clip.getMicrosecondLength());
+				
+				new Thread("Progressbar Update Thread") {
+					@Override
+					public void run() {
+						progress.setProgress((int) clip.getMicrosecondPosition()); // /1000000
+					}
+				}.start();
+			}
 		}
 		
 		public void close() {
@@ -179,6 +231,10 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 			    return audioInputStream;
 			  }
 		
+		public void addEndedListener(Runnable run) {
+			listeners.add(run);
+		}
+		 
 		@Override
 		public void run() {
 	        try {
@@ -191,8 +247,12 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 				}
                 clip = AudioSystem.getClip();
                 clip.open(audioInputStream);
-                clip.start();
-                Thread.sleep(clip.getMicrosecondLength()/1000);
+                play();
+                Thread.sleep((clip.getMicrosecondLength()-clip.getMicrosecondPosition())/1000);
+                close();
+                for (Runnable run : listeners) {
+                	new Thread(run).start();
+                }
             } catch(InterruptedException ex) {
             	Thread.currentThread().interrupt();
             } catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
