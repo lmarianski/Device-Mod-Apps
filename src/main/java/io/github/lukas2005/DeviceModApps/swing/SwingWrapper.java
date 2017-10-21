@@ -88,6 +88,7 @@ public class SwingWrapper {
 		paintThread.interrupt();
 		SwingUtils.panel.remove(this.c);
 		c.setVisible(false);
+		SwingUtils.frame.setVisible(false);
 	}
 	
 	public void handleMouseClick(int xPosition, int yPosition, int mouseX, int mouseY, int mouseButton) {
