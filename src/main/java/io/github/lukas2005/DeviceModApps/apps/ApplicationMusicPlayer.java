@@ -32,11 +32,6 @@ import net.minecraft.util.SoundCategory;
 
 public class ApplicationMusicPlayer extends ApplicationBase {
 	
-	/**
-	 * Will be used when sound cloud will allow for registration of apps again - currently unused
-	 */
-	//ApiWrapper api = new ApiWrapper("", "", null, null);
-	
 	ItemList<ListedSong> playList;
 	
 	public static ArrayList<ListedSong> defaultRecords = new ArrayList<>();
@@ -51,9 +46,6 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		setCurrentLayout(main);
 		
 		playList = new ItemList<>(5, 5, 75, 6);
-		
-		//playList.addItem(new ListedSong("C418 - Cat", new File("")));
-		//markDirty();
 		
 		
 		for (ListedSong e : defaultRecords) {
