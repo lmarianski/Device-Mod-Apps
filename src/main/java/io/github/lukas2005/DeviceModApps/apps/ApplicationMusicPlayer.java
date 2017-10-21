@@ -163,8 +163,12 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		
 		File audioFile;
 		Clip clip;
+		
 		public long time = 0;
-		private ProgressBar progress;
+		
+		ProgressBar progress;
+		Thread progressUpdateThread;
+		
 		
 		private ArrayList<Runnable> listeners = new ArrayList<>();
 		
@@ -188,18 +192,23 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 			if (progress != null) {
 				progress.setMax((int) clip.getMicrosecondLength());
 				
-				new Thread("Progressbar Update Thread") {
+				progressUpdateThread = new Thread("Progressbar Update Thread") {
 					@Override
 					public void run() {
-						progress.setProgress((int) clip.getMicrosecondPosition()); // /1000000
+						while (!Thread.interrupted()) {
+							progress.setProgress((int) clip.getMicrosecondPosition()); // /1000000
+						}
 					}
-				}.start();
+				};
+				
+				progressUpdateThread.start();
 			}
 		}
 		
 		public void close() {
 			clip.stop();
 			clip.close();
+			if (progressUpdateThread != null) progressUpdateThread.interrupt();
 			Thread.currentThread().interrupt();
 		}
 		
@@ -248,11 +257,11 @@ public class ApplicationMusicPlayer extends ApplicationBase {
                 clip = AudioSystem.getClip();
                 clip.open(audioInputStream);
                 play();
-                Thread.sleep((clip.getMicrosecondLength()-clip.getMicrosecondPosition())/1000);
-                close();
+                Thread.sleep((clip.getMicrosecondLength()-time)/1000);
                 for (Runnable run : listeners) {
                 	new Thread(run).start();
                 }
+                close();
             } catch(InterruptedException ex) {
             	Thread.currentThread().interrupt();
             } catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
