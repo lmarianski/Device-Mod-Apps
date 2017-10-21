@@ -2,12 +2,16 @@ package io.github.lukas2005.DeviceModApps.apps;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import com.mrcrayfish.device.api.app.Component;
@@ -20,7 +24,11 @@ import com.mrcrayfish.device.api.app.listener.ClickListener;
 import io.github.lukas2005.DeviceModApps.objects.ListedSong;
 import javazoom.spi.mpeg.sampled.file.MpegAudioFileReader;
 import javazoom.spi.vorbis.sampled.file.VorbisAudioFileReader;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.SoundHandler;
+import net.minecraft.client.audio.SoundManager;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.SoundCategory;
 
 public class ApplicationMusicPlayer extends ApplicationBase {
 	
@@ -175,6 +183,9 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		
 		private ArrayList<Runnable> listeners = new ArrayList<>();
 		
+		protected Method getVolumeMethod = null;
+		protected SoundManager sndManager = null;
+		
 		public SoundPlayingThread(File audioFile, ProgressBar progress) {
 			this.audioFile = audioFile;
 			this.progress = progress;
@@ -190,6 +201,30 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 	            clip = AudioSystem.getClip();
 	            clip.open(audioInputStream);
 			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			SoundHandler sndHandler = Minecraft.getMinecraft().getSoundHandler();
+			Class<? extends SoundHandler> sndHandlerClass = sndHandler.getClass();
+			Field sndManagerField = null;
+			
+			try {
+				sndManagerField = sndHandlerClass.getDeclaredField("sndManager");
+				sndManagerField.setAccessible(true);
+				
+				sndManager = (SoundManager) sndManagerField.get(sndHandler);
+			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+				e.printStackTrace();
+			}
+			
+			Class<? extends SoundManager> sndManagerClass = sndManager.getClass();
+			
+			try {
+				
+				getVolumeMethod = sndManagerClass.getDeclaredMethod("getVolume", SoundCategory.class);
+				getVolumeMethod.setAccessible(true);
+				
+			} catch (SecurityException | IllegalArgumentException | NoSuchMethodException e) {
 				e.printStackTrace();
 			}
 		}
@@ -220,6 +255,17 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 					progressUpdateThread.start();
 				}
 			}
+			
+			float volume = 0;
+			try {
+				volume = (float) getVolumeMethod.invoke(sndManager, SoundCategory.RECORDS);
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		    FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);        
+		    gainControl.setValue(20f * (float) Math.log10(volume));
 			
 			if (isAlive()) {
 				clip.start();
