@@ -8,7 +8,6 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import com.mrcrayfish.device.api.app.Component;
@@ -92,9 +91,13 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 								}
 							}
 						});
-						soundThread.start();
+						try {
+							soundThread.play();
+						} catch (InterruptedException e) {}
 					} else if (soundThread != null) {
-						soundThread.play();
+						try {
+							soundThread.play();
+						} catch (InterruptedException e) {}
 					}
 					isPlaying = true;
 					pause.setEnabled(isPlaying);
@@ -175,6 +178,20 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		public SoundPlayingThread(File audioFile, ProgressBar progress) {
 			this.audioFile = audioFile;
 			this.progress = progress;
+			
+			try {
+	            AudioInputStream audioInputStream;
+				if(audioFile.getName().endsWith(".ogg") || audioFile.getName().endsWith(".mp3")) {
+					audioInputStream = createOggMp3(audioFile);
+				}
+				else { // wav
+					audioInputStream = AudioSystem.getAudioInputStream(audioFile);
+				}
+	            clip = AudioSystem.getClip();
+	            clip.open(audioInputStream);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		
 		public SoundPlayingThread(File audioFile) {
@@ -186,22 +203,28 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 			clip.stop();
 		}
 		
-		public void play() {
-			clip.start();
-			clip.setMicrosecondPosition(time);
+		public void play() throws InterruptedException {
 			if (progress != null) {
 				progress.setMax((int) clip.getMicrosecondLength());
 				
-				progressUpdateThread = new Thread("Progressbar Update Thread") {
-					@Override
-					public void run() {
-						while (!Thread.interrupted()) {
-							progress.setProgress((int) clip.getMicrosecondPosition()); // /1000000
+				if (progressUpdateThread == null) {
+					progressUpdateThread = new Thread("Progressbar Update Thread") {
+						@Override
+						public void run() {
+							while (!Thread.interrupted()) {
+								progress.setProgress((int) clip.getMicrosecondPosition()); // /1000000
+							}
 						}
-					}
-				};
-				
-				progressUpdateThread.start();
+					};
+					
+					progressUpdateThread.start();
+				}
+			}
+			
+			if (isAlive()) {
+				clip.start();
+			} else {
+				start();
 			}
 		}
 		
@@ -209,7 +232,7 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 			clip.stop();
 			clip.close();
 			if (progressUpdateThread != null) progressUpdateThread.interrupt();
-			Thread.currentThread().interrupt();
+			this.interrupt();
 		}
 		
 		 AudioInputStream createOggMp3(File fileIn) throws IOException, Exception {
@@ -246,30 +269,13 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		 
 		@Override
 		public void run() {
-	        try {
-                AudioInputStream audioInputStream;
-				if(audioFile.getName().endsWith(".ogg") || audioFile.getName().endsWith(".mp3")) {
-					audioInputStream = createOggMp3(audioFile);
-				}
-				else { // wav
-					audioInputStream = AudioSystem.getAudioInputStream(audioFile);
-				}
-                clip = AudioSystem.getClip();
-                clip.open(audioInputStream);
-                play();
-                Thread.sleep((clip.getMicrosecondLength()-time)/1000);
-                for (Runnable run : listeners) {
-                	new Thread(run).start();
-                }
-                close();
-            } catch(InterruptedException ex) {
-            	Thread.currentThread().interrupt();
-            } catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
-            	System.out.println("Error playing sound");
-            	e.printStackTrace();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			clip.start();
+			clip.setMicrosecondPosition(time);
+			try {
+				Thread.sleep((clip.getMicrosecondLength()-time)/1000);
+			} catch (InterruptedException e) {}
+			for (Runnable run : listeners) {
+				new Thread(run).start();
 			}
 		}
 	}
