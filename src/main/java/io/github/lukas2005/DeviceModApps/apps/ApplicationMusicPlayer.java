@@ -149,7 +149,11 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		NBTTagCompound songList = nbt.getCompoundTag("songList");
 		//playList.removeAll();
 		for (String key : songList.getKeySet()) {
-			//playList.addItem(new ListedSong(key, new File(songList.getString(key))));
+			if (songList.getString(key+"_type") == "FILE") {
+				playList.addItem(new ListedSong(key, new File(songList.getString(key))));
+			} else {
+				// Need to figure out how to do this
+			}
 		}
 	}
 
@@ -157,7 +161,13 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 	public void save(NBTTagCompound nbt) {
 		NBTTagCompound songList = new NBTTagCompound();
 		for (ListedSong s : playList.getItems()) {
-			//songList.setString(s.name, s.file.getAbsolutePath());
+			if (s.file != null) {
+				songList.setString(s.name+"_type", "FILE");
+				songList.setString(s.name, s.file.getAbsolutePath());
+			} else {
+				songList.setString(s.name+"_type", "SOUNDEVENT");
+				songList.setString(s.name, s.sound.getSoundName().toString());
+			}
 		}
 		nbt.setTag("songList", songList);
 	}
