@@ -96,7 +96,11 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 						} catch (InterruptedException e) {}
 					}
 					isPlaying = true;
-					pause.setEnabled(isPlaying);
+					if (playList.getSelectedItem().ps == null) {
+						pause.setEnabled(isPlaying);
+					} else {
+						pause.setEnabled(false);
+					}
 					stop.setEnabled(true);
 					play.setEnabled(!isPlaying);
 				}
@@ -109,7 +113,11 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 				if (soundThread != null) {
 					soundThread.pause();
 					isPlaying = false;
-					pause.setEnabled(isPlaying);
+					if (playList.getSelectedItem().ps == null) {
+						pause.setEnabled(isPlaying);
+					} else {
+						pause.setEnabled(false);
+					}
 					stop.setEnabled(true);
 					play.setEnabled(!isPlaying);
 				}
@@ -123,7 +131,11 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 					soundThread.close();
 					soundThread = null;
 					isPlaying = false;
-					pause.setEnabled(isPlaying);
+					if (playList.getSelectedItem().ps == null) {
+						pause.setEnabled(isPlaying);
+					} else {
+						pause.setEnabled(false);
+					}
 					stop.setEnabled(false);
 					play.setEnabled(!isPlaying);
 				}
@@ -233,6 +245,7 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 			    FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);        
 			    gainControl.setValue(20f * (float) Math.log10(volume));
 				
+			    Minecraft.getMinecraft().getSoundHandler().stopSounds();
 				if (isAlive()) {
 					clip.start();
 				} else {
