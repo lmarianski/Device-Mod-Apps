@@ -29,12 +29,12 @@ public class Main {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent e) {
 		if (!modDataDir.exists()) modDataDir.mkdirs();
-		ReflectionManager.init();
 		SwingUtils.init();
 	}
 	
 	@EventHandler
 	public void init(FMLInitializationEvent e) {
+		ReflectionManager.init();
 //		try {
 //			ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - Cat",     getSoundResourceAsFile(SoundEvents.RECORD_CAT.getSoundName())));
 //			ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - Blocks",  getSoundResourceAsFile(SoundEvents.RECORD_BLOCKS.getSoundName())));

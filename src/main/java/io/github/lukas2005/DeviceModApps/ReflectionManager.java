@@ -15,6 +15,10 @@ public class ReflectionManager {
 	
 	public static Field playingSoundsField;
 	
+	public static void preInit() {
+	
+	}
+	
 	public static void init() {
 		//Sound reflection
 		SoundHandler sndHandler = Minecraft.getMinecraft().getSoundHandler();
@@ -43,5 +47,9 @@ public class ReflectionManager {
 			e.printStackTrace();
 		}
 	} 
+	
+	public static void postInit() {
+		
+	}
 	
 }
