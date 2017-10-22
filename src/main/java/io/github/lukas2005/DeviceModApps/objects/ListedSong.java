@@ -33,9 +33,7 @@ public class ListedSong {
 		
 		// Get the positioned sound using reflection
 		Minecraft mc = Minecraft.getMinecraft();
-		EntityPlayer player = mc.player;
-		BlockPos playerPos = new BlockPos(player.posX, player.posY, player.posZ);
-		mc.world.playSound(playerPos, sound, SoundCategory.RECORDS, 1.0F, 1.0F, false);
+		mc.world.playSound(new BlockPos(0,0,0), sound, SoundCategory.RECORDS, 1.0F, 1.0F, false);
 		
 		Map<String, ISound> playingSounds = null;
 		
