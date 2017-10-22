@@ -49,7 +49,7 @@ public class Main {
 		ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Strad",   SoundEvents.RECORD_STRAD));
 		ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Wait",    SoundEvents.RECORD_WAIT));
 		ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Ward",    SoundEvents.RECORD_WARD));
-		//ApplicationMusicPlayer.registerSong(new ListedSong("C418 - 11",    SoundEvents.RECORD_11));
+		//ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - 11",    SoundEvents.RECORD_11));
 		ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - 13",      SoundEvents.RECORD_13));
 	}
 
