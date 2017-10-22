@@ -2,9 +2,7 @@ package io.github.lukas2005.DeviceModApps.apps;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import javax.sound.sampled.AudioFormat;
@@ -21,14 +19,14 @@ import com.mrcrayfish.device.api.app.component.ItemList;
 import com.mrcrayfish.device.api.app.component.ProgressBar;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 
+import io.github.lukas2005.DeviceModApps.ReflectionManager;
 import io.github.lukas2005.DeviceModApps.objects.ListedSong;
-import javazoom.spi.mpeg.sampled.file.MpegAudioFileReader;
 import javazoom.spi.vorbis.sampled.file.VorbisAudioFileReader;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.client.audio.SoundManager;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 
 public class ApplicationMusicPlayer extends ApplicationBase {
 	
@@ -77,7 +75,7 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 			public void onClick(Component c, int mouseButton) {
 				if (playList.getSelectedItem() != null) {
 					if (soundThread == null) { 
-						soundThread = new SoundPlayingThread(playList.getSelectedItem().file, progress);
+						soundThread = new SoundPlayingThread(playList.getSelectedItem(), progress);
 						soundThread.addEndedListener(new Runnable() {
 							@Override
 							public void run() {
@@ -139,9 +137,9 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 	@Override
 	public void load(NBTTagCompound nbt) {
 		NBTTagCompound songList = nbt.getCompoundTag("songList");
-		playList.removeAll();
+		//playList.removeAll();
 		for (String key : songList.getKeySet()) {
-			playList.addItem(new ListedSong(key, new File(songList.getString(key))));
+			//playList.addItem(new ListedSong(key, new File(songList.getString(key))));
 		}
 	}
 
@@ -149,7 +147,7 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 	public void save(NBTTagCompound nbt) {
 		NBTTagCompound songList = new NBTTagCompound();
 		for (ListedSong s : playList.getItems()) {
-			songList.setString(s.name, s.file.getAbsolutePath());
+			//songList.setString(s.name, s.file.getAbsolutePath());
 		}
 		nbt.setTag("songList", songList);
 	}
@@ -162,7 +160,9 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		}
 	}
 	
-	public class SoundPlayingThread extends Thread {
+	public static class SoundPlayingThread extends Thread {
+		
+		ListedSong listedSong;
 		
 		File audioFile;
 		Clip clip;
@@ -175,105 +175,98 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		
 		private ArrayList<Runnable> listeners = new ArrayList<>();
 		
-		protected Method getVolumeMethod = null;
-		protected SoundManager sndManager = null;
-		
-		public SoundPlayingThread(File audioFile, ProgressBar progress) {
-			this.audioFile = audioFile;
+		public SoundPlayingThread(ListedSong listedSong, ProgressBar progress) {
+			this.listedSong = listedSong;
+			this.audioFile = listedSong.file;
 			this.progress = progress;
 			
-			try {
-	            AudioInputStream audioInputStream;
-				if(audioFile.getName().endsWith(".ogg") || audioFile.getName().endsWith(".mp3")) {
-					audioInputStream = createOggMp3(audioFile);
+			if (audioFile != null) {
+				try {
+		            AudioInputStream audioInputStream;
+					if(audioFile.getName().endsWith(".ogg") || audioFile.getName().endsWith(".mp3")) {
+						audioInputStream = createFromOgg(audioFile);
+					}
+					else { // wav
+						audioInputStream = AudioSystem.getAudioInputStream(audioFile);
+					}
+		            clip = AudioSystem.getClip();
+		            clip.open(audioInputStream);
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-				else { // wav
-					audioInputStream = AudioSystem.getAudioInputStream(audioFile);
-				}
-	            clip = AudioSystem.getClip();
-	            clip.open(audioInputStream);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-			SoundHandler sndHandler = Minecraft.getMinecraft().getSoundHandler();
-			Class<? extends SoundHandler> sndHandlerClass = sndHandler.getClass();
-			Field sndManagerField = null;
-			
-			try {
-				sndManagerField = sndHandlerClass.getDeclaredField("sndManager");
-				sndManagerField.setAccessible(true);
-				
-				sndManager = (SoundManager) sndManagerField.get(sndHandler);
-			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-				e.printStackTrace();
-			}
-			
-			Class<? extends SoundManager> sndManagerClass = sndManager.getClass();
-			
-			try {
-				
-				getVolumeMethod = sndManagerClass.getDeclaredMethod("getVolume", SoundCategory.class);
-				getVolumeMethod.setAccessible(true);
-				
-			} catch (SecurityException | IllegalArgumentException | NoSuchMethodException e) {
-				e.printStackTrace();
 			}
 		}
 		
-		public SoundPlayingThread(File audioFile) {
-			this(audioFile, null);
+		public SoundPlayingThread(ListedSong listedSong) {
+			this(listedSong, null);
 		}
 		
 		public void pause() {
-			time = clip.getMicrosecondPosition();
-			clip.stop();
+			if (clip != null) {
+				time = clip.getMicrosecondPosition();
+				clip.stop();
+			}
 		}
 		
 		public void play() throws InterruptedException {
-			if (progress != null) {
-				progress.setMax((int) clip.getMicrosecondLength());
-				
-				if (progressUpdateThread == null) {
-					progressUpdateThread = new Thread("Progressbar Update Thread") {
-						@Override
-						public void run() {
-							while (!Thread.interrupted()) {
-								progress.setProgress((int) clip.getMicrosecondPosition()); // /1000000
-							}
-						}
-					};
+			if (clip != null) {
+				if (progress != null) {
+					progress.setMax((int) clip.getMicrosecondLength());
 					
-					progressUpdateThread.start();
+					if (progressUpdateThread == null) {
+						progressUpdateThread = new Thread("Progressbar Update Thread") {
+							@Override
+							public void run() {
+								while (!Thread.interrupted()) {
+									progress.setProgress((int) clip.getMicrosecondPosition()); // /1000000
+								}
+							}
+						};
+						
+						progressUpdateThread.start();
+					}
 				}
-			}
-			
-			float volume = 0;
-			try {
-				volume = (float) getVolumeMethod.invoke(sndManager, SoundCategory.RECORDS);
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		    FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);        
-		    gainControl.setValue(20f * (float) Math.log10(volume));
-			
-			if (isAlive()) {
-				clip.start();
+				
+				float volume = 0;
+				try {
+					volume = (float) ReflectionManager.getVolumeMethod.invoke(ReflectionManager.sndManager, SoundCategory.RECORDS);
+				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			    FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);        
+			    gainControl.setValue(20f * (float) Math.log10(volume));
+				
+				if (isAlive()) {
+					clip.start();
+				} else {
+					start();
+				}
 			} else {
+				Minecraft mc = Minecraft.getMinecraft();
+				EntityPlayer player = mc.player;
+				BlockPos playerPos = new BlockPos(player.posX, player.posY, player.posZ);
+				mc.world.playSound(playerPos, listedSong.sound, SoundCategory.RECORDS, 1.0F, 1.0F, false);
+				
+
 				start();
 			}
 		}
 		
 		public void close() {
-			clip.stop();
-			clip.close();
+			if (clip != null) { 
+				clip.stop();
+				clip.close();
+			} else {
+				
+				Minecraft.getMinecraft().getSoundHandler().stopSound(listedSong.ps);
+			}
 			if (progressUpdateThread != null) progressUpdateThread.interrupt();
 			this.interrupt();
 		}
 		
-		 AudioInputStream createOggMp3(File fileIn) throws IOException, Exception {
+		 AudioInputStream createFromOgg(File fileIn) throws IOException, Exception {
 			    AudioInputStream audioInputStream=null;
 			    AudioFormat targetFormat=null;
 			    try {
@@ -281,10 +274,6 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 			      if(fileIn.getName().endsWith(".ogg")) {
 			        VorbisAudioFileReader vb=new VorbisAudioFileReader();
 			        in=vb.getAudioInputStream(fileIn);
-			      }
-			      else if(fileIn.getName().endsWith(".mp3")) {
-			        MpegAudioFileReader mp=new MpegAudioFileReader();
-			        in=mp.getAudioInputStream(fileIn);
 			      }
 			      AudioFormat baseFormat=in.getFormat();
 			      targetFormat=new AudioFormat(
@@ -307,15 +296,27 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		 
 		@Override
 		public void run() {
-			clip.start();
-			clip.setMicrosecondPosition(time);
-			try {
-				Thread.sleep((clip.getMicrosecondLength()-time)/1000);
-			} catch (InterruptedException e) {}
-			for (Runnable run : listeners) {
-				new Thread(run).start();
+			if (clip != null) {
+				clip.start();
+				clip.setMicrosecondPosition(time);
+				try {
+					Thread.sleep((clip.getMicrosecondLength()-time)/1000);
+				} catch (InterruptedException e) {}
+				for (Runnable run : listeners) {
+					new Thread(run).start();
+				}
+			} else {
+				if (Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(listedSong.ps)) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					time += 1000000;
+					progress.setProgress((int) time);
+				}
 			}
 		}
 	}
-	
 }
