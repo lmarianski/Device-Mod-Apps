@@ -159,7 +159,7 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		}
 	}
 	
-	public static void registerSong(ListedSong listedSong) {
+	public static void registerDefaultSong(ListedSong listedSong) {
 		defaultRecords.add(listedSong);
 	}
 	
