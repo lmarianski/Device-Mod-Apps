@@ -39,18 +39,18 @@ public class Main {
 	public void init(FMLInitializationEvent e) {
 		ReflectionManager.init();	
 		
-		ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - Cat",     SoundEvents.RECORD_CAT));
-		ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - Blocks",  SoundEvents.RECORD_BLOCKS));
-		ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - Chirp",   SoundEvents.RECORD_CHIRP));
-		ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - Far",     SoundEvents.RECORD_FAR));
-		ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - Mall",    SoundEvents.RECORD_MALL));
-		ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - Mellohi", SoundEvents.RECORD_MELLOHI));
-		ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - Stal",    SoundEvents.RECORD_STAL));
-		ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - Strad",   SoundEvents.RECORD_STRAD));
-		ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - Wait",    SoundEvents.RECORD_WAIT));
-		ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - Ward",    SoundEvents.RECORD_WARD));
-		//ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - 11",    SoundEvents.RECORD_11));
-		ApplicationMusicPlayer.defaultRecords.add(new ListedSong("C418 - 13",      SoundEvents.RECORD_13));
+		ApplicationMusicPlayer.registerSong(new ListedSong("C418 - Cat",     SoundEvents.RECORD_CAT));
+		ApplicationMusicPlayer.registerSong(new ListedSong("C418 - Blocks",  SoundEvents.RECORD_BLOCKS));
+		ApplicationMusicPlayer.registerSong(new ListedSong("C418 - Chirp",   SoundEvents.RECORD_CHIRP));
+		ApplicationMusicPlayer.registerSong(new ListedSong("C418 - Far",     SoundEvents.RECORD_FAR));
+		ApplicationMusicPlayer.registerSong(new ListedSong("C418 - Mall",    SoundEvents.RECORD_MALL));
+		ApplicationMusicPlayer.registerSong(new ListedSong("C418 - Mellohi", SoundEvents.RECORD_MELLOHI));
+		ApplicationMusicPlayer.registerSong(new ListedSong("C418 - Stal",    SoundEvents.RECORD_STAL));
+		ApplicationMusicPlayer.registerSong(new ListedSong("C418 - Strad",   SoundEvents.RECORD_STRAD));
+		ApplicationMusicPlayer.registerSong(new ListedSong("C418 - Wait",    SoundEvents.RECORD_WAIT));
+		ApplicationMusicPlayer.registerSong(new ListedSong("C418 - Ward",    SoundEvents.RECORD_WARD));
+		//ApplicationMusicPlayer.registerSong(new ListedSong("C418 - 11",    SoundEvents.RECORD_11));
+		ApplicationMusicPlayer.registerSong(new ListedSong("C418 - 13",      SoundEvents.RECORD_13));
 	}
 
 	@EventHandler

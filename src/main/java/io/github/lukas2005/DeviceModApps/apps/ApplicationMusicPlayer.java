@@ -23,6 +23,7 @@ import io.github.lukas2005.DeviceModApps.ReflectionManager;
 import io.github.lukas2005.DeviceModApps.objects.ListedSong;
 import javazoom.spi.vorbis.sampled.file.VorbisAudioFileReader;
 import net.minecraft.client.Minecraft;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundCategory;
 
@@ -158,6 +159,10 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		}
 	}
 	
+	public static void registerSong(ListedSong listedSong) {
+		defaultRecords.add(listedSong);
+	}
+	
 	public static class SoundPlayingThread extends Thread {
 		
 		ListedSong listedSong;
@@ -197,13 +202,6 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		
 		public SoundPlayingThread(ListedSong listedSong) {
 			this(listedSong, null);
-		}
-		
-		public void pause() {
-			if (clip != null) {
-				time = clip.getMicrosecondPosition();
-				clip.stop();
-			}
 		}
 		
 		public void play() throws InterruptedException {
@@ -249,6 +247,13 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 				mc.getSoundHandler().playSound(listedSong.ps);
 
 				start();
+			}
+		}
+		
+		public void pause() {
+			if (clip != null) {
+				time = clip.getMicrosecondPosition();
+				clip.stop();
 			}
 		}
 		
