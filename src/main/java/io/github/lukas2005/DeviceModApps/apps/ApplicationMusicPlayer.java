@@ -23,10 +23,8 @@ import io.github.lukas2005.DeviceModApps.ReflectionManager;
 import io.github.lukas2005.DeviceModApps.objects.ListedSong;
 import javazoom.spi.vorbis.sampled.file.VorbisAudioFileReader;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
 
 public class ApplicationMusicPlayer extends ApplicationBase {
 	
@@ -245,10 +243,10 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 				}
 			} else {
 				Minecraft mc = Minecraft.getMinecraft();
-				EntityPlayer player = mc.player;
-				BlockPos playerPos = new BlockPos(player.posX, player.posY, player.posZ);
-				mc.world.playSound(playerPos, listedSong.sound, SoundCategory.RECORDS, 1.0F, 1.0F, false);
-				
+				//EntityPlayer player = mc.player;
+				//BlockPos playerPos = new BlockPos(player.posX, player.posY, player.posZ);
+				//mc.world.playSound(playerPos, listedSong.sound, SoundCategory.RECORDS, 1.0F, 1.0F, false);
+				mc.getSoundHandler().playSound(listedSong.ps);
 
 				start();
 			}
