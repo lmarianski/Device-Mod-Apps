@@ -19,7 +19,7 @@ public enum Emoji
 	
     public static final ResourceLocation EMOJI_ASSET = new ResourceLocation(Reference.MOD_ID,"textures/gui/emoji.png");
 
-    public static final int ICON_SIZE = 14;
+    public static final int ICON_SIZE = 10;
     public static final int GRID_SIZE = 1;
 
     public static HashMap<Character, Emoji> emojiMapping = new HashMap<>(); 
@@ -42,6 +42,6 @@ public enum Emoji
     {
         GlStateManager.color(1.0F, 1.0F, 1.0F);
         mc.getTextureManager().bindTexture(EMOJI_ASSET);
-        RenderUtil.drawRectWithTexture(x, y, getU(), getV(), ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE, 14, 14);
+        RenderUtil.drawRectWithTexture(x, y, getU(), getV(), ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
     }
 }
