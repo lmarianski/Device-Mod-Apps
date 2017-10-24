@@ -26,17 +26,26 @@ public class Main {
 
 	public static File modDataDir = Paths.get(Minecraft.getMinecraft().mcDataDir.getAbsolutePath(), "mods", Reference.MOD_ID).toFile();
 	
+	public static MyFontRenderer fontRendererObj;
+	
+	public static Minecraft mc = Minecraft.getMinecraft();
+	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent e) {
 		if (!modDataDir.exists()) modDataDir.mkdirs();
 		
 		ReflectionManager.preInit();
 		
+		Emoji.init();
+		
 		SwingUtils.init();
 	}
 	
 	@EventHandler
 	public void init(FMLInitializationEvent e) {
+		
+		fontRendererObj = new MyFontRenderer(Minecraft.getMinecraft());
+		
 		ReflectionManager.init();	
 		
 		ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Cat",     SoundEvents.RECORD_CAT));
@@ -85,4 +94,5 @@ public class Main {
 		
 		return out;
 	}
+	
 }

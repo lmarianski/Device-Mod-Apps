@@ -6,6 +6,8 @@ import java.lang.reflect.Method;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.audio.SoundManager;
+import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.client.resources.LanguageManager;
 import net.minecraft.util.SoundCategory;
 
 public class ReflectionManager {
@@ -15,11 +17,41 @@ public class ReflectionManager {
 	
 	public static Field playingSoundsField;
 	
+	static Minecraft mc = Minecraft.getMinecraft();
+	
 	public static void preInit() {
 	
 	}
 	
 	public static void init() {
+		
+		
+		try {
+			
+	    	Class<? extends Minecraft> mcClass = mc.getClass();
+			
+	        if (mc.gameSettings.language != null)
+	        {
+	        	Main.fontRendererObj.setUnicodeFlag(mc.isUnicode());
+					
+				Field mcLanguageManagerField = mcClass.getDeclaredField("mcLanguageManager");
+	
+				mcLanguageManagerField.setAccessible(true);
+	        	
+				Main.fontRendererObj.setBidiFlag(((LanguageManager) mcLanguageManagerField.get(mc)).isCurrentLanguageBidirectional());
+				
+	        }
+			
+			Field mcResourceManagerField = mcClass.getDeclaredField("mcResourceManager");
+	
+			mcResourceManagerField.setAccessible(true);
+			
+			((IReloadableResourceManager) mcResourceManagerField.get(mc)).registerReloadListener(Main.fontRendererObj);
+	        
+		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e1) {
+			e1.printStackTrace();
+		}
+		
 		//Sound reflection
 		SoundHandler sndHandler = Minecraft.getMinecraft().getSoundHandler();
 		Class<? extends SoundHandler> sndHandlerClass = sndHandler.getClass();
