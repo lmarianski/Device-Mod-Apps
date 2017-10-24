@@ -15,17 +15,19 @@ import net.minecraft.util.ResourceLocation;
  */
 public enum Emoji
 {
-	CHROME;
+	CHROME,
+	SMILE;
 	
     public static final ResourceLocation EMOJI_ASSET = new ResourceLocation(Reference.MOD_ID,"textures/gui/emoji.png");
 
     public static final int ICON_SIZE = 10;
-    public static final int GRID_SIZE = 1;
+    public static final int GRID_SIZE = 2;
 
     public static HashMap<Character, Emoji> emojiMapping = new HashMap<>(); 
     
     public static void init() {
     	emojiMapping.put('ﻼ', CHROME);
+    	emojiMapping.put('ﻻ', SMILE);
     }
     
     public int getU()
@@ -42,6 +44,6 @@ public enum Emoji
     {
         GlStateManager.color(1.0F, 1.0F, 1.0F);
         mc.getTextureManager().bindTexture(EMOJI_ASSET);
-        RenderUtil.drawRectWithTexture(x, y, getU(), getV(), ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
+        RenderUtil.drawRectWithTexture(x, y, getU(), getV(), ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE, 200, 200);
     }
 }
