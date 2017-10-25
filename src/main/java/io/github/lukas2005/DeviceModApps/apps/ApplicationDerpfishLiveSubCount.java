@@ -43,6 +43,9 @@ public class ApplicationDerpfishLiveSubCount extends ApplicationBase {
 			main.addComponent(derpfishDevSubCount);
 			main.addComponent(derpfishDevFace);
 			
+			
+			main.addComponent(aboutText);
+			
 			subUpdateThread = new Thread("Sub Update Thread") {
 				public void run() {
 					while (!Thread.interrupted()) {
