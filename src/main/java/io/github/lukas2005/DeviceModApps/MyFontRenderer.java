@@ -31,6 +31,15 @@ public class MyFontRenderer extends FontRenderer {
 		}
 	}
 	
+	@Override
+	public int getCharWidth(char ch) {
+		if (!Emoji.emojiMapping.containsKey((char)ch)) {
+			return super.getCharWidth(ch);
+		} else {
+			return Emoji.ICON_SIZE;
+		}
+	}
+	
 	public float renderEmoji(int ch) {
 		int returnVal = 0;
 		Emoji emojiToDraw = Emoji.emojiMapping.get((char)ch);
