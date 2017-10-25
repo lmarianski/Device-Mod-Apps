@@ -15,4 +15,11 @@
       </plugin>
     </plugins>
   </build>
+  <dependencies>
+  	<dependency>
+  		<groupId>com.google.apis</groupId>
+  		<artifactId>google-api-services-youtube</artifactId>
+  		<version>v3-rev186-1.23.0</version>
+  	</dependency>
+  </dependencies>
 </project>

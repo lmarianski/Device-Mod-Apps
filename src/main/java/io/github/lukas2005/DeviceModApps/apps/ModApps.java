@@ -18,7 +18,9 @@ public class ModApps {
 	public static void init() {
 		registerApp(new ResourceLocation(Reference.MOD_ID, "mwb"), ApplicationWebBrowser.class, true);
 		registerApp(new ResourceLocation(Reference.MOD_ID, "mta"), ApplicationMusicPlayer.class, true);
+		
 		registerApp(new ResourceLocation(Reference.MOD_ID, "eka"), ApplicationEmojiKeyboard.class, false);
+		registerApp(new ResourceLocation(Reference.MOD_ID, "dlsc"), ApplicationDerpfishLiveSubCount.class, false);
 	}
 	
 	public static void registerApp(ResourceLocation identifier, Class<? extends Application> clazz, boolean needsDataDir) {
