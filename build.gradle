@@ -10,6 +10,9 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
+apply plugin: 'java'
+
+compileJava.options.encoding = 'UTF-8'
 
 version = "0.0.3"
 group = "io.github.lukas2005.lda" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
