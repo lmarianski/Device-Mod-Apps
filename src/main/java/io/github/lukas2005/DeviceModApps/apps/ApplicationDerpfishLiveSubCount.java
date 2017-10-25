@@ -43,8 +43,11 @@ public class ApplicationDerpfishLiveSubCount extends ApplicationBase {
 			main.addComponent(derpfishDevSubCount);
 			main.addComponent(derpfishDevFace);
 			
+			Text aboutText = new Text("Requested by vos6434", main.width-115, main.height-10, main.width);
+			//Text aboutText2 = new Text("Made by lukas2005", main.width-95, main.height-10, main.width);
 			
 			main.addComponent(aboutText);
+			//main.addComponent(aboutText2);
 			
 			subUpdateThread = new Thread("Sub Update Thread") {
 				public void run() {
