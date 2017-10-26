@@ -1,14 +1,30 @@
 package io.github.lukas2005.DeviceModApps.apps;
 
+import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.api.app.Layout;
+import com.mrcrayfish.device.api.app.listener.ClickListener;
+
+import io.github.lukas2005.DeviceModApps.Emoji;
+import io.github.lukas2005.DeviceModApps.components.EmojiButtonComponent;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class ApplicationEmojiKeyboard extends ApplicationBase {
-
+	
 	@Override
 	public void init() {
-		
+		Layout main = new Layout();
+		setCurrentLayout(main);
+		for (Emoji e : Emoji.values()) {
+			EmojiButtonComponent emojiButton = new EmojiButtonComponent(10+(e.ordinal()*5), 10+(e.ordinal()*5), 15, 15, e);
+			emojiButton.setClickListener(new ClickListener() {
+				@Override
+				public void onClick(Component c, int mouseButton) {
+				}
+			});
+			main.addComponent(emojiButton);
+		}
 	}
-
+	
 	@Override
 	public void load(NBTTagCompound arg0) {
 		// TODO Auto-generated method stub

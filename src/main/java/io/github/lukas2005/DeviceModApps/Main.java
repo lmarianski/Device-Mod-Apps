@@ -5,8 +5,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+
+import com.mrcrayfish.device.api.app.component.TextArea;
 
 import io.github.lukas2005.DeviceModApps.apps.ApplicationMusicPlayer;
 import io.github.lukas2005.DeviceModApps.apps.ModApps;
@@ -29,6 +33,8 @@ public class Main {
 	public static MyFontRenderer fontRendererObj;
 	
 	public static Minecraft mc = Minecraft.getMinecraft();
+	
+	public static ArrayList<WeakReference<TextArea>> textAreas = new ArrayList<>();
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent e) {
