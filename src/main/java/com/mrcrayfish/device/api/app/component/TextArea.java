@@ -1,6 +1,7 @@
 package com.mrcrayfish.device.api.app.component;
 
 import java.awt.Color;
+import java.lang.ref.WeakReference;
 
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
@@ -48,6 +49,7 @@ public class TextArea extends Component
 		this.width = width;
 		this.height = height;
 		this.maxLines = (int) Math.floor((height - padding * 2) / fontRendererObj.FONT_HEIGHT);
+		Main.textAreas.add(new WeakReference<TextArea>(this));
 	}
 	
 	@Override
@@ -182,6 +184,15 @@ public class TextArea extends Component
 	public void setFocused(boolean isFocused) 
 	{
 		this.isFocused = isFocused;
+	}
+	
+	/**
+	 * Gets this text area focused state.
+	 * 
+	 */
+	public boolean getFocused() 
+	{
+		return this.isFocused;
 	}
 	
 	/**

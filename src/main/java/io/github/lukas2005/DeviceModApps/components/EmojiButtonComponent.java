@@ -19,7 +19,7 @@ public class EmojiButtonComponent extends Button {
 	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive,
 			float partialTicks) {
 		super.render(laptop, mc, x, y, mouseX, mouseY, windowActive, partialTicks);
-		icon.draw(mc, x, y);
+		icon.draw(mc, (x-5)+15/2, (y-5)+15/2);
 	}
 
 }
