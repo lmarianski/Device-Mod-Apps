@@ -18,7 +18,7 @@ public enum Emoji
 	CHROME,
 	SMILE;
 	
-    public static final ResourceLocation EMOJI_ASSET = new ResourceLocation(Reference.MOD_ID,"textures/gui/emoji.png");
+    public static final ResourceLocation ICON_ASSET = new ResourceLocation(Reference.MOD_ID,"textures/gui/emoji.png");
 
     public static final int ICON_SIZE = 10;
     public static final int GRID_SIZE = 2;
@@ -43,7 +43,8 @@ public enum Emoji
     public void draw(Minecraft mc, float x, float y)
     {
         GlStateManager.color(1.0F, 1.0F, 1.0F);
-        mc.getTextureManager().bindTexture(EMOJI_ASSET);
+        mc.getTextureManager().bindTexture(ICON_ASSET);
         RenderUtil.drawRectWithTexture(x, y, getU(), getV(), ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE, 200, 200);
     }
+    
 }

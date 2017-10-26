@@ -43,7 +43,7 @@ public class ApplicationWebBrowser extends ApplicationBase {
 			addressBar.setText("https://google.com");
 			main.addComponent(addressBar);
 			
-			Button goButton = new Button("Go!", main.width-17, 5, 15, 15);
+			Button goButton = new Button(main.width-17, 5, 15, 15, "Go!");
 			goButton.setClickListener(new ClickListener() {
 				@Override
 				public void onClick(Component c, int mouseButton) {

@@ -13,6 +13,7 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.api.app.Icon;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.ItemList;
@@ -53,15 +54,15 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		
 		main.addComponent(playList);
 		
-		final Button play = new Button("Play", 100, 10, 20, 20);
+		final Button play = new Button(20, 100, 10, 20, Icon.PLAY);
 		
 		main.addComponent(play);
 		
-		final Button pause = new Button("Pause", 130, 10, 20, 20);
+		final Button pause = new Button(130, 10, 20, 20, Icon.PAUSE);
 		pause.setEnabled(false);
 		main.addComponent(pause);
 		
-		final Button stop = new Button("Stop", 160, 10, 20, 20);
+		final Button stop = new Button(160, 10, 20, 20, Icon.STOP);
 		stop.setEnabled(false);
 		main.addComponent(stop);
 		
