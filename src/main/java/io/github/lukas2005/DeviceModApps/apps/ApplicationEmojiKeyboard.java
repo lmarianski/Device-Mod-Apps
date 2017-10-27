@@ -24,10 +24,12 @@ public class ApplicationEmojiKeyboard extends ApplicationBase {
 				@Override
 				public void onClick(Component c, int mouseButton) {
 					EmojiButtonComponent button = (EmojiButtonComponent) c;
+					Emoji emoji = (Emoji) button.icon;
 					for (WeakReference<TextArea> textAreaRef : Main.textAreas) {
 						TextArea textArea = textAreaRef.get();
 						if (textArea != null && textArea.getFocused()) {
-							textArea.writeText(button.icon.assignedChar+"");
+							
+							textArea.writeText(emoji.assignedChar+"");
 							textArea = null;
 						}
 					}

@@ -3,14 +3,14 @@ package io.github.lukas2005.DeviceModApps.components;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.core.Laptop;
 
-import io.github.lukas2005.DeviceModApps.Emoji;
+import io.github.lukas2005.DeviceModApps.IIcon;
 import net.minecraft.client.Minecraft;
 
 public class EmojiButtonComponent extends Button {
 
-	public Emoji icon;
+	public IIcon icon;
 	
-	public EmojiButtonComponent(int left, int top, int buttonWidth, int buttonHeight, Emoji icon) {
+	public EmojiButtonComponent(int left, int top, int buttonWidth, int buttonHeight, IIcon icon) {
 		super(left, top, buttonWidth, buttonHeight, "");
 		this.icon = icon;
 	}
