@@ -28,6 +28,7 @@ public class ApplicationEmojiKeyboard extends ApplicationBase {
 						TextArea textArea = textAreaRef.get();
 						if (textArea != null && textArea.getFocused()) {
 							textArea.writeText(button.icon.assignedChar+"");
+							textArea = null;
 						}
 					}
 				}
