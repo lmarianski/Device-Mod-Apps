@@ -1,14 +1,14 @@
 package io.github.lukas2005.DeviceModApps.apps;
 
-import java.lang.ref.WeakReference;
+import java.awt.AWTException;
+import java.awt.Robot;
 
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
-import com.mrcrayfish.device.api.app.component.TextArea;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 
 import io.github.lukas2005.DeviceModApps.Emoji;
-import io.github.lukas2005.DeviceModApps.Main;
+import io.github.lukas2005.DeviceModApps.Utils;
 import io.github.lukas2005.DeviceModApps.components.EmojiButtonComponent;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -25,13 +25,11 @@ public class ApplicationEmojiKeyboard extends ApplicationBase {
 				public void onClick(Component c, int mouseButton) {
 					EmojiButtonComponent button = (EmojiButtonComponent) c;
 					Emoji emoji = (Emoji) button.icon;
-					for (WeakReference<TextArea> textAreaRef : Main.textAreas) {
-						TextArea textArea = textAreaRef.get();
-						if (textArea != null && textArea.getFocused()) {
-							
-							textArea.writeText(emoji.assignedChar+"");
-							textArea = null;
-						}
+					try {
+						Utils.pressUnicode(new Robot(), emoji.assignedChar);
+					} catch (AWTException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 				}
 			});
