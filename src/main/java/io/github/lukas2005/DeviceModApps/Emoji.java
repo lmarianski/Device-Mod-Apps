@@ -34,12 +34,8 @@ public enum Emoji implements IIcon
     
     public static void init() {
     	for (Emoji e : values()) {
-    		e.addToMapping();
+    		emojiMapping.put(e.assignedChar, e);
     	}
-    }
-    
-    public void addToMapping() {
-    	emojiMapping.put(assignedChar, this);
     }
     
 	@Override
