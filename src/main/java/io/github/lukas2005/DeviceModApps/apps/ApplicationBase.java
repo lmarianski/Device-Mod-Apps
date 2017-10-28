@@ -6,8 +6,10 @@ import com.mrcrayfish.device.api.app.Application;
 
 public abstract class ApplicationBase extends Application {
 	
+	protected File appDataDir;
+	
 	public File getAppDataDir() {
-		return ModApps.MOD_APP_DATADIR.get(getInfo().getId());
+		return appDataDir;
 	}
 	
 }
