@@ -60,11 +60,8 @@ public class SwingWrapper {
 		this.c = c;
 		
 		img = new BufferedImage(renderWidth, renderHeight, BufferedImage.TYPE_INT_RGB);
-		//imgOld = new BufferedImage(img.getWidth(), img.getHeight(), img.getType());
 		g = img.createGraphics();
-		System.out.println("Creating new img");
 		
-		System.out.println("Added component:"+c.toString());
 		SwingUtils.panel.add(c, BorderLayout.CENTER);
 		
 		SwingUtils.frame.setState(JFrame.NORMAL);
@@ -147,13 +144,6 @@ public class SwingWrapper {
 		}
 	}
 	
-	public void handleMouse(int xPosition, int yPosition, int mouseX, int mouseY) {
-		//Point p = new Point(Math.round(SwingUtils.map(mouseX-xPosition, 0, width, 0, c.getWidth())), Math.round(SwingUtils.map(mouseY-yPosition, 0, height, 0, c.getHeight())));
-		//MouseEvent event = new MouseEvent(c, MouseEvent.MOUSE_CLICKED,  System.currentTimeMillis(), 0, Math.round(SwingUtils.map(mouseX-xPosition, 0, width, 0, c.getWidth())), Math.round(SwingUtils.map(mouseY-yPosition, 0, height, 0, c.getHeight())), p.x, p.y, 1, false, 0);
-		//c.dispatchEvent(event);
-	}
-	
-	//int i = 0;
 	ResourceLocation rc;
 	boolean isTheSameOld = true;
 	public void render(int x, int y) {

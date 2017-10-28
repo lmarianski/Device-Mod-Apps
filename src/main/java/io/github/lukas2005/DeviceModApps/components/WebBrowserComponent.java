@@ -17,12 +17,6 @@ public class WebBrowserComponent extends Component {
 		super(x, y);
 		
 		this.view = new BrowserView(b);
-//		JButton jb = new JButton("Hello");
-//		jb.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				System.out.println("Hello from JButton!");
-//			}
-//		});
 		
 		this.wrapper = new SwingWrapper(width, height, 1000, 450, view);
 	}
@@ -53,7 +47,6 @@ public class WebBrowserComponent extends Component {
 	
 	@Override
 	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks) {
-		wrapper.handleMouse(xPosition, yPosition, mouseX, mouseY);
 		wrapper.render(x, y);
 	}
 
