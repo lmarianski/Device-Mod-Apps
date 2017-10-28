@@ -17,12 +17,13 @@ public enum Emoji implements IIcon
 {
 	CHROME('ﻼ'),
 	SMILE('ﻻ'),
-	DERPFISH('ﻺ');
+	DERPFISH('ﻺ'),
+	POOP('ﻹ');
 	
     public static final ResourceLocation ICON_ASSET = new ResourceLocation(Reference.MOD_ID,"textures/gui/emoji.png");
 
     public static final int ICON_SIZE = 10;
-    public static final int GRID_SIZE = 3;
+    public static final int GRID_SIZE = 4;
 
     public static HashMap<Character, Emoji> emojiMapping = new HashMap<>(); 
 
