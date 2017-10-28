@@ -38,6 +38,12 @@ public class ApplicationEmojiKeyboard extends ApplicationBase {
 	}
 	
 	@Override
+	public void handleKeyTyped(char character, int code) {
+		super.handleKeyTyped(character, code);
+		System.out.println((char)code);
+	}
+	
+	@Override
 	public void load(NBTTagCompound arg0) {
 		// TODO Auto-generated method stub
 
