@@ -16,12 +16,13 @@ import net.minecraft.util.ResourceLocation;
 public enum Emoji implements IIcon
 {
 	CHROME('ﻼ'),
-	SMILE('ﻻ');
+	SMILE('ﻻ'),
+	DERPFISH('ﻺ');
 	
     public static final ResourceLocation ICON_ASSET = new ResourceLocation(Reference.MOD_ID,"textures/gui/emoji.png");
 
     public static final int ICON_SIZE = 10;
-    public static final int GRID_SIZE = 2;
+    public static final int GRID_SIZE = 3;
 
     public static HashMap<Character, Emoji> emojiMapping = new HashMap<>(); 
 
