@@ -10,13 +10,12 @@ import net.minecraft.client.Minecraft;
 
 public class WebBrowserComponent extends Component {
 
-	private BrowserView view;
-	private SwingWrapper wrapper;
+    private SwingWrapper wrapper;
 	
 	public WebBrowserComponent(int x, int y, int width, int height, Browser b) {
 		super(x, y);
-		
-		this.view = new BrowserView(b);
+
+        BrowserView view = new BrowserView(b);
 		
 		this.wrapper = new SwingWrapper(width, height, 1000, 450, view);
 	}

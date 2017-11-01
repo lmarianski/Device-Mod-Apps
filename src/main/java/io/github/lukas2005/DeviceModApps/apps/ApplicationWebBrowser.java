@@ -1,10 +1,8 @@
 package io.github.lukas2005.DeviceModApps.apps;
 
-import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.TextField;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.teamdev.jxbrowser.chromium.Browser;
 import com.teamdev.jxbrowser.chromium.BrowserContext;
 import com.teamdev.jxbrowser.chromium.BrowserContextParams;
@@ -44,12 +42,7 @@ public class ApplicationWebBrowser extends ApplicationBase {
 			main.addComponent(addressBar);
 			
 			Button goButton = new Button(main.width-17, 5, 15, 15, "Go!");
-			goButton.setClickListener(new ClickListener() {
-				@Override
-				public void onClick(Component c, int mouseButton) {
-					b.loadURL(addressBar.getText());
-				}
-			});
+			goButton.setClickListener((c, mouseButton) -> b.loadURL(addressBar.getText()));
 			main.addComponent(goButton);
 			
 			//final Slider scrollBar = new Slider(main.width-5, 10, 100);

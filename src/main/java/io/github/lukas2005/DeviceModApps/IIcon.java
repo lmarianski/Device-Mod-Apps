@@ -5,16 +5,16 @@ import net.minecraft.util.ResourceLocation;
 
 public interface IIcon {
 
-	public ResourceLocation getIconAsset();
+	ResourceLocation getIconAsset();
 	
-	public int getIconSize();
+	int getIconSize();
 	
-	public int getGridSize();
+	int getGridSize();
 	
-	public int getU();
+	int getU();
 
-    public int getV();
+    int getV();
 
-    public void draw(Minecraft mc, float x, float y);
+    void draw(Minecraft mc, float x, float y);
 	
 }

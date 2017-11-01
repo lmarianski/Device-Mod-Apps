@@ -62,11 +62,11 @@ public class SwingUtils {
 	static int prev_width  = 0;
 	static int prev_height = 0;
 	static BufferedImage img;
-	
-	@Deprecated
+
 	/**
 	 * use new SwingWrapper() now
 	 */
+	@Deprecated
 	public static void drawSwingComponent(int x, int y, int width, int height, Component c) {
 		if (!initialized) throw new IllegalStateException("SwingUtils not initalized!");
 		
@@ -129,7 +129,7 @@ public class SwingUtils {
 	   target.dispatchEvent(click);
 	}
 	
-	static public final float map(float value, float istart, float istop, float ostart, float ostop) {
+	static public float map(float value, float istart, float istop, float ostart, float ostop) {
 	      return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
 	}
 	

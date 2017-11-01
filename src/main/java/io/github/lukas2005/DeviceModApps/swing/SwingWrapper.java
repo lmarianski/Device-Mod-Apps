@@ -68,15 +68,12 @@ public class SwingWrapper {
 		
 		SwingUtils.frame.setVisible(true);
 		
-		new Thread() {
-			@Override
-			public void run() {
-				try {
-					Thread.sleep(500);
-					SwingUtils.frame.setState(JFrame.ICONIFIED);
-				} catch (InterruptedException e) {}
-			}
-		}.start();
+		new Thread(() -> {
+            try {
+                Thread.sleep(500);
+                SwingUtils.frame.setState(JFrame.ICONIFIED);
+            } catch (InterruptedException ignored) {}
+        }).start();
 		
 		if (c.getName() == null) c.setName("Component");
 		

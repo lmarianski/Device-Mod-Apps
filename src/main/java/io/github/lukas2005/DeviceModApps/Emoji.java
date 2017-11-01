@@ -29,7 +29,7 @@ public enum Emoji implements IIcon
 
     public char assignedChar;
     
-    private Emoji(char assignedChar) {
+    Emoji(char assignedChar) {
     	this.assignedChar = assignedChar;
 	}
     

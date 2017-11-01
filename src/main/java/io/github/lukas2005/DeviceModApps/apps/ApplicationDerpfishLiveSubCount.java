@@ -59,7 +59,7 @@ public class ApplicationDerpfishLiveSubCount extends ApplicationBase {
 						Thread.currentThread().interrupt();
 					}
 				}
-			};
+			}
 		};
 		
 		subUpdateThread.start();

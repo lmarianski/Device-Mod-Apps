@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -12,13 +13,11 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Icon;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.ItemList;
 import com.mrcrayfish.device.api.app.component.ProgressBar;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 
 import io.github.lukas2005.DeviceModApps.ReflectionManager;
 import io.github.lukas2005.DeviceModApps.objects.ListedSong;
@@ -69,79 +68,63 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		final ProgressBar progress = new ProgressBar(100, 50, 80, 10);
 		main.addComponent(progress);
 		
-		play.setClickListener(new ClickListener() {
-			@Override
-			public void onClick(Component c, int mouseButton) {
-				if (playList.getSelectedItem() != null) {
-					if (soundThread == null) { 
-						soundThread = new SoundPlayingThread(playList.getSelectedItem(), progress);
-						soundThread.addEndedListener(new Runnable() {
-							@Override
-							public void run() {
-								if (soundThread != null) {
-									soundThread.close();
-									soundThread = null;
-									isPlaying = false;
-									pause.setEnabled(isPlaying);
-									stop.setEnabled(false);
-									play.setEnabled(!isPlaying);
-								}
-							}
-						});
-						try {
-							soundThread.play();
-						} catch (InterruptedException e) {}
-					} else if (soundThread != null) {
-						try {
-							soundThread.play();
-						} catch (InterruptedException e) {}
-					}
-					isPlaying = true;
-					if (playList.getSelectedItem().ps == null) {
-						pause.setEnabled(isPlaying);
-					} else {
-						pause.setEnabled(false);
-					}
-					stop.setEnabled(true);
-					play.setEnabled(!isPlaying);
-				}
-			}
-		});
+		play.setClickListener((c, mouseButton) -> {
+            if (playList.getSelectedItem() != null) {
+                if (soundThread == null) {
+                    soundThread = new SoundPlayingThread(playList.getSelectedItem(), progress);
+                    soundThread.addEndedListener(() -> {
+						if (soundThread != null) {
+							soundThread.close();
+							soundThread = null;
+							isPlaying = false;
+							pause.setEnabled(false);
+							stop.setEnabled(false);
+							play.setEnabled(!isPlaying);
+						}
+					});
+					soundThread.play();
+                } else {
+					soundThread.play();
+                }
+                isPlaying = true;
+                if (playList.getSelectedItem().ps == null) {
+                    pause.setEnabled(isPlaying);
+                } else {
+                    pause.setEnabled(false);
+                }
+                stop.setEnabled(true);
+                play.setEnabled(!isPlaying);
+            }
+        });
 		
-		pause.setClickListener(new ClickListener() {
-			@Override
-			public void onClick(Component c, int mouseButton) {
-				if (soundThread != null) {
-					soundThread.pause();
-					isPlaying = false;
-					if (playList.getSelectedItem().ps == null) {
-						pause.setEnabled(isPlaying);
-					} else {
-						pause.setEnabled(false);
-					}
-					stop.setEnabled(true);
-					play.setEnabled(!isPlaying);
-				}
-			}
-		});
+		pause.setClickListener((c, mouseButton) -> {
+            if (soundThread != null) {
+                soundThread.pause();
+                isPlaying = false;
+                if (playList.getSelectedItem().ps == null) {
+                    pause.setEnabled(isPlaying);
+                } else {
+                    pause.setEnabled(false);
+                }
+                stop.setEnabled(true);
+                play.setEnabled(!isPlaying);
+            }
+        });
 		
-		stop.setClickListener(new ClickListener() {
-			@Override
-			public void onClick(Component c, int mouseButton) {
-				if (soundThread != null) {
-					soundThread.close();
-					soundThread = null;
-					isPlaying = false;
-					if (playList.getSelectedItem().ps == null) {
-						pause.setEnabled(isPlaying);
-					} else {
-						pause.setEnabled(false);
-					}
-					stop.setEnabled(false);
-					play.setEnabled(!isPlaying);
-				}
-			}
-		});
+		stop.setClickListener((c, mouseButton) -> {
+            if (soundThread != null) {
+                soundThread.close();
+                soundThread = null;
+                isPlaying = false;
+                if (playList.getSelectedItem().ps == null) {
+                    pause.setEnabled(isPlaying);
+                } else {
+                    pause.setEnabled(false);
+                }
+                stop.setEnabled(false);
+                play.setEnabled(!isPlaying);
+            }
+        });
 		
 	}
 	
@@ -150,7 +133,7 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		NBTTagCompound songList = nbt.getCompoundTag("songList");
 		//playList.removeAll();
 		for (String key : songList.getKeySet()) {
-			if (songList.getString(key+"_type") == "FILE") {
+			if (Objects.equals(songList.getString(key + "_type"), "FILE")) {
 				playList.addItem(new ListedSong(key, new File(songList.getString(key))));
 			} else {
 				// Need to figure out how to do this
@@ -226,7 +209,7 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 			this(listedSong, null);
 		}
 		
-		public void play() throws InterruptedException {
+		public void play() {
 			if (clip != null) {
 				if (progress != null) {
 					progress.setMax((int) clip.getMicrosecondLength());
@@ -291,16 +274,16 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 			this.interrupt();
 		}
 		
-		 AudioInputStream createFromOgg(File fileIn) throws IOException, Exception {
+		 AudioInputStream createFromOgg(File fileIn) throws Exception {
 			    AudioInputStream audioInputStream=null;
-			    AudioFormat targetFormat=null;
+			    AudioFormat targetFormat;
 			    try {
 			      AudioInputStream in=null;
 			      if(fileIn.getName().endsWith(".ogg")) {
 			        VorbisAudioFileReader vb=new VorbisAudioFileReader();
 			        in=vb.getAudioInputStream(fileIn);
 			      }
-			      AudioFormat baseFormat=in.getFormat();
+			      AudioFormat baseFormat= in != null ? in.getFormat() : null;
 			      targetFormat=new AudioFormat(
 			              AudioFormat.Encoding.PCM_SIGNED,
 			              baseFormat.getSampleRate(),
@@ -326,7 +309,7 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 				clip.setMicrosecondPosition(time);
 				try {
 					Thread.sleep((clip.getMicrosecondLength()-time)/1000);
-				} catch (InterruptedException e) {}
+				} catch (InterruptedException ignored) {}
 				for (Runnable run : listeners) {
 					new Thread(run).start();
 				}

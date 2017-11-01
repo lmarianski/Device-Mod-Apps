@@ -24,7 +24,7 @@ public class MyFontRenderer extends FontRenderer {
 	
 	@Override
 	protected float renderUnicodeChar(char ch, boolean italic) {
-		if (!Emoji.emojiMapping.containsKey((char)ch)) {
+		if (!Emoji.emojiMapping.containsKey(ch)) {
 			return super.renderUnicodeChar(ch, italic);
 		} else {
 			return renderEmoji(ch);
@@ -33,7 +33,7 @@ public class MyFontRenderer extends FontRenderer {
 	
 	@Override
 	public int getCharWidth(char ch) {
-		if (!Emoji.emojiMapping.containsKey((char)ch)) {
+		if (!Emoji.emojiMapping.containsKey(ch)) {
 			return super.getCharWidth(ch);
 		} else {
 			return Emoji.ICON_SIZE;

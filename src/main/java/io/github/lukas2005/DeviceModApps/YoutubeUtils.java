@@ -3,8 +3,6 @@ package io.github.lukas2005.DeviceModApps;
 import java.io.IOException;
 import java.math.BigInteger;
 
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
@@ -19,9 +17,7 @@ public class YoutubeUtils {
     public static YouTube youtube = new YouTube.Builder(
             new NetHttpTransport(),
             new JacksonFactory(),
-            new HttpRequestInitializer() {
-                    public void initialize(HttpRequest request) throws IOException {
-            }
+            request -> {
     }).setApplicationName("lukas2005's Device Mod Apps").setYouTubeRequestInitializer(new YouTubeRequestInitializer(API_KEY)).build();
 	
 	public static BigInteger getSubscriberCount(String channelId) throws IOException {

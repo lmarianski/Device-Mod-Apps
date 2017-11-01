@@ -55,7 +55,7 @@ public class ReflectionManager {
 		//Sound reflection
 		SoundHandler sndHandler = Minecraft.getMinecraft().getSoundHandler();
 		Class<? extends SoundHandler> sndHandlerClass = sndHandler.getClass();
-		Field sndManagerField = null;
+		Field sndManagerField;
 		
 		try {
 			sndManagerField = sndHandlerClass.getDeclaredField("sndManager");

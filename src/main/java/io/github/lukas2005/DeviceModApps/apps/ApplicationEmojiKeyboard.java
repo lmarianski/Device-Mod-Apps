@@ -3,9 +3,7 @@ package io.github.lukas2005.DeviceModApps.apps;
 import java.awt.AWTException;
 import java.awt.Robot;
 
-import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 
 import io.github.lukas2005.DeviceModApps.Emoji;
 import io.github.lukas2005.DeviceModApps.Utils;
@@ -20,19 +18,16 @@ public class ApplicationEmojiKeyboard extends ApplicationBase {
 		setCurrentLayout(main);
 		for (Emoji e : Emoji.values()) {
 			EmojiButtonComponent emojiButton = new EmojiButtonComponent(5+(e.ordinal()*17), 5, 15, 15, e);
-			emojiButton.setClickListener(new ClickListener() {
-				@Override
-				public void onClick(Component c, int mouseButton) {
-					EmojiButtonComponent button = (EmojiButtonComponent) c;
-					Emoji emoji = (Emoji) button.icon;
-					try {
-						Utils.pressUnicode(new Robot(), emoji.assignedChar);
-					} catch (AWTException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			});
+			emojiButton.setClickListener((c, mouseButton) -> {
+                EmojiButtonComponent button = (EmojiButtonComponent) c;
+                Emoji emoji = (Emoji) button.icon;
+                try {
+                    Utils.pressUnicode(new Robot(), emoji.assignedChar);
+                } catch (AWTException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            });
 			main.addComponent(emojiButton);
 		}
 	}
