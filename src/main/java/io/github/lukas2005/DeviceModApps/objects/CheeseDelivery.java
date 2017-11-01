@@ -18,5 +18,7 @@ public class CheeseDelivery {
 	public enum CheeseType {
 		GOUDA,
 		CHEDAR,
+		STINKY
+    }
 	
 }
