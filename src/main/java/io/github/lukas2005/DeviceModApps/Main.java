@@ -1,17 +1,11 @@
 package io.github.lukas2005.DeviceModApps;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
+import com.mrcrayfish.device.api.app.component.TextArea;
 import io.github.lukas2005.DeviceModApps.apps.ApplicationMusicPlayer;
 import io.github.lukas2005.DeviceModApps.apps.ModApps;
 import io.github.lukas2005.DeviceModApps.objects.ListedSong;
 import io.github.lukas2005.DeviceModApps.swing.SwingUtils;
+import javassist.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
@@ -21,17 +15,34 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
+import java.io.*;
+import java.lang.ref.WeakReference;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+
 @Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, dependencies = "required-after:cdm@[0.1.0,]")
 public class Main {
 
 	public static File modDataDir = Paths.get(Minecraft.getMinecraft().mcDataDir.getAbsolutePath(), "mods", Reference.MOD_ID).toFile();
 	
 	public static Minecraft mc = Minecraft.getMinecraft();
-	
+
+	public static final ArrayList<WeakReference<TextArea>> textAreas = new ArrayList<>();
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent e) {
 		if (!modDataDir.exists()) modDataDir.mkdirs();
-		
+
+//		ClassPool pool = ClassPool.getDefault();
+//		try {
+//			CtClass cc = pool.get("com.mrcrayfish.device.api.app.component.TextArea");
+//			CtConstructor[] consts = cc.getDeclaredConstructors();
+//			CtConstructor constructor = consts[0];
+//			constructor.insertAfter("io.github.lukas2005.DeviceModApps.Main.textAreas.add(new WeakReference<TextArea>(this));");
+//		} catch (Exception e1) {
+//			e1.printStackTrace();
+//		}
 		ReflectionManager.preInit();
 		
 		Emoji.init();

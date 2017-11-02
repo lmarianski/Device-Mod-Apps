@@ -63,6 +63,8 @@ dependencies {
 	embed files("libs/jxbrowser/licence.jar")
 	embed files("libs/jxbrowser/lib/jxbrowser-6.16.jar")
 	
+	embed files("libs/javaassist/javaassist.jar")
+	
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"

@@ -2,10 +2,15 @@ package io.github.lukas2005.DeviceModApps.apps;
 
 import java.awt.AWTException;
 import java.awt.Robot;
+import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
 
 import com.mrcrayfish.device.api.app.Layout;
 
+import com.mrcrayfish.device.api.app.component.Text;
+import com.mrcrayfish.device.api.app.component.TextArea;
 import io.github.lukas2005.DeviceModApps.Emoji;
+import io.github.lukas2005.DeviceModApps.Main;
 import io.github.lukas2005.DeviceModApps.Utils;
 import io.github.lukas2005.DeviceModApps.components.EmojiButtonComponent;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,6 +19,7 @@ public class ApplicationEmojiKeyboard extends ApplicationBase {
 	
 	@Override
 	public void init() {
+		System.out.println(Main.textAreas.size());
 		Layout main = new Layout();
 		setCurrentLayout(main);
 		for (Emoji e : Emoji.values()) {
@@ -21,12 +27,20 @@ public class ApplicationEmojiKeyboard extends ApplicationBase {
 			emojiButton.setClickListener((c, mouseButton) -> {
                 EmojiButtonComponent button = (EmojiButtonComponent) c;
                 Emoji emoji = (Emoji) button.icon;
-                try {
-                    Utils.pressUnicode(new Robot(), emoji.assignedChar);
-                } catch (AWTException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                }
+                Class<TextArea> textAreaClass = TextArea.class;
+				Field isFocusedField = null;
+				try {
+					isFocusedField = textAreaClass.getDeclaredField("isFocused");
+					for (WeakReference<TextArea> areaReference : Main.textAreas) {
+						TextArea area = areaReference.get();
+						if (isFocusedField != null && (boolean)isFocusedField.get(area)) {
+							area.writeText(emoji.assignedChar+"");
+						}
+						area = null;
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
             });
 			main.addComponent(emojiButton);
 		}
