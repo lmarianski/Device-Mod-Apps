@@ -1,4 +1,4 @@
-package io.github.lukas2005.DeviceModApps.apps;
+/*package io.github.lukas2005.DeviceModApps.apps;
 
 import com.mrcrayfish.device.api.app.Dialog.OpenFile;
 import com.mrcrayfish.device.api.app.Layout;
@@ -149,3 +149,4 @@ public class ApplicationCheeseDesigner extends ApplicationBase {
 	}
 
 }
+*/

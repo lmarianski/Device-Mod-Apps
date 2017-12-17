@@ -1,12 +1,9 @@
 package io.github.lukas2005.DeviceModApps;
 
-import java.util.HashMap;
-
-import com.mrcrayfish.device.api.utils.RenderUtil;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mrcrayfish.device.api.app.IIcon;
 import net.minecraft.util.ResourceLocation;
+
+import java.util.HashMap;
 
 /**
  * 
@@ -48,11 +45,6 @@ public enum Emoji implements IIcon
 	public int getIconSize() {
 		return ICON_SIZE;
 	}
-
-	@Override
-	public int getGridSize() {
-		return GRID_SIZE;
-	}
     
 	@Override
     public int getU()
@@ -67,11 +59,12 @@ public enum Emoji implements IIcon
     }
 
 	@Override
-    public void draw(Minecraft mc, float x, float y)
-    {
-        GlStateManager.color(1.0F, 1.0F, 1.0F);
-        mc.getTextureManager().bindTexture(ICON_ASSET);
-        RenderUtil.drawRectWithTexture(x, y, getU(), getV(), ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE, 200, 200);
-    }
-    
+	public int getGridWidth() {
+		return GRID_SIZE;
+	}
+
+	@Override
+	public int getGridHeight() {
+		return GRID_SIZE;
+	}
 }

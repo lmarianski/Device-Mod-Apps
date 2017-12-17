@@ -1,18 +1,13 @@
 package io.github.lukas2005.DeviceModApps.apps;
 
-import java.awt.AWTException;
-import java.awt.Robot;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 
 import com.mrcrayfish.device.api.app.Layout;
 
-import com.mrcrayfish.device.api.app.component.Text;
 import com.mrcrayfish.device.api.app.component.TextArea;
 import io.github.lukas2005.DeviceModApps.Emoji;
 import io.github.lukas2005.DeviceModApps.Main;
-import io.github.lukas2005.DeviceModApps.Utils;
-import io.github.lukas2005.DeviceModApps.components.EmojiButtonComponent;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class ApplicationEmojiKeyboard extends ApplicationBase {

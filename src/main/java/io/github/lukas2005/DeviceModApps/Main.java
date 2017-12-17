@@ -53,7 +53,7 @@ public class Main {
 	@EventHandler
 	public void init(FMLInitializationEvent e) {
 		
-		Minecraft.getMinecraft().fontRendererObj = new MyFontRenderer(Minecraft.getMinecraft());
+		Minecraft.getMinecraft().fontRenderer = new MyFontRenderer(Minecraft.getMinecraft());
 		
 		ReflectionManager.init();	
 		

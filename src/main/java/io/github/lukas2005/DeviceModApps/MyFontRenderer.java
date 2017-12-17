@@ -30,13 +30,13 @@ public class MyFontRenderer extends FontRenderer {
 			return renderEmoji(ch);
 		}
 	}
-	
+
 	@Override
 	public int getCharWidth(char ch) {
 		if (!Emoji.emojiMapping.containsKey(ch)) {
 			return super.getCharWidth(ch);
 		} else {
-			return Emoji.ICON_SIZE;
+			return Emoji.emojiMapping.get(ch).getGridWidth();
 		}
 	}
 	
@@ -44,7 +44,7 @@ public class MyFontRenderer extends FontRenderer {
 		int returnVal = 0;
 		Emoji emojiToDraw = Emoji.emojiMapping.get((char)ch);
 		if (emojiToDraw != null) {
-			emojiToDraw.draw(mc, this.posX, this.posY);
+			emojiToDraw.draw(mc, (int)this.posX, (int)this.posY);
 			returnVal = Emoji.ICON_SIZE;
 		}
 		return returnVal;

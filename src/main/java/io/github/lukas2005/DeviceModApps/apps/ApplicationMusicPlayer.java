@@ -1,7 +1,6 @@
 package io.github.lukas2005.DeviceModApps.apps;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -13,7 +12,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import com.mrcrayfish.device.api.app.Icon;
+import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.ItemList;
@@ -53,15 +52,15 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		
 		main.addComponent(playList);
 		
-		final Button play = new Button(20, 100, 10, 20, Icon.PLAY);
+		final Button play = new Button(20, 100, 10, 20, Icons.PLAY);
 		
 		main.addComponent(play);
 		
-		final Button pause = new Button(130, 10, 20, 20, Icon.PAUSE);
+		final Button pause = new Button(130, 10, 20, 20, Icons.PAUSE);
 		pause.setEnabled(false);
 		main.addComponent(pause);
 		
-		final Button stop = new Button(160, 10, 20, 20, Icon.STOP);
+		final Button stop = new Button(160, 10, 20, 20, Icons.STOP);
 		stop.setEnabled(false);
 		main.addComponent(stop);
 		

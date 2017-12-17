@@ -32,13 +32,13 @@ public class ReflectionManager {
 			
 	        if (mc.gameSettings.language != null)
 	        {
-	        	Minecraft.getMinecraft().fontRendererObj.setUnicodeFlag(mc.isUnicode());
+	        	Minecraft.getMinecraft().fontRenderer.setUnicodeFlag(mc.isUnicode());
 					
 				Field mcLanguageManagerField = mcClass.getDeclaredField("mcLanguageManager");
 	
 				mcLanguageManagerField.setAccessible(true);
 	        	
-				Minecraft.getMinecraft().fontRendererObj.setBidiFlag(((LanguageManager) mcLanguageManagerField.get(mc)).isCurrentLanguageBidirectional());
+				Minecraft.getMinecraft().fontRenderer.setBidiFlag(((LanguageManager) mcLanguageManagerField.get(mc)).isCurrentLanguageBidirectional());
 				
 	        }
 			
@@ -46,7 +46,7 @@ public class ReflectionManager {
 	
 			mcResourceManagerField.setAccessible(true);
 			
-			((IReloadableResourceManager) mcResourceManagerField.get(mc)).registerReloadListener(Minecraft.getMinecraft().fontRendererObj);
+			((IReloadableResourceManager) mcResourceManagerField.get(mc)).registerReloadListener(Minecraft.getMinecraft().fontRenderer);
 	        
 		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e1) {
 			e1.printStackTrace();
