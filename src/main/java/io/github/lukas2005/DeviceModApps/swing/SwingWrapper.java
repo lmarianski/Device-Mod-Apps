@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import net.minecraft.client.renderer.BufferBuilder;
 import org.lwjgl.input.Keyboard;
 
 import com.teamdev.jxbrowser.chromium.BrowserKeyEvent.KeyCode;
@@ -17,7 +18,6 @@ import com.teamdev.jxbrowser.chromium.swing.BrowserView;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -156,7 +156,7 @@ public class SwingWrapper {
 
 	protected static void drawRectWithFullTexture(double x, double y, float u, float v, int width, int height) {
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer buffer = tessellator.getBuffer();
+		BufferBuilder buffer = tessellator.getBuffer();
 		buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
 		buffer.pos(x, y + height, 0).tex(0, 1).endVertex();
 		buffer.pos(x + width, y + height, 0).tex(1, 1).endVertex();

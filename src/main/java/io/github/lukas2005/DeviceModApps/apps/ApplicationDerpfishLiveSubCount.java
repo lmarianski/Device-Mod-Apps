@@ -50,8 +50,8 @@ public class ApplicationDerpfishLiveSubCount extends ApplicationBase {
 			public void run() {
 				while (!Thread.interrupted()) {
 					try {
-						derpfishSubCount.setText(YoutubeUtils.getSubscriberCount(MRCRAYFISH_CHANNEL_ID)+"");
-						derpfishDevSubCount.setText(YoutubeUtils.getSubscriberCount(MRCRAYFISHDEV_CHANNEL_ID)+"");
+						derpfishSubCount.setText(YoutubeUtils.getSubscriberCount(MRCRAYFISH_CHANNEL_ID).toString());
+						derpfishDevSubCount.setText(YoutubeUtils.getSubscriberCount(MRCRAYFISHDEV_CHANNEL_ID).toString());
 						Thread.sleep(5000);
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -61,7 +61,7 @@ public class ApplicationDerpfishLiveSubCount extends ApplicationBase {
 				}
 			}
 		};
-		
+
 		subUpdateThread.start();
 	}
 	

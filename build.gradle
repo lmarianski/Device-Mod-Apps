@@ -53,7 +53,9 @@ configurations {
 
 dependencies {
 
-	embed 'com.google.apis:google-api-services-youtube:v3-rev186-1.23.0'
+	embed ('com.google.apis:google-api-services-youtube:v3-rev186-1.23.0') {
+		exclude group: 'com.google.guava'
+	}
 
 	embed files("libs/vorbisspi1.0.3.jar")
 	embed files("libs/tritonus_share.jar")
@@ -61,7 +63,7 @@ dependencies {
 	embed files("libs/jogg-0.0.7.jar")
 	
 	embed files("libs/jxbrowser/licence.jar")
-	embed files("libs/jxbrowser/lib/jxbrowser-6.16.jar")
+	embed files("libs/jxbrowser/lib/jxbrowser-"+jxbrowser_version+".jar")
 	
 	embed files("libs/javaassist/javaassist.jar")
 	
