@@ -20,6 +20,7 @@ import com.mrcrayfish.device.api.app.component.ProgressBar;
 
 import io.github.lukas2005.DeviceModApps.ReflectionManager;
 import io.github.lukas2005.DeviceModApps.objects.ListedSong;
+import io.github.lukas2005.DeviceModApps.proxy.ClientProxy;
 import javazoom.spi.vorbis.sampled.file.VorbisAudioFileReader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
@@ -67,7 +68,7 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		final ProgressBar progress = new ProgressBar(100, 50, 80, 10);
 		main.addComponent(progress);
 		
-		play.setClickListener((c, mouseButton) -> {
+		play.setClickListener((mouseX, mouseY, mouseButton) -> {
             if (playList.getSelectedItem() != null) {
                 if (soundThread == null) {
                     soundThread = new SoundPlayingThread(playList.getSelectedItem(), progress);
@@ -96,7 +97,7 @@ public class ApplicationMusicPlayer extends ApplicationBase {
             }
         });
 		
-		pause.setClickListener((c, mouseButton) -> {
+		pause.setClickListener((mouseX, mouseY, mouseButton) -> {
             if (soundThread != null) {
                 soundThread.pause();
                 isPlaying = false;
@@ -110,7 +111,7 @@ public class ApplicationMusicPlayer extends ApplicationBase {
             }
         });
 		
-		stop.setClickListener((c, mouseButton) -> {
+		stop.setClickListener((mouseX, mouseY, mouseButton) -> {
             if (soundThread != null) {
                 soundThread.close();
                 soundThread = null;
@@ -229,7 +230,7 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 				
 				float volume = 0;
 				try {
-					volume = (float) ReflectionManager.getVolumeMethod.invoke(ReflectionManager.sndManager, SoundCategory.RECORDS);
+					volume = (float) ClientProxy.getVolumeMethod.invoke(ClientProxy.sndManager, SoundCategory.RECORDS);
 				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

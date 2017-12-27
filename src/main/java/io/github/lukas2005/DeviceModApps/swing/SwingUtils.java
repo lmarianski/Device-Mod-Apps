@@ -46,7 +46,7 @@ public class SwingUtils {
 	private static Minecraft mc = Minecraft.getMinecraft();
 	
 	/**
-	 * Call this before any other method in this class or new Swingwrapper();
+	 * Call this before any other method in this class or new SwingWrapper();
 	 */
 	public static void init() {
 		frame = new JFrame();

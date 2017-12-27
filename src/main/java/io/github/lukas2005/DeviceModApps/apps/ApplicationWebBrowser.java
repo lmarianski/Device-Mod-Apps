@@ -42,7 +42,7 @@ public class ApplicationWebBrowser extends ApplicationBase {
 			main.addComponent(addressBar);
 			
 			Button goButton = new Button(main.width-17, 5, 15, 15, "Go!");
-			goButton.setClickListener((c, mouseButton) -> b.loadURL(addressBar.getText()));
+			goButton.setClickListener((mouseX, mouseY, mouseButton) -> b.loadURL(addressBar.getText()));
 			main.addComponent(goButton);
 			
 			//final Slider scrollBar = new Slider(main.width-5, 10, 100);

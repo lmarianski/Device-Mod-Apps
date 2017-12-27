@@ -1,87 +1,30 @@
 package io.github.lukas2005.DeviceModApps;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import javassist.ClassPool;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import org.apache.openjpa.enhance.InstrumentationFactory;
+import org.apache.openjpa.lib.log.NoneLogFactory;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.client.audio.SoundManager;
-import net.minecraft.client.resources.IReloadableResourceManager;
-import net.minecraft.client.resources.LanguageManager;
-import net.minecraft.util.SoundCategory;
+import java.lang.instrument.Instrumentation;
 
 public class ReflectionManager {
 
-	public static Method getVolumeMethod = null;
-	public static SoundManager sndManager = null;
-	
-	public static Field playingSoundsField;
-	
-	static Minecraft mc = Minecraft.getMinecraft();
-	
-	public static void preInit() {
-	
+	public static final Instrumentation instrumentationInstance = InstrumentationFactory.getInstrumentation(new CustomVerboseLogger());
+
+    public static ClassPool pool = ClassPool.getDefault();
+
+	public static void preInit(FMLPreInitializationEvent e) {
+        Main.proxy.preInitReflect(e);
 	}
-	
-	public static void init() {
-		
-		
-		try {
-			
-	    	Class<? extends Minecraft> mcClass = mc.getClass();
-			
-	        if (mc.gameSettings.language != null)
-	        {
-	        	Minecraft.getMinecraft().fontRenderer.setUnicodeFlag(mc.isUnicode());
-					
-				Field mcLanguageManagerField = mcClass.getDeclaredField("mcLanguageManager");
-	
-				mcLanguageManagerField.setAccessible(true);
-	        	
-				Minecraft.getMinecraft().fontRenderer.setBidiFlag(((LanguageManager) mcLanguageManagerField.get(mc)).isCurrentLanguageBidirectional());
-				
-	        }
-			
-			Field mcResourceManagerField = mcClass.getDeclaredField("mcResourceManager");
-	
-			mcResourceManagerField.setAccessible(true);
-			
-			((IReloadableResourceManager) mcResourceManagerField.get(mc)).registerReloadListener(Minecraft.getMinecraft().fontRenderer);
-	        
-		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e1) {
-			e1.printStackTrace();
-		}
-		
-		//Sound reflection
-		SoundHandler sndHandler = Minecraft.getMinecraft().getSoundHandler();
-		Class<? extends SoundHandler> sndHandlerClass = sndHandler.getClass();
-		Field sndManagerField;
-		
-		try {
-			sndManagerField = sndHandlerClass.getDeclaredField("sndManager");
-			sndManagerField.setAccessible(true);
-			
-			sndManager = (SoundManager) sndManagerField.get(sndHandler);
-		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-			e.printStackTrace();
-		}
-		
-		Class<? extends SoundManager> sndManagerClass = sndManager.getClass();
-		
-		try {
-			
-			getVolumeMethod = sndManagerClass.getDeclaredMethod("getVolume", SoundCategory.class);
-			getVolumeMethod.setAccessible(true);
-			
-			playingSoundsField = sndManagerClass.getDeclaredField("playingSounds");
-			playingSoundsField.setAccessible(true);
-		} catch (SecurityException | IllegalArgumentException | NoSuchMethodException | NoSuchFieldException e) {
-			e.printStackTrace();
-		}
-	} 
-	
-	public static void postInit() {
-		
+
+	public static void init(FMLInitializationEvent e) {
+        Main.proxy.initReflect(e);
 	}
-	
+
+	public static void postInit(FMLPostInitializationEvent e) {
+        Main.proxy.postInitReflect(e);
+	}
+
 }
