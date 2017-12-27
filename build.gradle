@@ -1,21 +1,15 @@
 buildscript {
     repositories {
-		mavenCentral()
-		maven { url = "http://files.minecraftforge.net/maven" }
-		maven { url "https://plugins.gradle.org/m2/" }
+        jcenter()
+        maven { url = "http://files.minecraftforge.net/maven" }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-		classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.4'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
-apply plugin: 'com.github.johnrengelman.shadow'
-apply plugin: 'java'
-
-compileJava.options.encoding = 'UTF-8'
 
 version = "0.0.4"
 group = "io.github.lukas2005.lda" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -23,13 +17,10 @@ archivesBaseName = "lda"
 
 def jxbrowser_version = "6.16"
 
-shadowJar {
-	exclude 'META-INF/LICENSE'
-}
-
-sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
+compileJava.options.encoding = 'UTF-8'
+sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 compileJava {
-    sourceCompatibility = targetCompatibility = "1.8"
+    sourceCompatibility = targetCompatibility = '1.8'
 }
 
 minecraft {
@@ -41,7 +32,7 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20171217"
+    mappings = "snapshot_20171003"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
@@ -52,27 +43,35 @@ configurations {
 }
 
 dependencies {
-
-	embed ('com.google.apis:google-api-services-youtube:v3-rev186-1.23.0') {
-		exclude group: 'com.google.guava'
-	}
-
-	embed files("libs/vorbisspi1.0.3.jar")
-	embed files("libs/tritonus_share.jar")
-	embed files("libs/jorbis-0.0.15.jar")
-	embed files("libs/jogg-0.0.7.jar")
-	
-	embed files("libs/jxbrowser/licence.jar")
-	embed files("libs/jxbrowser/lib/jxbrowser-"+jxbrowser_version+".jar")
-	
-	embed files("libs/javaassist/javaassist.jar")
-	
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"
     //compile "some.group:artifact:version"
       
-    // real examples
+	embed ('com.google.apis:google-api-services-youtube:v3-rev186-1.23.0') {
+		exclude group: 'com.google.guava'
+	}
+
+	embed files("lib/vorbisspi1.0.3.jar")
+	embed files("lib/tritonus_share.jar")
+	embed files("lib/jorbis-0.0.15.jar")
+	embed files("lib/jogg-0.0.7.jar")
+	
+	embed files("lib/jxbrowser/licence.jar")
+	embed files("lib/jxbrowser/lib/jxbrowser-"+jxbrowser_version+".jar")
+
+	compile files("lib/jxbrowser/lib/jxbrowser-linux64-"+jxbrowser_version+".jar")
+	compile files("lib/jxbrowser/lib/jxbrowser-mac-"+jxbrowser_version+".jar")
+	compile files("lib/jxbrowser/lib/jxbrowser-win32-"+jxbrowser_version+".jar")
+	
+	embed files("lib/javassist.jar")
+	
+	compile files("lib/device-api-0.2.0pre6-1.12.2.jar")
+
+	// https://mvnrepository.com/artifact/org.apache.openjpa/openjpa
+	compile group: 'org.apache.openjpa', name: 'openjpa', version: '2.4.2'
+
+	// real examples
     //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
     //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
 
@@ -94,9 +93,6 @@ dependencies {
 jar {
     from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
 }
-
-// Let Shadow do its thing
-jar.finalizedBy shadowJar
 
 processResources {
     // this will ensure that this task is redone when the versions change.
