@@ -1,7 +1,7 @@
 buildscript {
     repositories {
-        jcenter()
-        maven { url = "http://files.minecraftforge.net/maven" }
+		jcenter()
+		maven { url "http://files.minecraftforge.net/maven" }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
@@ -21,6 +21,10 @@ compileJava.options.encoding = 'UTF-8'
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 compileJava {
     sourceCompatibility = targetCompatibility = '1.8'
+}
+
+repositories {
+	maven { url 'https://jitpack.io' }
 }
 
 minecraft {
@@ -65,8 +69,8 @@ dependencies {
 	compile files("lib/jxbrowser/lib/jxbrowser-win32-"+jxbrowser_version+".jar")
 	
 	embed files("lib/javassist.jar")
-	
-	compile files("lib/device-api-0.2.0pre6-1.12.2.jar")
+
+	deobfCompile 'com.github.MrCrayfish:MrCrayfishDeviceMod:c2a4b9b85a'
 
 	// https://mvnrepository.com/artifact/org.apache.openjpa/openjpa
 	compile group: 'org.apache.openjpa', name: 'openjpa', version: '2.4.2'
