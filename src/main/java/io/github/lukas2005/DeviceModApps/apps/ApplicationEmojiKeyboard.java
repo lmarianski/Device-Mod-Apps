@@ -46,6 +46,7 @@ public class ApplicationEmojiKeyboard extends ApplicationBase {
 			Field isFocusedField = null;
 			try {
 				isFocusedField = textAreaClass.getDeclaredField("isFocused");
+				isFocusedField.setAccessible(true);
 				for (WeakReference<TextArea> areaReference : Main.textAreas) {
 					TextArea area = areaReference.get();
 					if (isFocusedField != null && (boolean)isFocusedField.get(area)) {

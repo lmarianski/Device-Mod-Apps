@@ -3,8 +3,6 @@ package io.github.lukas2005.DeviceModApps;
 import com.mrcrayfish.device.api.app.IIcon;
 import com.mrcrayfish.device.core.client.LaptopFontRenderer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.util.ResourceLocation;
 
 public class MyFontRenderer extends LaptopFontRenderer {
 
@@ -39,7 +37,7 @@ public class MyFontRenderer extends LaptopFontRenderer {
 		if (!Emoji.emojiMapping.containsKey(ch) && !Emoji.externalEmojiMapping.containsKey(ch)) {
 			return super.getCharWidth(ch);
 		} else {
-			return Emoji.emojiMapping.containsKey(ch) ? Emoji.emojiMapping.get(ch).getGridWidth() : Emoji.externalEmojiMapping.get(ch).getGridWidth();
+			return Emoji.emojiMapping.containsKey(ch) ? Emoji.emojiMapping.get(ch).getIconSize() : Emoji.externalEmojiMapping.get(ch).getIconSize();
 		}
 	}
 	
@@ -55,7 +53,7 @@ public class MyFontRenderer extends LaptopFontRenderer {
 
 		if (emojiToDraw != null) {
 			emojiToDraw.draw(mc, (int)this.posX, (int)this.posY);
-			returnVal = Emoji.ICON_SIZE;
+			returnVal = emojiToDraw.getIconSize();
 		}
 		return returnVal;
 	}
