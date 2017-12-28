@@ -3,7 +3,10 @@ package io.github.lukas2005.DeviceModApps;
 import com.mrcrayfish.device.api.app.IIcon;
 import com.mrcrayfish.device.core.client.LaptopFontRenderer;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class MyFontRenderer extends LaptopFontRenderer {
 
 	Minecraft mc;

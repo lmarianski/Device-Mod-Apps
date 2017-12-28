@@ -1,15 +1,14 @@
 package io.github.lukas2005.DeviceModApps.apps;
 
-import java.io.File;
-import java.nio.file.Paths;
-import java.util.HashMap;
-
 import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Application;
-
 import io.github.lukas2005.DeviceModApps.Main;
 import io.github.lukas2005.DeviceModApps.Reference;
 import net.minecraft.util.ResourceLocation;
+
+import java.io.File;
+import java.nio.file.Paths;
+import java.util.HashMap;
 
 public class ModApps {
 
@@ -20,7 +19,8 @@ public class ModApps {
 		registerApp(new ResourceLocation(Reference.MOD_ID, "mta"), ApplicationMusicPlayer.class, true);
 		
 		registerApp(new ResourceLocation(Reference.MOD_ID, "eka"), ApplicationEmojiKeyboard.class, false);
-		registerApp(new ResourceLocation(Reference.MOD_ID, "dlsc"), ApplicationDerpfishLiveSubCount.class, false);
+		//registerApp(new ResourceLocation(Reference.MOD_ID, "dlsc"), ApplicationDerpfishLiveSubCount.class, false);
+		registerApp(new ResourceLocation(Reference.MOD_ID, "hpa"), ApplicationHackPrinters.class, false);
 		//registerApp(new ResourceLocation(Reference.MOD_ID, "cdabcff"), ApplicationCheeseDesigner.class, false);
 	}
 	

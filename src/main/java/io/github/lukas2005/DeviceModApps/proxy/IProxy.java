@@ -13,5 +13,4 @@ public interface IProxy {
     void preInitReflect(FMLPreInitializationEvent e);
     void initReflect(FMLInitializationEvent e);
     void postInitReflect(FMLPostInitializationEvent e);
-
 }
