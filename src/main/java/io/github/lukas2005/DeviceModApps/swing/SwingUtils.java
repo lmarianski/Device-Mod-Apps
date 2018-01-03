@@ -33,78 +33,12 @@ import net.minecraft.util.ResourceLocation;
 import scala.actors.threadpool.Arrays;
 
 /**
- * 
+ *
  * @author lukas2005
  *
  */
 public class SwingUtils {
 
-	public static JFrame frame = new JFrame();
-	public static JPanel panel = new JPanel();
-	public static boolean initialized = false;
-	
-	private static Minecraft mc = Minecraft.getMinecraft();
-	
-	/**
-	 * Call this before any other method in this class or new SwingWrapper();
-	 */
-	public static void init() {
-		frame = new JFrame();
-		panel = new JPanel();
-		
-		panel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		panel.setLayout(new BorderLayout(0, 0));
-		frame.setContentPane(panel);
-		
-		initialized = true;
-	}
-	
-	static int prev_width  = 0;
-	static int prev_height = 0;
-	static BufferedImage img;
-
-	/**
-	 * use new SwingWrapper() now
-	 */
-	@Deprecated
-	public static void drawSwingComponent(int x, int y, int width, int height, Component c) {
-		if (!initialized) throw new IllegalStateException("SwingUtils not initalized!");
-		
-		if (prev_width != width || prev_height != height) {
-			img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-			img.createGraphics();
-			System.out.println("Creating new img");
-			
-		}
-		Graphics g = img.getGraphics();
-		
-		prev_width = width;
-		prev_height = height;
-
-		if (!Arrays.asList(panel.getComponents()).contains(c)) {
-			System.out.println("Added component:"+c.toString());
-			panel.add(c, BorderLayout.CENTER);
-			frame.setVisible(true);
-		}	
-		
-		if (!frame.isVisible()) frame.setVisible(true);
-		
-		frame.setSize(width, height);
-		
-		c.paint(g);
-		img.flush();
-		
-		frame.setSize(width, 0);
-		
-		//frame.setVisible(false);
-		
-		ResourceLocation rc = mc.getTextureManager().getDynamicTextureLocation(c.toString(), new DynamicTexture(img));
-		
-		mc.getRenderManager().renderEngine.bindTexture(rc);
-		RenderUtil.drawRectWithTexture(x, y, 0, 0, width, height, width, height);
-		mc.getTextureManager().deleteTexture(rc);
-	}
-	
 	public static void click(Component target, int x, int y, int mouseButton)
 	{
 	   MouseEvent press, release, click;
@@ -116,7 +50,7 @@ public class SwingUtils {
 	   Graphics g = target.getGraphics();
 	   g.setColor(mouseButton == 1 ? Color.RED : Color.BLUE);
 	   g.drawRoundRect(x, y, 5, 5, 5, 5);
-	   
+
 	   SwingUtilities.convertPointToScreen(point, target);
 
 	   time    = System.currentTimeMillis();
@@ -128,11 +62,11 @@ public class SwingUtils {
 	   target.dispatchEvent(release);
 	   target.dispatchEvent(click);
 	}
-	
+
 	static public float map(float value, float istart, float istop, float ostart, float ostop) {
 	      return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
 	}
-	
+
 	/**
 	 * Compares two images pixel by pixel.
 	 *
@@ -162,7 +96,7 @@ public class SwingUtils {
 	  return true;
 	}
 
-	public static BufferedImage resize(BufferedImage img, int newW, int newH) { 
+	public static BufferedImage resize(BufferedImage img, int newW, int newH) {
 	    Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
 	    BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
 
@@ -171,8 +105,8 @@ public class SwingUtils {
 	    g2d.dispose();
 
 	    return dimg;
-	} 
-	
+	}
+
 
 	public static void forwardMousePressEvent(Browser browser, MouseButtonType buttonType, int x, int y, int globalX, int globalY) {
 		BrowserMouseEventBuilder builder = new BrowserMouseEventBuilder();
@@ -186,7 +120,7 @@ public class SwingUtils {
 		.setModifiers(new KeyModifiersBuilder().mouseButton().build());
 		browser.forwardMouseEvent(builder.build());
 	}
-	
+
 	public static void forwardMouseReleaseEvent(Browser browser, MouseButtonType buttonType, int x, int y, int globalX, int globalY) {
 		BrowserMouseEventBuilder builder = new BrowserMouseEventBuilder();
 		builder.setEventType(MouseEventType.MOUSE_RELEASED)
@@ -199,12 +133,12 @@ public class SwingUtils {
 		.setModifiers(KeyModifiers.NO_MODIFIERS);
 		browser.forwardMouseEvent(builder.build());
 	}
-	
+
 	public static void forwardMouseClickEvent(Browser browser, MouseButtonType buttonType, int x, int y, int globalX, int globalY) {
 		forwardMousePressEvent(browser, buttonType, x, y, globalX, globalY);
 		forwardMouseReleaseEvent(browser, buttonType, x, y, globalX, globalY);
 	}
-	
+
 	public static void forwardMouseScrollEvent(Browser browser, int unitsToScroll, int x, int y) {
 		BrowserMouseEventBuilder builder = new BrowserMouseEventBuilder();
 		builder.setEventType(MouseEventType.MOUSE_WHEEL)
@@ -222,10 +156,10 @@ public class SwingUtils {
 		BrowserKeyEvent event = new BrowserKeyEvent(KeyEventType.TYPED, KeyCode.VK_A, key);
 		browser.forwardKeyEvent(event);
 	}
-	
+
 	public static void forwardKeyTypedEvent(Browser browser, KeyCode key) {
 		BrowserKeyEvent event = new BrowserKeyEvent(KeyEventType.TYPED, key);
 		browser.forwardKeyEvent(event);
 	}
-	
+
 }

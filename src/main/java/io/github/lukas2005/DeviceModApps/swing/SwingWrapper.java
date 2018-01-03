@@ -6,8 +6,9 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 import net.minecraft.client.renderer.BufferBuilder;
 import org.lwjgl.input.Keyboard;
@@ -36,6 +37,9 @@ public class SwingWrapper {
 	public int renderWidth;
 	public int renderHeight;
 
+	public JFrame frame;
+	public JPanel panel;
+
 	public Component c;
 
 	protected BufferedImage img;
@@ -48,9 +52,16 @@ public class SwingWrapper {
 	protected TextureManager txt = mc.getTextureManager();
 	
 	public SwingWrapper(int width, int height, int renderWidth, int renderHeight, Component c) {
-		if (!SwingUtils.initialized) throw new IllegalStateException("SwingUtils not initalized!");
+		//if (!SwingUtils.initialized) throw new IllegalStateException("SwingUtils not initalized!");
 		//if (!c.isLightweight()) throw new IllegalArgumentException("Heavyweight components are not currently supported!"); 
-		
+
+		frame = new JFrame();
+		panel = new JPanel();
+
+		panel.setBorder(new EmptyBorder(5, 5, 5, 5));
+		panel.setLayout(new BorderLayout(0, 0));
+		frame.setContentPane(panel);
+
 		this.width = width;
 		this.height = height;
 		
@@ -62,22 +73,22 @@ public class SwingWrapper {
 		img = new BufferedImage(renderWidth, renderHeight, BufferedImage.TYPE_INT_RGB);
 		g = img.createGraphics();
 		
-		SwingUtils.panel.add(c, BorderLayout.CENTER);
+		panel.add(c, BorderLayout.CENTER);
 		
-		SwingUtils.frame.setState(JFrame.NORMAL);
+		frame.setState(JFrame.NORMAL);
 		
-		SwingUtils.frame.setVisible(true);
+		frame.setVisible(true);
 		
 		new Thread(() -> {
             try {
                 Thread.sleep(500);
-                SwingUtils.frame.setState(JFrame.ICONIFIED);
+                frame.setState(JFrame.ICONIFIED);
             } catch (InterruptedException ignored) {}
         }).start();
 		
 		if (c.getName() == null) c.setName("Component");
 		
-		paintThread = new ComponentPaintingThread(renderWidth, renderHeight, c, g);
+		paintThread = new ComponentPaintingThread(renderWidth, renderHeight, this);
 		
 		paintThread.start();	
 	}
@@ -97,9 +108,9 @@ public class SwingWrapper {
 	 */
 	public void dispose() {
 		paintThread.interrupt();
-		SwingUtils.panel.remove(this.c);
+		panel.remove(this.c);
 		c.setVisible(false);
-		SwingUtils.frame.setVisible(false);
+		frame.setVisible(false);
 	}
 	
 	public void handleMouseClick(int xPosition, int yPosition, int mouseX, int mouseY, int mouseButton) {
@@ -145,7 +156,7 @@ public class SwingWrapper {
 	boolean isTheSameOld = true;
 	public void render(int x, int y) {
 		rc = txt.getDynamicTextureLocation(c.toString(), new DynamicTexture(img));
-		if (!SwingUtils.frame.isVisible()) SwingUtils.frame.setVisible(true);
+		if (!frame.isVisible()) frame.setVisible(true);
 		
 		if (rc != null) {
 			mc.getRenderManager().renderEngine.bindTexture(rc);

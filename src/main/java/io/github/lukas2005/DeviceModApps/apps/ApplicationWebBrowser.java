@@ -38,7 +38,6 @@ public class ApplicationWebBrowser extends ApplicationBase {
 			main.addComponent(deviceModView);
 			
 			final TextField addressBar = new TextField(10, 5, main.width-30);
-			addressBar.setText("https://google.com");
 			main.addComponent(addressBar);
 			
 			Button goButton = new Button(main.width-17, 5, 15, 15, "Go!");
@@ -47,7 +46,7 @@ public class ApplicationWebBrowser extends ApplicationBase {
 			
 			//final Slider scrollBar = new Slider(main.width-5, 10, 100);
 			//main.addComponent(scrollBar);
-			
+
 	        b.addLoadListener(new LoadAdapter() {
 	            @Override
 	            public void onFinishLoadingFrame(FinishLoadingEvent event) {

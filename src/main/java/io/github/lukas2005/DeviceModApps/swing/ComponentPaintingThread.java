@@ -13,27 +13,25 @@ public class ComponentPaintingThread extends Thread {
 	public int width = 0;
 	public int height = 0;
 	
-	private Component c;
-	private Graphics g;
+	private SwingWrapper w;
 	
-	public ComponentPaintingThread(int width, int height, Component c, Graphics g) {
-		super("Swing Wraper Painitng Thread for "+c.getName());
+	public ComponentPaintingThread(int width, int height, SwingWrapper w) {
+		super("Swing Wraper Painitng Thread for "+w.c.getName());
 		
 		this.width = width;
 		this.height = height;
-		this.c = c;
-		this.g = g;
+		this.w = w;
 	}
 	
 	@Override
 	public void run() {
 		while(!Thread.interrupted()) {
-			if (!SwingUtils.frame.isVisible()) SwingUtils.frame.setVisible(true);
+			if (!w.frame.isVisible()) w.frame.setVisible(true);
 			
-			SwingUtils.frame.setSize(width+26, height+49);
+			w.frame.setSize(width+26, height+49);
 			
 			//img.copyData(imgOld.getRaster());
-			c.paint(g);
+			w.c.paint(w.g);
 			//img.flush();
 			
 			//SwingUtils.frame.setSize(width, 0);
