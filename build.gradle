@@ -63,7 +63,6 @@ dependencies {
       
 	embed ('com.google.apis:google-api-services-youtube:v3-rev186-1.23.0') {
 		exclude group: 'com.google.guava'
-		exclude file : 'META-INF/LICENSE'
 	}
 
 	embed files("lib/vorbisspi1.0.3.jar")
@@ -84,6 +83,9 @@ dependencies {
 
 	// https://mvnrepository.com/artifact/org.apache.openjpa/openjpa
 	compile group: 'org.apache.openjpa', name: 'openjpa', version: '2.4.2'
+	// https://mvnrepository.com/artifact/org.kohsuke/github-api
+	compile group: 'org.kohsuke', name: 'github-api', version: '1.90'
+
 
 	// real examples
     //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env

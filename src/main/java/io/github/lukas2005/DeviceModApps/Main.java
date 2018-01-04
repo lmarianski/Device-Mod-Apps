@@ -28,6 +28,8 @@ public class Main {
     public static IProxy proxy = null;
 
     public static final RemoteClassLoader classLoader = new RemoteClassLoader(Main.class.getClassLoader());
+    public static final Github github = Github.connect();
+
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent e) {
