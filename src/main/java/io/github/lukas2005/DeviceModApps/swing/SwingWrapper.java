@@ -1,9 +1,6 @@
 package io.github.lukas2005.DeviceModApps.swing;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
@@ -99,7 +96,6 @@ public class SwingWrapper {
 	
 	@Override
 	protected void finalize() throws Throwable {
-		super.finalize();
 		dispose();
 	}
 	
@@ -109,8 +105,11 @@ public class SwingWrapper {
 	public void dispose() {
 		paintThread.interrupt();
 		panel.remove(this.c);
-		c.setVisible(false);
+		frame.remove(panel);
 		frame.setVisible(false);
+		frame = null;
+		panel = null;
+		c = null;
 	}
 	
 	public void handleMouseClick(int xPosition, int yPosition, int mouseX, int mouseY, int mouseButton) {
@@ -122,7 +121,16 @@ public class SwingWrapper {
 				SwingUtils.click(c, p.x, p.y, mouseButton);
 			} else {
 				BrowserView view = (BrowserView) c;
-				SwingUtils.forwardMouseClickEvent(view.getBrowser(), MouseButtonType.PRIMARY, p.x, p.y, globalP.x, globalP.y);
+				MouseButtonType buttonType = MouseButtonType.PRIMARY;
+				switch (mouseButton) {
+					case 1:
+						buttonType = MouseButtonType.SECONDARY;
+						break;
+					case 2:
+						buttonType = MouseButtonType.MIDDLE;
+						break;
+				}
+				SwingUtils.forwardMouseClickEvent(view.getBrowser(), buttonType, p.x, p.y, globalP.x, globalP.y);
 			}
 		}
 	}
@@ -136,36 +144,99 @@ public class SwingWrapper {
 			}
 		}
 	}
+
+	public void handleMouseDrag(int xPosition, int yPosition, int mouseX, int mouseY, int mouseButton) {
+		if (mouseX >= xPosition && mouseY >= yPosition && mouseX < xPosition + this.width && mouseY < yPosition + this.height) {
+			Point p = new Point(Math.round(SwingUtils.map(mouseX-xPosition, 0, width, 0, c.getWidth())), Math.round(SwingUtils.map(mouseY-yPosition, 0, height, 0, c.getHeight())));
+			Point globalP = p.getLocation();
+			SwingUtilities.convertPointToScreen(globalP, c);
+			if (!(c instanceof BrowserView)) {
+				SwingUtils.click(c, p.x, p.y, mouseButton);
+			} else {
+				BrowserView view = (BrowserView) c;
+				MouseButtonType buttonType = MouseButtonType.PRIMARY;
+				switch (mouseButton) {
+					case 1:
+						buttonType = MouseButtonType.SECONDARY;
+						break;
+					case 2:
+						buttonType = MouseButtonType.MIDDLE;
+						break;
+				}
+				SwingUtils.forwardMouseDragEvent(view.getBrowser(), buttonType, p.x, p.y, globalP.x, globalP.y);
+			}
+		}
+	}
+
+	public void handleMouseRelease(int xPosition, int yPosition, int mouseX, int mouseY, int mouseButton) {
+		if (mouseX >= xPosition && mouseY >= yPosition && mouseX < xPosition + this.width && mouseY < yPosition + this.height) {
+			Point p = new Point(Math.round(SwingUtils.map(mouseX-xPosition, 0, width, 0, c.getWidth())), Math.round(SwingUtils.map(mouseY-yPosition, 0, height, 0, c.getHeight())));
+			Point globalP = p.getLocation();
+			SwingUtilities.convertPointToScreen(globalP, c);
+			if (!(c instanceof BrowserView)) {
+				SwingUtils.click(c, p.x, p.y, mouseButton);
+			} else {
+				BrowserView view = (BrowserView) c;
+				MouseButtonType buttonType = MouseButtonType.PRIMARY;
+				switch (mouseButton) {
+					case 1:
+						buttonType = MouseButtonType.SECONDARY;
+						break;
+					case 2:
+						buttonType = MouseButtonType.MIDDLE;
+						break;
+				}
+				SwingUtils.forwardMouseReleaseEvent(view.getBrowser(), buttonType, p.x, p.y, globalP.x, globalP.y);
+			}
+		}
+	}
 	
 	public void handleKeyTyped(char key, int code) {
 		if (c instanceof BrowserView) {
 			BrowserView view = (BrowserView) c;
 			switch (code) {
-			case(Keyboard.KEY_BACK):
-				System.out.println("DELETE");
-				SwingUtils.forwardKeyTypedEvent(view.getBrowser(), KeyCode.VK_BACK);
-				break;
-			default:
-				SwingUtils.forwardKeyTypedEvent(view.getBrowser(), key);
-				break;
+				case(Keyboard.KEY_BACK):
+					SwingUtils.forwardKeyTypedEvent(view.getBrowser(), KeyCode.VK_BACK);
+					break;
+				default:
+					SwingUtils.forwardKeyTypedEvent(view.getBrowser(), key);
+					break;
 			}
 		}
 	}
 	
 	ResourceLocation rc;
 	boolean isTheSameOld = true;
-	public void render(int x, int y) {
+	int lastMouseX = 0;
+	int lastMouseY = 0;
+	public void render(int x, int y, int mouseX, int mouseY) {
 		rc = txt.getDynamicTextureLocation(c.toString(), new DynamicTexture(img));
 		if (!frame.isVisible()) frame.setVisible(true);
 		
 		if (rc != null) {
 			mc.getRenderManager().renderEngine.bindTexture(rc);
-			drawRectWithFullTexture(x, y, 0, 0, width, height);
+			drawRectWithFullTexture(x, y, width, height);
 			txt.deleteTexture(rc);
 		}
+		if (mouseX >= x && mouseY >= y && mouseX < x + this.width && mouseY < y + this.height) {
+			if (mouseX != lastMouseX && mouseY != lastMouseY) {
+				if (c instanceof BrowserView) {
+					Point p = new Point(Math.round(SwingUtils.map(mouseX - x, 0, width, 0, c.getWidth())), Math.round(SwingUtils.map(mouseY - y, 0, height, 0, c.getHeight())));
+
+					Point globalP = p.getLocation();
+					SwingUtilities.convertPointToScreen(globalP, c);
+
+					BrowserView view = (BrowserView) c;
+
+					SwingUtils.forwardMouseMoveEvent(view.getBrowser(), p.x, p.y, globalP.x, globalP.y);
+				}
+			}
+		}
+		lastMouseX = mouseX;
+		lastMouseY = mouseY;
 	}
 
-	protected static void drawRectWithFullTexture(double x, double y, float u, float v, int width, int height) {
+	private static void drawRectWithFullTexture(double x, double y, int width, int height) {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder buffer = tessellator.getBuffer();
 		buffer.begin(7, DefaultVertexFormats.POSITION_TEX);

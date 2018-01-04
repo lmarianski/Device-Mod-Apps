@@ -1,21 +1,5 @@
 package io.github.lukas2005.DeviceModApps.swing;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.border.EmptyBorder;
-
-import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.teamdev.jxbrowser.chromium.Browser;
 import com.teamdev.jxbrowser.chromium.BrowserKeyEvent;
 import com.teamdev.jxbrowser.chromium.BrowserKeyEvent.KeyCode;
@@ -27,10 +11,10 @@ import com.teamdev.jxbrowser.chromium.BrowserMouseEvent.MouseButtonType;
 import com.teamdev.jxbrowser.chromium.BrowserMouseEvent.MouseEventType;
 import com.teamdev.jxbrowser.chromium.BrowserMouseEvent.MouseScrollType;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.util.ResourceLocation;
-import scala.actors.threadpool.Arrays;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 /**
  *
@@ -134,9 +118,32 @@ public class SwingUtils {
 		browser.forwardMouseEvent(builder.build());
 	}
 
+	public static void forwardMouseMoveEvent(Browser browser, int x, int y, int globalX, int globalY) {
+		BrowserMouseEventBuilder builder = new BrowserMouseEventBuilder();
+		builder.setEventType(MouseEventType.MOUSE_MOVED)
+				.setX(x)
+				.setY(y)
+				.setGlobalX(globalX)
+				.setGlobalY(globalY);
+		browser.forwardMouseEvent(builder.build());
+	}
+
 	public static void forwardMouseClickEvent(Browser browser, MouseButtonType buttonType, int x, int y, int globalX, int globalY) {
 		forwardMousePressEvent(browser, buttonType, x, y, globalX, globalY);
 		forwardMouseReleaseEvent(browser, buttonType, x, y, globalX, globalY);
+	}
+
+	public static void forwardMouseDragEvent(Browser browser, MouseButtonType buttonType, int x, int y, int globalX, int globalY) {
+		BrowserMouseEventBuilder builder = new BrowserMouseEventBuilder();
+		builder.setEventType(MouseEventType.MOUSE_DRAGGED)
+				.setButtonType(buttonType)
+				.setX(x)
+				.setY(y)
+				.setGlobalX(globalX)
+				.setGlobalY(globalY)
+				.setClickCount(1)
+				.setModifiers(KeyModifiers.NO_MODIFIERS);
+		browser.forwardMouseEvent(builder.build());
 	}
 
 	public static void forwardMouseScrollEvent(Browser browser, int unitsToScroll, int x, int y) {
@@ -147,7 +154,7 @@ public class SwingUtils {
 		.setGlobalX(0)
 		.setGlobalY(0)
 		.setScrollBarPixelsPerLine(25)
-		.setScrollType(MouseScrollType.WHEEL_BLOCK_SCROLL)
+		.setScrollType(MouseScrollType.WHEEL_UNIT_SCROLL)
 		.setUnitsToScroll(unitsToScroll);
 		browser.forwardMouseEvent(builder.build());
 	}

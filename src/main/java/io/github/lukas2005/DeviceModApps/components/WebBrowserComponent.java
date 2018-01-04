@@ -8,6 +8,8 @@ import com.teamdev.jxbrowser.chromium.swing.BrowserView;
 import io.github.lukas2005.DeviceModApps.swing.SwingWrapper;
 import net.minecraft.client.Minecraft;
 
+import javax.swing.*;
+
 public class WebBrowserComponent extends Component {
 
     private SwingWrapper wrapper;
@@ -16,7 +18,7 @@ public class WebBrowserComponent extends Component {
 		super(x, y);
 
         BrowserView view = new BrowserView(b);
-		
+
 		this.wrapper = new SwingWrapper(width, height, 1000, 450, view);
 	}
 	
@@ -38,15 +40,25 @@ public class WebBrowserComponent extends Component {
 	public void handleMouseScroll(int mouseX, int mouseY, boolean direction) {
 		wrapper.handleMouseScroll(xPosition, yPosition, mouseX, mouseY, direction);
 	}
-	
+
+	@Override
+	protected void handleMouseDrag(int mouseX, int mouseY, int mouseButton) {
+		wrapper.handleMouseDrag(xPosition, yPosition, mouseX, mouseY, mouseButton);
+	}
+
+	@Override
+	protected void handleMouseRelease(int mouseX, int mouseY, int mouseButton) {
+		wrapper.handleMouseRelease(xPosition, yPosition, mouseX, mouseY, mouseButton);
+	}
+
 	@Override
 	public void handleKeyTyped(char key, int code) {
 		wrapper.handleKeyTyped(key, code);
 	}
-	
+
 	@Override
 	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks) {
-		wrapper.render(x, y);
+		wrapper.render(x, y, mouseX, mouseY);
 	}
 
 }

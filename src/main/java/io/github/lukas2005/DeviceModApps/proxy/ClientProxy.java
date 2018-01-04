@@ -42,7 +42,6 @@ public class ClientProxy implements IProxy {
     @Override
     public void preInit(FMLPreInitializationEvent e) {
         Main.modDataDir = Paths.get(mc.mcDataDir.getAbsolutePath(), "mods", Reference.MOD_ID).toFile();
-        SwingUtils.init();
     }
 
     @Override

@@ -27,6 +27,8 @@ public class Main {
     @SidedProxy(serverSide = "io.github.lukas2005.DeviceModApps.proxy.ServerProxy", clientSide = "io.github.lukas2005.DeviceModApps.proxy.ClientProxy")
     public static IProxy proxy = null;
 
+    public static final RemoteClassLoader classLoader = new RemoteClassLoader(Main.class.getClassLoader());
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent e) {
         proxy.preInit(e);

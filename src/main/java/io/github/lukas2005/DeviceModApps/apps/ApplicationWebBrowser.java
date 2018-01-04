@@ -68,7 +68,7 @@ public class ApplicationWebBrowser extends ApplicationBase {
 		b.dispose();
 		deviceModView.dispose();
 	}
-	
+
 	@Override
 	public void load(NBTTagCompound tagCompound) {
 		// TODO Auto-generated method stub
