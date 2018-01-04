@@ -8,12 +8,10 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-		classpath "com.github.jengelman.gradle.plugins:shadow:1.2.4"
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
-apply plugin: "com.github.johnrengelman.shadow"
 apply plugin: 'java'
 
 version = "0.0.4"
@@ -26,10 +24,6 @@ compileJava.options.encoding = 'UTF-8'
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 compileJava {
     sourceCompatibility = targetCompatibility = '1.8'
-}
-
-shadowJar {
-	exclude 'META-INF/LICENSE'
 }
 
 repositories {
