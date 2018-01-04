@@ -1,0 +1,48 @@
+SOFTWARE REQUIREMENTS
+===============================================================================
+
+1. Operating Systems
+-------------------------------------------------------------------------------
+JxBrowser runs on the following Windows, Linux, and macOS platforms, both 32- 
+and 64-bit:
+
+Windows (32-bit and 64-bit):
+Windows 10
+Windows 8 & 8.1
+Windows 7
+Windows Server 2008 R2
+Windows Server 2012
+Windows Server 2016
+
+Linux (64-bit):
+Ubuntu 14.04+
+Debian 8+
+Fedora Linux 24+
+openSUSE 13.3+
+
+macOS (64-bit):
+OS X Mavericks 10.9 or later
+
+Note: Linux and macOS environments must be in the non-headless mode, 
+because Chromium doesn't support headless mode.
+
+2. JREs (Oracle, IBM, Apple) 32-bit & 64-bit
+-------------------------------------------------------------------------------
+Swing:  Oracle (Sun) JRE 1.6.x  and  higher,  IBM JRE 1.7.x  and  higher  (only 
+        Windows and Linux), Apple JRE 1.6.x and higher (only macOS).
+JavaFX: Oracle (Sun) JRE 1.8.x and higher.
+
+
+HARDWARE REQUIREMENTS
+===============================================================================
+
+Intel Pentium 4 or later, 512 MB RAM minimum, 350 MB Hard Disk Space.
+
+HiDPI Monitors & Retina
+-------------------------------------------------------------------------------
+JxBrowser supports HiDPI monitors on both  Windows and macOS  platforms with 
+Retina displays.
+
+ARM
+-------------------------------------------------------------------------------
+JxBrowser doesn't support ARM architecture.
