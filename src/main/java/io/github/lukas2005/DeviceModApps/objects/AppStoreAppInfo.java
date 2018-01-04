@@ -13,7 +13,7 @@ public class AppStoreAppInfo {
     public AppCategory category;
 
     public ArrayList<URL> urls;
-    public ArrayList<Class> classes = new ArrayList<>();
+    private transient ArrayList<Class> classes = new ArrayList<>();
 
     public AppStoreAppInfo(String name, String shortDescription, String description, AppCategory category, ArrayList<URL> urls) {
         this.name = name;
@@ -37,4 +37,12 @@ public class AppStoreAppInfo {
         }
     }
 
+    public ArrayList<Class> getClasses() {
+        return classes;
+    }
+
+    @Override
+    public String toString() {
+        return name + ":" + shortDescription + ":" + category;
+    }
 }

@@ -1,25 +1,21 @@
 package io.github.lukas2005.DeviceModApps.swing;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-
-import net.minecraft.client.renderer.BufferBuilder;
-import org.lwjgl.input.Keyboard;
-
 import com.teamdev.jxbrowser.chromium.BrowserKeyEvent.KeyCode;
 import com.teamdev.jxbrowser.chromium.BrowserMouseEvent.MouseButtonType;
 import com.teamdev.jxbrowser.chromium.swing.BrowserView;
-
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.input.Keyboard;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * 

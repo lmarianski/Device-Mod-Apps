@@ -4,11 +4,8 @@ import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
 import com.teamdev.jxbrowser.chromium.Browser;
 import com.teamdev.jxbrowser.chromium.swing.BrowserView;
-
 import io.github.lukas2005.DeviceModApps.swing.SwingWrapper;
 import net.minecraft.client.Minecraft;
-
-import javax.swing.*;
 
 public class WebBrowserComponent extends Component {
 

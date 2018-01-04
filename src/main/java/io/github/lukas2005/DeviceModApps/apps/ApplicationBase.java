@@ -1,8 +1,8 @@
 package io.github.lukas2005.DeviceModApps.apps;
 
-import java.io.File;
-
 import com.mrcrayfish.device.api.app.Application;
+
+import java.io.File;
 
 public abstract class ApplicationBase extends Application {
 	

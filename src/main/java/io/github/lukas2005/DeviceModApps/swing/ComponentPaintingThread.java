@@ -1,8 +1,5 @@
 package io.github.lukas2005.DeviceModApps.swing;
 
-import java.awt.Component;
-import java.awt.Graphics;
-
 /**
  * 
  * @author lukas2005

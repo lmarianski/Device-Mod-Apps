@@ -10,7 +10,6 @@ import com.teamdev.jxbrowser.chromium.BrowserType;
 import com.teamdev.jxbrowser.chromium.events.FinishLoadingEvent;
 import com.teamdev.jxbrowser.chromium.events.LoadAdapter;
 import com.teamdev.jxbrowser.chromium.swing.BrowserView;
-
 import io.github.lukas2005.DeviceModApps.components.WebBrowserComponent;
 import net.minecraft.nbt.NBTTagCompound;
 
