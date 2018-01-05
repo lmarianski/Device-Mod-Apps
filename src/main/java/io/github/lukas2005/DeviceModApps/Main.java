@@ -48,10 +48,8 @@ public class Main {
         proxy.preInit(e);
 
         try {
-            Properties props = new Properties();
-            props.setProperty("oauth", "f6710197d10c01c77b8f5a1574c10ee0b57f5e6b");
-            github = GitHubBuilder.fromProperties(props)
-                    .build();
+            github = new GitHubBuilder()/*.withOAuthToken("f6710197d10c01c77b8f5a1574c10ee0b57f5e6b", "lukas2005.38@gmail.com")
+                    */.build();
 
             gson = new GsonBuilder()
                     .serializeNulls()

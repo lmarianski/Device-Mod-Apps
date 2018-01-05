@@ -1,5 +1,6 @@
 package io.github.lukas2005.DeviceModApps.objects;
 
+import com.google.gson.annotations.SerializedName;
 import io.github.lukas2005.DeviceModApps.Main;
 import io.github.lukas2005.DeviceModApps.Utils;
 
@@ -10,6 +11,7 @@ import java.util.LinkedHashSet;
 public class AppStoreAppInfo {
 
     public String name;
+    @SerializedName("short_description")
     public String shortDescription;
     public String description;
     public AppCategory category;

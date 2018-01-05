@@ -43,7 +43,7 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
                     GHContent content = repository.getFileContent("apps.json");
                     String jsonString = IOUtils.toString(content.read(), Charset.defaultCharset());
 
-                    AppStoreAppInfo appInfo = Main.gson.fromJson(jsonString, new TypeToken<Set<AppStoreAppInfo>>(){}.getType());
+                    ArrayList<AppStoreAppInfo> appInfo = Main.gson.fromJson(jsonString, new TypeToken<List<AppStoreAppInfo>>(){}.getType());
 
                     List<GHContent> libsContent = null;
 
@@ -57,11 +57,11 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
 
                     if (libsContent != null) {
                         for (GHContent libContent : libsContent) {
-                            appInfo.jars.add(libContent.getDownloadUrl());
+                            //appInfo.jars.add(libContent.getDownloadUrl());
                         }
                     }
 
-                    knownApps.add(appInfo);
+                    knownApps.addAll(appInfo);
                 } catch (IOException e) {
                     continue;
                 }
