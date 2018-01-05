@@ -8,10 +8,12 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+		classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.0.9"
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+apply plugin: 'com.matthewprenger.cursegradle'
 apply plugin: 'java'
 
 version = "0.1.0"
@@ -133,7 +135,18 @@ processResources {
         exclude 'mcmod.info'
     }
 }
-//reobfJar.dependsOn shadowJar
+
+//curseforge {
+//	apiKey = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+//	project {
+//		id = '12345'
+//		changelog = 'Some changes'
+//		releaseType = 'alpha'
+//		relations {
+//			requiredLibrary 'railcraft'
+//		}
+//	}
+//}
 
 // Custom tasks
 
