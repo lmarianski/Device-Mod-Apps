@@ -14,7 +14,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'java'
 
-version = "0.0.4"
+version = "0.1.0"
 group = "io.github.lukas2005.lda" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "lda"
 
@@ -104,7 +104,15 @@ dependencies {
 
 // Add dependencies to the JAR
 jar {
-    from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
+    from configurations.embed.collect {
+		exclude '.classpath'
+		exclude '.project'
+		exclude 'META-INF/LICENSE.txt'
+		exclude 'META-INF/NOTICE.txt'
+		exclude 'META-INF/LICENSE'
+		exclude 'META-INF/NOTICE'
+		it.isDirectory() ? it : zipTree(it)
+	}
 }
 
 processResources {
@@ -115,7 +123,7 @@ processResources {
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-                
+
         // replace version and mcversion
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }
@@ -158,17 +166,17 @@ task unpackModLinux64(type:Exec) {
 
 task unpackLibWin32(type:Exec) {
 	workingDir = 'tmp'
-	commandLine = ['cmd.exe', '/c', 'jar', '-xvf', '..\\libs\\jxbrowser\\lib\\jxbrowser-win32-'+jxbrowser_version+'.jar']
+	commandLine = ['cmd.exe', '/c', 'jar', '-xvf', '..\\lib\\jxbrowser\\lib\\jxbrowser-win32-'+jxbrowser_version+'.jar']
 }
 
 task unpackLibMac(type:Exec) {
 	workingDir = 'tmp'
-	commandLine = ['cmd.exe', '/c', 'jar', '-xvf', '..\\libs\\jxbrowser\\lib\\jxbrowser-mac-'+jxbrowser_version+'.jar']
+	commandLine = ['cmd.exe', '/c', 'jar', '-xvf', '..\\lib\\jxbrowser\\lib\\jxbrowser-mac-'+jxbrowser_version+'.jar']
 }
 
 task unpackLibLinux64(type:Exec) {
 	workingDir = 'tmp'
-	commandLine = ['cmd.exe', '/c', 'jar', '-xvf', '..\\libs\\jxbrowser\\lib\\jxbrowser-linux64-'+jxbrowser_version+'.jar']
+	commandLine = ['cmd.exe', '/c', 'jar', '-xvf', '..\\lib\\jxbrowser\\lib\\jxbrowser-linux64-'+jxbrowser_version+'.jar']
 }
 
 task repackWin32(type:Exec) {

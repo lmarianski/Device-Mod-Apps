@@ -2,13 +2,10 @@ package io.github.lukas2005.DeviceModApps;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.mrcrayfish.device.api.app.component.TextArea;
 import io.github.lukas2005.DeviceModApps.apps.ApplicationMusicPlayer;
 import io.github.lukas2005.DeviceModApps.apps.ApplicationUnofficialAppStore;
 import io.github.lukas2005.DeviceModApps.apps.ModApps;
-import io.github.lukas2005.DeviceModApps.objects.AppCategory;
-import io.github.lukas2005.DeviceModApps.objects.AppStoreAppInfo;
 import io.github.lukas2005.DeviceModApps.objects.ListedSong;
 import io.github.lukas2005.DeviceModApps.proxy.IProxy;
 import net.minecraft.init.SoundEvents;
@@ -20,14 +17,10 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
-import org.kohsuke.github.extras.OkHttpConnector;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, dependencies = "required-after:cdm@[0.2.0-pre4,]")
 public class Main {
@@ -70,7 +63,7 @@ public class Main {
 //            ArrayList<AppStoreAppInfo> info = new ArrayList<>();
 //            info.add(new AppStoreAppInfo("Mineuim Web Browser", "A web browser in mc!", "", AppCategory.INTERNET, new ArrayList<>()));
 //            System.out.println(gson.toJson(info));
-            new ApplicationUnofficialAppStore().init();
+            //new ApplicationUnofficialAppStore().init();
         } catch (Exception e1) {
             e1.printStackTrace();
         }

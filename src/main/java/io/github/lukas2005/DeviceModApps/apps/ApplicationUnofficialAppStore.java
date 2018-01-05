@@ -17,7 +17,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 public class ApplicationUnofficialAppStore extends ApplicationBase {
 
@@ -35,7 +34,7 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
                     GHContent content = repository.getFileContent("app-repos.json", "unofficial-app-store");
                     String jsonString = IOUtils.toString(content.read(), Charset.defaultCharset());
 
-                    LinkedHashSet<String> list = Main.gson.fromJson(jsonString, new TypeToken<Set<String>>(){}.getType());
+                    ArrayList<String> list = Main.gson.fromJson(jsonString, new TypeToken<List<String>>(){}.getType());
                     repos.addAll(list);
                 }
 
