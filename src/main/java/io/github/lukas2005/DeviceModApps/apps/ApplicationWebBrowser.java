@@ -16,7 +16,6 @@ import net.minecraft.nbt.NBTTagCompound;
 public class ApplicationWebBrowser extends ApplicationBase {
 	
 	Browser b;
-	BrowserView view;
 	WebBrowserComponent deviceModView;
 	BrowserContextParams bcp;
 	BrowserContext bc;
@@ -24,8 +23,8 @@ public class ApplicationWebBrowser extends ApplicationBase {
 	@Override
 	public void init() {
 		try {
-			BrowserContextParams bcp = new BrowserContextParams(getAppDataDir().getAbsolutePath());
-			BrowserContext bc = new BrowserContext(bcp);
+			bcp = new BrowserContextParams(getAppDataDir().getAbsolutePath());
+			bc = new BrowserContext(bcp);
 			b = new Browser(BrowserType.LIGHTWEIGHT, bc);
 			
 			Layout main = new Layout(300,150);

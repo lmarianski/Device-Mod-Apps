@@ -43,7 +43,25 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
                     GHContent content = repository.getFileContent("apps.json");
                     String jsonString = IOUtils.toString(content.read(), Charset.defaultCharset());
 
-                    knownApps.add(Main.gson.fromJson(jsonString, new TypeToken<List<AppStoreAppInfo>>(){}.getType()));
+                    AppStoreAppInfo appInfo = Main.gson.fromJson(jsonString, new TypeToken<Set<AppStoreAppInfo>>(){}.getType());
+
+                    List<GHContent> libsContent = null;
+
+                    try {
+                        libsContent = repository.getDirectoryContent("libs");
+                    } catch (Exception e) {
+                        try {
+                            libsContent = repository.getDirectoryContent("lib");
+                        } catch (Exception ignored) {}
+                    }
+
+                    if (libsContent != null) {
+                        for (GHContent libContent : libsContent) {
+                            appInfo.jars.add(libContent.getDownloadUrl());
+                        }
+                    }
+
+                    knownApps.add(appInfo);
                 } catch (IOException e) {
                     continue;
                 }

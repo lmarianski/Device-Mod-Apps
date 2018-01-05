@@ -5,7 +5,8 @@
     "description": "",
     "category": "INTERNET",
     "urls": [
-      ""
+    ],
+    "jars": [
     ]
   }
 ]

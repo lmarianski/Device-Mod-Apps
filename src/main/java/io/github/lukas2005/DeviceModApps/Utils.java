@@ -13,7 +13,13 @@ import java.awt.event.KeyEvent;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class Utils {
 
@@ -60,20 +66,20 @@ public class Utils {
         ((IReloadableResourceManager) mcResourceManagerField.get(mc)).registerReloadListener(renderer);
     }
 
-    public File getResourceAsFile(String resource) throws IOException {
+    public static File getResourceAsFile(String resource) throws IOException {
         String[] splitRes = resource.split("[.]");
         return streamToFile(getResourceAsStream(resource), Files.createTempFile("tmp", "."+splitRes[splitRes.length-1]).toFile());
     }
 
-    public InputStream getResourceAsStream(String resource) {
-        return getClass().getClassLoader().getResourceAsStream(resource);
+    public static InputStream getResourceAsStream(String resource) {
+        return Utils.class.getClassLoader().getResourceAsStream(resource);
     }
 
-    public InputStream getResourceAsStream(ResourceLocation resource) throws IOException {
+    public static InputStream getResourceAsStream(ResourceLocation resource) throws IOException {
         return Minecraft.getMinecraft().getResourceManager().getResource(resource).getInputStream();
     }
 
-    public File streamToFile(InputStream initialStream, File out) throws IOException {
+    public static File streamToFile(InputStream initialStream, File out) throws IOException {
         byte[] buffer = new byte[initialStream.available()];
         initialStream.read(buffer);
 
@@ -84,6 +90,39 @@ public class Utils {
         out.deleteOnExit();
 
         return out;
+    }
+
+    public static ArrayList<Class> loadAllClassesFromJar(String path) {
+        JarFile jarFile = null;
+        ArrayList<Class> classes = new ArrayList<>();
+        try {
+            jarFile = new JarFile(path);
+            Enumeration<JarEntry> e = jarFile.entries();
+
+            URL[] urls = {new URL("jar:" + path + "!/")};
+            URLClassLoader cl = URLClassLoader.newInstance(urls);
+
+            while (e.hasMoreElements()) {
+                JarEntry je = e.nextElement();
+                if (je.isDirectory() || !je.getName().endsWith(".class")) {
+                    continue;
+                }
+                // -6 because of .class
+                String className = je.getName().substring(0, je.getName().length() - 6);
+                className = className.replace('/', '.');
+                classes.add(cl.loadClass(className));
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                jarFile.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return  classes;
     }
 
 }

@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.mrcrayfish.device.api.app.component.TextArea;
 import io.github.lukas2005.DeviceModApps.apps.ApplicationMusicPlayer;
+import io.github.lukas2005.DeviceModApps.apps.ApplicationUnofficialAppStore;
 import io.github.lukas2005.DeviceModApps.apps.ModApps;
 import io.github.lukas2005.DeviceModApps.objects.AppCategory;
 import io.github.lukas2005.DeviceModApps.objects.AppStoreAppInfo;
@@ -47,8 +48,9 @@ public class Main {
         proxy.preInit(e);
 
         try {
-            //Properties props = new Properties();
-            github = GitHubBuilder.fromCredentials()
+            Properties props = new Properties();
+            props.setProperty("oauth", "f6710197d10c01c77b8f5a1574c10ee0b57f5e6b");
+            github = GitHubBuilder.fromProperties(props)
                     .build();
 
             gson = new GsonBuilder()
@@ -56,20 +58,21 @@ public class Main {
                     .setPrettyPrinting()
                     .create();
 
-            ArrayList<AppStoreAppInfo> list = Main.gson.fromJson("[\n" +
-                    "  {\n" +
-                    "    \"name\": \"Mineuim Web Browser\",\n" +
-                    "    \"shortDescription\": \"A web browser in mc!\",\n" +
-                    "    \"description\": \"\",\n" +
-                    "    \"category\": \"INTERNET\",\n" +
-                    "    \"urls\": []\n" +
-                    "  }\n" +
-                    "]", new TypeToken<List<AppStoreAppInfo>>(){}.getType());
-            System.out.println(list.get(0));
-
-            ArrayList<AppStoreAppInfo> info = new ArrayList<>();
-            info.add(new AppStoreAppInfo("Mineuim Web Browser", "A web browser in mc!", "", AppCategory.INTERNET, new ArrayList<>()));
-            System.out.println(gson.toJson(info));
+//            ArrayList<AppStoreAppInfo> list = Main.gson.fromJson("[\n" +
+//                    "  {\n" +
+//                    "    \"name\": \"Mineuim Web Browser\",\n" +
+//                    "    \"shortDescription\": \"A web browser in mc!\",\n" +
+//                    "    \"description\": \"\",\n" +
+//                    "    \"category\": \"INTERNET\",\n" +
+//                    "    \"urls\": []\n" +
+//                    "  }\n" +
+//                    "]", new TypeToken<List<AppStoreAppInfo>>(){}.getType());
+//            System.out.println(list.get(0));
+//
+//            ArrayList<AppStoreAppInfo> info = new ArrayList<>();
+//            info.add(new AppStoreAppInfo("Mineuim Web Browser", "A web browser in mc!", "", AppCategory.INTERNET, new ArrayList<>()));
+//            System.out.println(gson.toJson(info));
+            new ApplicationUnofficialAppStore().init();
         } catch (Exception e1) {
             e1.printStackTrace();
         }

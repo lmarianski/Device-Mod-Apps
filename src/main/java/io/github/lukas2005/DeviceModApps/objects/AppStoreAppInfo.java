@@ -1,9 +1,11 @@
 package io.github.lukas2005.DeviceModApps.objects;
 
 import io.github.lukas2005.DeviceModApps.Main;
+import io.github.lukas2005.DeviceModApps.Utils;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 public class AppStoreAppInfo {
 
@@ -13,19 +15,26 @@ public class AppStoreAppInfo {
     public AppCategory category;
 
     public ArrayList<URL> urls;
-    private transient ArrayList<Class> classes = new ArrayList<>();
+    public ArrayList<String> jars;
 
-    public AppStoreAppInfo(String name, String shortDescription, String description, AppCategory category, ArrayList<URL> urls) {
+    private transient LinkedHashSet<Class> classes = new LinkedHashSet<>();
+    private transient LinkedHashSet<Class> jarClasses = new LinkedHashSet<>();
+
+    public AppStoreAppInfo(String name, String shortDescription, String description, AppCategory category, ArrayList<URL> urls, ArrayList<String> jars) {
         this.name = name;
         this.shortDescription = shortDescription;
         this.description = description;
         this.category = category;
         this.urls = urls;
+        this.jars = jars;
     }
 
     public void loadClasses() throws ClassNotFoundException {
         for (URL url : urls) {
             classes.add(Main.classLoader.loadClass(url.toString()));
+        }
+        for (String jar : jars) {
+            jarClasses.addAll(Utils.loadAllClassesFromJar(jar));
         }
     }
 
@@ -37,7 +46,7 @@ public class AppStoreAppInfo {
         }
     }
 
-    public ArrayList<Class> getClasses() {
+    public LinkedHashSet<Class> getClasses() {
         return classes;
     }
 
