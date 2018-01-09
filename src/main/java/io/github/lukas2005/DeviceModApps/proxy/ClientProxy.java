@@ -3,20 +3,15 @@ package io.github.lukas2005.DeviceModApps.proxy;
 import com.mrcrayfish.device.api.app.component.TextArea;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.network.Router;
-import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.network.task.MessageSyncApplications;
-import com.mrcrayfish.device.network.task.MessageSyncBlock;
 import com.mrcrayfish.device.tileentity.TileEntityRouter;
 import io.github.lukas2005.DeviceModApps.*;
-import io.github.lukas2005.DeviceModApps.apps.ApplicationHackPrinters;
-import io.github.lukas2005.DeviceModApps.swing.SwingUtils;
 import javassist.CtClass;
 import javassist.CtConstructor;
 import javassist.CtMethod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.audio.SoundManager;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -24,9 +19,9 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import java.lang.instrument.ClassDefinition;
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.nio.file.FileSystem;
 import java.nio.file.Paths;
 
 public class ClientProxy implements IProxy {
@@ -35,9 +30,8 @@ public class ClientProxy implements IProxy {
 
     static Minecraft mc = Minecraft.getMinecraft();
 
-    public static Method getVolumeMethod = null;
-    public static SoundManager sndManager = null;
-    public static Field playingSoundsField;
+    public static Field fileSystemAttachedDriveField = null;
+    public static Field fileSystemAttachedDriveColorField = null;
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
@@ -76,6 +70,7 @@ public class ClientProxy implements IProxy {
             e1.printStackTrace();
         }
 
+        //
         if (Minecraft.getMinecraft().getSession().getUsername().equalsIgnoreCase("lukas20056")) {
             try {
                 // Get the CtClass of the Router
@@ -148,12 +143,24 @@ public class ClientProxy implements IProxy {
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
+
+            try {
+                Class<? extends FileSystem> fileSystemClass = FileSystem.class;
+
+                fileSystemAttachedDriveField = fileSystemClass.getDeclaredField("attachedDrive");
+                fileSystemAttachedDriveColorField = fileSystemClass.getDeclaredField("attachedDriveColor");
+
+                fileSystemAttachedDriveField.setAccessible(true);
+                fileSystemAttachedDriveColorField.setAccessible(true);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
         }
     }
 
     @Override
     public void initReflect(FMLInitializationEvent e) {
-        // Font renderer stuff
+        // Font renderer stuffA
         try {
             // Register the renderer
             Utils.registerFontRenderer(mc, ClientProxy.myFontRenderer);
@@ -161,37 +168,6 @@ public class ClientProxy implements IProxy {
             Utils.setFinalStatic(Laptop.class.getField("fontRenderer"), ClientProxy.myFontRenderer);
         } catch (Exception e1) {
             e1.printStackTrace();
-        }
-
-        //Sound reflection
-
-        // Declaring fields and classes
-        SoundHandler sndHandler = mc.getSoundHandler();
-        Class<? extends SoundHandler> sndHandlerClass = sndHandler.getClass();
-        Field sndManagerField;
-
-        // Get the soundManager (not the sound handler)
-        try {
-            sndManagerField = sndHandlerClass.getDeclaredField("sndManager");
-            sndManagerField.setAccessible(true);
-
-            sndManager = (SoundManager) sndManagerField.get(sndHandler);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        // Get the sound manager class
-        Class<? extends SoundManager> sndManagerClass = sndManager.getClass();
-
-        // Get access to the methods
-        try {
-            getVolumeMethod = sndManagerClass.getDeclaredMethod("getVolume", SoundCategory.class);
-            getVolumeMethod.setAccessible(true);
-
-            playingSoundsField = sndManagerClass.getDeclaredField("playingSounds");
-            playingSoundsField.setAccessible(true);
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
     }
 

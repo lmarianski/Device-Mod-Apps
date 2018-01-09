@@ -2,6 +2,7 @@ package io.github.lukas2005.DeviceModApps.apps;
 
 import com.google.gson.reflect.TypeToken;
 import io.github.lukas2005.DeviceModApps.Main;
+import io.github.lukas2005.DeviceModApps.Utils;
 import io.github.lukas2005.DeviceModApps.objects.AppStoreAppInfo;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -13,6 +14,7 @@ import org.kohsuke.github.GitHub;
 import scala.actors.threadpool.Arrays;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -23,6 +25,7 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
     private LinkedHashSet<String> repos = new LinkedHashSet<String>(Arrays.asList(new String[]{"lukas2005/Device-Mod-Apps"}));
 
     private ArrayList<AppStoreAppInfo> knownApps = new ArrayList<>();
+    private ArrayList<String> jars = new ArrayList<>();
 
     @Override
     public void init() {
@@ -56,11 +59,18 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
 
                     if (libsContent != null) {
                         for (GHContent libContent : libsContent) {
-                            //appInfo.jars.add(libContent.getDownloadUrl());
+                            jars.add(libContent.getDownloadUrl());
+                        }
+                    }
+
+                    for (AppStoreAppInfo appInfo1 : appInfo) {
+                        for (URL jar : appInfo1.libs) {
+                            jars.add(jar.getFile());
                         }
                     }
 
                     knownApps.addAll(appInfo);
+                    loadAllLibJars();
                 } catch (IOException e) {
                     continue;
                 }
@@ -69,6 +79,13 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
             e.printStackTrace();
         }
     }
+
+    public void loadAllLibJars() {
+        for (String jarUrl : jars) {
+            Utils.loadAllClassesFromJar(jarUrl);
+        }
+    }
+
 
     @Override
     public void load(NBTTagCompound tagCompound) {

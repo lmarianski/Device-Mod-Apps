@@ -1,13 +1,15 @@
 package io.github.lukas2005.DeviceModApps;
 
 import javassist.ClassPool;
+import net.minecraft.client.audio.SoundManager;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.openjpa.enhance.InstrumentationFactory;
-import org.apache.openjpa.lib.log.NoneLogFactory;
 
 import java.lang.instrument.Instrumentation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 public class ReflectionManager {
 

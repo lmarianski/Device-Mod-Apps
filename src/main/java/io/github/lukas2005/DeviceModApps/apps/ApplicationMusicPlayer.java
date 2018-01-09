@@ -227,15 +227,8 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 						progressUpdateThread.start();
 					}
 				}
-				
-				float volume = 0;
-				try {
-					volume = (float) ClientProxy.getVolumeMethod.invoke(ClientProxy.sndManager, SoundCategory.RECORDS);
-				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
+
+				float volume = Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.RECORDS);
 			    FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);        
 			    gainControl.setValue(20f * (float) Math.log10(volume));
 				

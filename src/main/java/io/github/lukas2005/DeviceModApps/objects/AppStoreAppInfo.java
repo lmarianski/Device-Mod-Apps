@@ -17,10 +17,9 @@ public class AppStoreAppInfo {
     public AppCategory category;
 
     public ArrayList<URL> urls;
-    public ArrayList<String> jars;
+    public ArrayList<URL> libs;
 
     private transient LinkedHashSet<Class> classes = new LinkedHashSet<>();
-    private transient LinkedHashSet<Class> jarClasses = new LinkedHashSet<>();
 
     public AppStoreAppInfo(String name, String shortDescription, String description, AppCategory category, ArrayList<URL> urls, ArrayList<String> jars) {
         this.name = name;
@@ -28,15 +27,11 @@ public class AppStoreAppInfo {
         this.description = description;
         this.category = category;
         this.urls = urls;
-        this.jars = jars;
     }
 
     public void loadClasses() throws ClassNotFoundException {
         for (URL url : urls) {
             classes.add(Main.classLoader.loadClass(url.toString()));
-        }
-        for (String jar : jars) {
-            jarClasses.addAll(Utils.loadAllClassesFromJar(jar));
         }
     }
 

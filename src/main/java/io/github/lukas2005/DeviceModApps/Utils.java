@@ -46,24 +46,12 @@ public class Utils {
 
     @SideOnly(Side.CLIENT)
     public static void registerFontRenderer(Minecraft mc, FontRenderer renderer) throws Exception {
-
-        Class<? extends Minecraft> mcClass = mc.getClass();
-
         if (mc.gameSettings.language != null) {
             renderer.setUnicodeFlag(mc.isUnicode());
-
-            Field mcLanguageManagerField = mcClass.getDeclaredField("mcLanguageManager");
-
-            mcLanguageManagerField.setAccessible(true);
-
-            renderer.setBidiFlag(((LanguageManager) mcLanguageManagerField.get(mc)).isCurrentLanguageBidirectional());
+            renderer.setBidiFlag(mc.getLanguageManager().isCurrentLanguageBidirectional());
         }
 
-        Field mcResourceManagerField = mcClass.getDeclaredField("mcResourceManager");
-
-        mcResourceManagerField.setAccessible(true);
-
-        ((IReloadableResourceManager) mcResourceManagerField.get(mc)).registerReloadListener(renderer);
+        ((IReloadableResourceManager) mc.getResourceManager()).registerReloadListener(renderer);
     }
 
     public static File getResourceAsFile(String resource) throws IOException {
