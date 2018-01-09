@@ -31,6 +31,7 @@ public class AppStoreAppInfo {
 
     public void loadClasses() throws ClassNotFoundException {
         for (URL url : urls) {
+            System.out.println(url.toString());
             classes.add(Main.classLoader.loadClass(url.toString()));
         }
     }

@@ -3,10 +3,10 @@ package io.github.lukas2005.DeviceModApps;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.IReloadableResourceManager;
-import net.minecraft.client.resources.LanguageManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import sun.net.www.protocol.jar.JarURLConnection;
 
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
@@ -80,14 +80,19 @@ public class Utils {
         return out;
     }
 
-    public static ArrayList<Class> loadAllClassesFromJar(String path) {
+    public static ArrayList<Class> loadAllClassesFromRemoteJar(String path) {
+        if (path == null || path.equals("null")) return new ArrayList<>();
         JarFile jarFile = null;
         ArrayList<Class> classes = new ArrayList<>();
+        URL jarUrl;
         try {
-            jarFile = new JarFile(path);
+            jarUrl = new URL("jar:" + path + "!/");
+            JarURLConnection conn = new JarURLConnection(jarUrl, null);
+
+            jarFile = conn.getJarFile();
             Enumeration<JarEntry> e = jarFile.entries();
 
-            URL[] urls = {new URL("jar:" + path + "!/")};
+            URL[] urls = {jarUrl};
             URLClassLoader cl = URLClassLoader.newInstance(urls);
 
             while (e.hasMoreElements()) {

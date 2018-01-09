@@ -43,8 +43,7 @@ public class RemoteClassLoader extends ClassLoader {
     public Class loadClass(String urlS) throws ClassNotFoundException {
         try {
             if (classes.containsKey(urlS)) return classes.get(urlS);
-            URL url = null;
-            url = new URL(urlS);
+            URL url = new URL(urlS);
             return getClass(url, url.getPath().replace("/", "").replace(".class", ""));
         } catch (Exception e) {
             if (!(e instanceof MalformedURLException)) e.printStackTrace();

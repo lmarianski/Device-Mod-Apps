@@ -15,11 +15,12 @@ public class ModApps {
 	public static HashMap<ResourceLocation, ApplicationBase> APPS = new HashMap<>();
 
 	public static void init() {
-		registerApp(new ResourceLocation(Reference.MOD_ID, "mwb"), ApplicationWebBrowser.class, true);
+		//registerApp(new ResourceLocation(Reference.MOD_ID, "mwb"), ApplicationWebBrowser.class, true);
 		registerApp(new ResourceLocation(Reference.MOD_ID, "mta"), ApplicationMusicPlayer.class, true);
 		
 		registerApp(new ResourceLocation(Reference.MOD_ID, "eka"), ApplicationEmojiKeyboard.class, false);
 		registerApp(new ResourceLocation(Reference.MOD_ID, "dlsc"), ApplicationDerpfishLiveSubCount.class, false);
+		registerApp(new ResourceLocation(Reference.MOD_ID, "unas"), ApplicationUnofficialAppStore.class, false);
 		//registerApp(new ResourceLocation(Reference.MOD_ID, "hpa"), ApplicationHackPrinters.class, false);
 		//registerApp(new ResourceLocation(Reference.MOD_ID, "cdabcff"), ApplicationCheeseDesigner.class, false);
 	}

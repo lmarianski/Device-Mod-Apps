@@ -25,7 +25,7 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
     private LinkedHashSet<String> repos = new LinkedHashSet<String>(Arrays.asList(new String[]{"lukas2005/Device-Mod-Apps"}));
 
     private ArrayList<AppStoreAppInfo> knownApps = new ArrayList<>();
-    private ArrayList<String> jars = new ArrayList<>();
+    private LinkedHashSet<String> jars = new LinkedHashSet<>();
 
     @Override
     public void init() {
@@ -47,31 +47,45 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
 
                     ArrayList<AppStoreAppInfo> appInfo = Main.gson.fromJson(jsonString, new TypeToken<List<AppStoreAppInfo>>(){}.getType());
 
-                    List<GHContent> libsContent = null;
+                    LinkedHashSet<GHContent> libsContent = new LinkedHashSet<>();
 
                     try {
-                        libsContent = repository.getDirectoryContent("libs");
+                        libsContent.addAll(repository.getDirectoryContent("libs"));
                     } catch (Exception e) {
                         try {
-                            libsContent = repository.getDirectoryContent("lib");
+                            libsContent.addAll(repository.getDirectoryContent("lib"));
                         } catch (Exception ignored) {}
                     }
 
-                    if (libsContent != null) {
-                        for (GHContent libContent : libsContent) {
-                            jars.add(libContent.getDownloadUrl());
+                    LinkedHashSet<GHContent> addToLibContent = null;
+                    LinkedHashSet<GHContent> removeFromLibContent = null;
+                    while (addToLibContent == null || !addToLibContent.isEmpty()) {
+                        addToLibContent = new LinkedHashSet<>();
+                        removeFromLibContent = new LinkedHashSet<>();
+                        if (!libsContent.isEmpty()) {
+                            for (GHContent libContent : libsContent) {
+                                if (libContent.isFile() && !libContent.getName().endsWith("(2).jar") && libContent.getName().endsWith(".jar")) {
+                                    jars.add(libContent.getDownloadUrl());
+                                } else if (libContent.isDirectory()) {
+                                    if (!(libContent.getName().equals("doc") || libContent.getName().equals("javadoc"))) addToLibContent.addAll(repository.getDirectoryContent(libContent.getPath()));
+                                    removeFromLibContent.add(libContent);
+                                }
+                            }
+                            libsContent.addAll(addToLibContent);
+                            libsContent.removeAll(removeFromLibContent);
                         }
                     }
 
                     for (AppStoreAppInfo appInfo1 : appInfo) {
                         for (URL jar : appInfo1.libs) {
-                            jars.add(jar.getFile());
+                            jars.add(jar.toString());
                         }
                     }
 
                     knownApps.addAll(appInfo);
                     loadAllLibJars();
-                } catch (IOException e) {
+                    knownApps.get(0).loadClasses();
+                } catch (Exception e) {
                     continue;
                 }
             }
@@ -82,7 +96,10 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
 
     public void loadAllLibJars() {
         for (String jarUrl : jars) {
-            Utils.loadAllClassesFromJar(jarUrl);
+            System.out.println(jarUrl);
+            for (Class c : Utils.loadAllClassesFromRemoteJar(jarUrl)) {
+                //System.out.println(c.getName());
+            }
         }
     }
 
