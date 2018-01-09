@@ -7,6 +7,7 @@
     "urls": [
     ],
     "libs": [
+      "https://raw.githubusercontent.com/lukas2005/Device-Mod-Apps/master/lib/javassist.jar"
     ]
   }
 ]
