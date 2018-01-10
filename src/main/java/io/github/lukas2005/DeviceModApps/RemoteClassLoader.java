@@ -14,6 +14,7 @@ import java.util.Map;
 public class RemoteClassLoader extends ClassLoader {
 
     Map<String, Class> classes = new HashMap<>();
+    public String prefix = null;
 
     /**
      * This constructor is used to set the parent ClassLoader
@@ -44,7 +45,8 @@ public class RemoteClassLoader extends ClassLoader {
         try {
             if (classes.containsKey(urlS)) return classes.get(urlS);
             URL url = new URL(urlS);
-            return getClass(url, url.getPath().replace("/", "").replace(".class", ""));
+            String[] split = url.getFile().replaceAll("[?].*", "").split("/");
+            return getClass(url, prefix==null ? url.getPath().replace("/", ".").replace(".class", "") : prefix+split[split.length-1].replace(".class", ""));
         } catch (Exception e) {
             if (!(e instanceof MalformedURLException)) e.printStackTrace();
             return getParent().loadClass(urlS);

@@ -19,7 +19,7 @@ public class AppStoreAppInfo {
     public ArrayList<URL> urls;
     public ArrayList<URL> libs;
 
-    private transient LinkedHashSet<Class> classes = new LinkedHashSet<>();
+    private LinkedHashSet<Class> classes;
 
     public AppStoreAppInfo(String name, String shortDescription, String description, AppCategory category, ArrayList<URL> urls, ArrayList<String> jars) {
         this.name = name;
@@ -30,8 +30,9 @@ public class AppStoreAppInfo {
     }
 
     public void loadClasses() throws ClassNotFoundException {
+        if (classes == null) classes = new LinkedHashSet<>();
         for (URL url : urls) {
-            System.out.println(url.toString());
+            Main.classLoader.prefix = Utils.buildStringWithoutLast('.', url.getPath().substring(75).split("/")).replace("/", ".");
             classes.add(Main.classLoader.loadClass(url.toString()));
         }
     }

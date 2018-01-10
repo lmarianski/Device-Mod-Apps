@@ -86,6 +86,7 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
                     loadAllLibJars();
                     knownApps.get(0).loadClasses();
                 } catch (Exception e) {
+                    e.printStackTrace();
                     continue;
                 }
             }
@@ -96,7 +97,7 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
 
     public void loadAllLibJars() {
         for (String jarUrl : jars) {
-            System.out.println(jarUrl);
+            //System.out.println(jarUrl);
             for (Class c : Utils.loadAllClassesFromRemoteJar(jarUrl)) {
                 //System.out.println(c.getName());
             }

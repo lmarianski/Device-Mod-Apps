@@ -8,7 +8,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import sun.net.www.protocol.jar.JarURLConnection;
 
-import java.awt.Robot;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.*;
 import java.lang.reflect.Field;
@@ -65,6 +65,20 @@ public class Utils {
 
     public static InputStream getResourceAsStream(ResourceLocation resource) throws IOException {
         return Minecraft.getMinecraft().getResourceManager().getResource(resource).getInputStream();
+    }
+
+    public static String buildStringWithoutLast(String...parts) {
+        return buildStringWithoutLast(' ', parts);
+    }
+
+    public static String buildStringWithoutLast(char separator, String... parts) {
+        StringBuilder builder = new StringBuilder();
+        int i = 0;
+        for (String part : parts) {
+            if (!(i >= parts.length-1)) builder.append(part+separator);
+            i++;
+        }
+        return builder.toString();
     }
 
     public static File streamToFile(InputStream initialStream, File out) throws IOException {
