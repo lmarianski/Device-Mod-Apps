@@ -1,8 +1,11 @@
 package io.github.lukas2005.DeviceModApps.objects;
 
 import com.google.gson.annotations.SerializedName;
+import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import io.github.lukas2005.DeviceModApps.Main;
 import io.github.lukas2005.DeviceModApps.Utils;
+import net.minecraft.launchwrapper.Launch;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -33,7 +36,12 @@ public class AppStoreAppInfo {
         if (classes == null) classes = new LinkedHashSet<>();
         for (URL url : urls) {
             Main.classLoader.prefix = Utils.buildStringWithoutLast('.', url.getPath().substring(75).split("/")).replace("/", ".");
-            classes.add(Main.classLoader.loadClass(url.toString()));
+            try {
+                classes.add(Main.classLoader.loadClass(url.toString()));
+            } catch (Exception e) {
+                System.err.println("Error loading class from url: " + url.toString() + " Message: "+e.getMessage());
+                if ((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment")) e.printStackTrace();
+            }
         }
     }
 
@@ -45,8 +53,8 @@ public class AppStoreAppInfo {
         }
     }
 
-    public LinkedHashSet<Class> getClasses() {
-        return classes;
+    public ArrayList<Class> getClasses() {
+        return new ArrayList<>(classes);
     }
 
     @Override

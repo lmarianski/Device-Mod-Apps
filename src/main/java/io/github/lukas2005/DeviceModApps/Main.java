@@ -40,6 +40,8 @@ public class Main {
     public void preInit(FMLPreInitializationEvent e) {
         proxy.preInit(e);
 
+        ModConfig.initConfig(e.getSuggestedConfigurationFile());
+
         try {
             github = new GitHubBuilder().fromCredentials()/*.withOAuthToken("f6710197d10c01c77b8f5a1574c10ee0b57f5e6b", "lukas2005.38@gmail.com")
                     */.build();

@@ -2,11 +2,13 @@ package io.github.lukas2005.DeviceModApps.apps;
 
 import com.google.gson.reflect.TypeToken;
 import io.github.lukas2005.DeviceModApps.Main;
+import io.github.lukas2005.DeviceModApps.Reference;
 import io.github.lukas2005.DeviceModApps.Utils;
 import io.github.lukas2005.DeviceModApps.objects.AppStoreAppInfo;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
 import org.kohsuke.github.GHContent;
 import org.kohsuke.github.GHRepository;
@@ -23,6 +25,7 @@ import java.util.List;
 public class ApplicationUnofficialAppStore extends ApplicationBase {
 
     private LinkedHashSet<String> repos = new LinkedHashSet<String>(Arrays.asList(new String[]{"lukas2005/Device-Mod-Apps"}));
+    public static Class test;
 
     private ArrayList<AppStoreAppInfo> knownApps = new ArrayList<>();
     private LinkedHashSet<String> jars = new LinkedHashSet<>();
@@ -85,6 +88,9 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
                     knownApps.addAll(appInfo);
                     loadAllLibJars();
                     knownApps.get(0).loadClasses();
+
+                    ArrayList<Class> classes = knownApps.get(0).getClasses();
+                    test = classes.get(classes.size()-1);
                 } catch (Exception e) {
                     e.printStackTrace();
                     continue;

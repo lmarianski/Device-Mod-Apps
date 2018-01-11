@@ -45,7 +45,7 @@ public class RemoteClassLoader extends ClassLoader {
         try {
             if (classes.containsKey(urlS)) return classes.get(urlS);
             URL url = new URL(urlS);
-            String[] split = url.getFile().replaceAll("[?].*", "").split("/");
+            String[] split = url.getFile().replaceAll("[?].*", "").replace("%24", "$").split("/");
             return getClass(url, prefix==null ? url.getPath().replace("/", ".").replace(".class", "") : prefix+split[split.length-1].replace(".class", ""));
         } catch (Exception e) {
             if (!(e instanceof MalformedURLException)) e.printStackTrace();
