@@ -8,6 +8,7 @@ import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.network.Router;
 import com.mrcrayfish.device.network.task.MessageSyncApplications;
 import com.mrcrayfish.device.tileentity.TileEntityRouter;
+import com.teamdev.jxbrowser.chromium.BrowserContextParams;
 import io.github.lukas2005.DeviceModApps.*;
 import javassist.CannotCompileException;
 import javassist.CtClass;
@@ -78,6 +79,24 @@ public class ClientProxy implements IProxy {
 
         try {
             // Get the CtClass of the TextArea
+            CtClass cc = ReflectionManager.pool.get(BrowserContextParams.class.getName());
+
+            CtMethod method = cc.getDeclaredMethod("setAcceptLanguage", new CtClass[]{ReflectionManager.pool.get(String.class.getName())});
+
+            // Inject this line of code
+            method.setBody("d = \"en-us\";");
+
+            // Get the new bytecode
+            byte[] bytecode = cc.toBytecode();
+
+            // Redefine the TextArea class (replace it with the new bytecode)
+            ReflectionManager.instrumentationInstance.redefineClasses(new ClassDefinition(BrowserContextParams.class, bytecode));
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+
+        try {
+            // Get the CtClass of the TextArea
             CtClass cc = ReflectionManager.pool.get(Button.class.getName());
 
             // Get the method
@@ -87,14 +106,14 @@ public class ClientProxy implements IProxy {
 
             CtMethod method1 = cc.getDeclaredMethod("render", new CtClass[] {ReflectionManager.pool.get(Laptop.class.getName()),ReflectionManager.pool.get(Minecraft.class.getName()),ReflectionManager.pool.get(int.class.getName()),ReflectionManager.pool.get(int.class.getName()),ReflectionManager.pool.get(int.class.getName()),ReflectionManager.pool.get(int.class.getName()),ReflectionManager.pool.get(boolean.class.getName()),ReflectionManager.pool.get(float.class.getName())});
 
-            method1.instrument(new ExprEditor() {
-                @Override
-                public void edit(MethodCall m) throws CannotCompileException {
-                    if (m.getClassName().equals(RenderUtil.class.getName()) && m.getMethodName().equals("drawRectWithTexture") && m.getLineNumber() == 236) {
-                        m.replace("if (iconResource == Emoji.ICON_ASSET) {RenderUtil.drawRectWithTexture((double)$3 + contentX, (double)$4 + iconY, (float)iconU, (float)iconV, (int)Emoji.getDrawSize(), (int)Emoji.getDrawSize(), (float)iconWidth, (float)iconHeight, (int)iconSourceWidth, (int)iconSourceHeight);} else {RenderUtil.drawRectWithTexture((double)$3 + contentX, (double)$4 + iconY, (float)iconU, (float)iconV, (int)iconWidth, (int)iconHeight, (float)iconWidth, (float)iconHeight, (int)iconSourceWidth, (int)iconSourceHeight);}");
-                    }
-                }
-            });
+//            method1.instrument(new ExprEditor() {
+//                @Override
+//                public void edit(MethodCall m) throws CannotCompileException {
+//                    if (m.getClassName().equals(RenderUtil.class.getName()) && m.getMethodName().equals("drawRectWithTexture") && m.getLineNumber() == 236) {
+//                        m.replace("if (iconResource == Emoji.ICON_ASSET) {RenderUtil.drawRectWithTexture((double)$3 + contentX, (double)$4 + iconY, (float)iconU, (float)iconV, (int)Emoji.getDrawSize(), (int)Emoji.getDrawSize(), (float)iconWidth, (float)iconHeight, (int)iconSourceWidth, (int)iconSourceHeight);} else {RenderUtil.drawRectWithTexture((double)$3 + contentX, (double)$4 + iconY, (float)iconU, (float)iconV, (int)iconWidth, (int)iconHeight, (float)iconWidth, (float)iconHeight, (int)iconSourceWidth, (int)iconSourceHeight);}");
+//                    }
+//                }
+//            });
 
             // Get the new bytecode
             byte[] bytecode = cc.toBytecode();

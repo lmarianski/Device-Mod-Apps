@@ -43,8 +43,8 @@ public class Main {
         ModConfig.initConfig(e.getSuggestedConfigurationFile());
 
         try {
-            github = new GitHubBuilder().fromCredentials()/*.withOAuthToken("f6710197d10c01c77b8f5a1574c10ee0b57f5e6b", "lukas2005.38@gmail.com")
-                    */.build();
+//            github = new GitHubBuilder().fromCredentials()/*.withOAuthToken("f6710197d10c01c77b8f5a1574c10ee0b57f5e6b", "lukas2005.38@gmail.com")
+//                    */.build();
 
             gson = new GsonBuilder()
                     .serializeNulls()
@@ -65,7 +65,7 @@ public class Main {
 //            ArrayList<AppStoreAppInfo> info = new ArrayList<>();
 //            info.add(new AppStoreAppInfo("Mineuim Web Browser", "A web browser in mc!", "", AppCategory.INTERNET, new ArrayList<>()));
 //            System.out.println(gson.toJson(info));
-            new ApplicationUnofficialAppStore().init();
+            //new ApplicationUnofficialAppStore().init();
         } catch (Exception e1) {
             e1.printStackTrace();
         }

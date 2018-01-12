@@ -22,7 +22,7 @@ public class ApplicationWebBrowser extends ApplicationBase {
 	@Override
 	public void init() {
 		try {
-			bcp = new BrowserContextParams(getAppDataDir().getAbsolutePath());
+			bcp = new BrowserContextParams(getAppDataDir().getAbsolutePath(), "en-us");
 			bc = new BrowserContext(bcp);
 			b = new Browser(BrowserType.LIGHTWEIGHT, bc);
 
