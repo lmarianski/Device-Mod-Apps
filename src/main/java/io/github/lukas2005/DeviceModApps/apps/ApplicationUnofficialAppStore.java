@@ -25,7 +25,6 @@ import java.util.List;
 public class ApplicationUnofficialAppStore extends ApplicationBase {
 
     private LinkedHashSet<String> repos = new LinkedHashSet<String>(Arrays.asList(new String[]{"lukas2005/Device-Mod-Apps"}));
-    public static Class test;
 
     private ArrayList<AppStoreAppInfo> knownApps = new ArrayList<>();
     private LinkedHashSet<String> jars = new LinkedHashSet<>();
@@ -86,11 +85,6 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
                     }
 
                     knownApps.addAll(appInfo);
-                    loadAllLibJars();
-                    knownApps.get(0).loadClasses();
-
-                    ArrayList<Class> classes = knownApps.get(0).getClasses();
-                    test = classes.get(classes.size()-1);
                 } catch (Exception e) {
                     e.printStackTrace();
                     continue;

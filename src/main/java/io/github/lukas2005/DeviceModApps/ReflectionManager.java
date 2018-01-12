@@ -1,15 +1,12 @@
 package io.github.lukas2005.DeviceModApps;
 
 import javassist.ClassPool;
-import net.minecraft.client.audio.SoundManager;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.openjpa.enhance.InstrumentationFactory;
 
 import java.lang.instrument.Instrumentation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 public class ReflectionManager {
 
@@ -25,15 +22,16 @@ public class ReflectionManager {
 
 		pool.importPackage("net.minecraftforge.fml.relauncher");
 
+		pool.importPackage("com.mrcrayfish.device");
 		pool.importPackage("com.mrcrayfish.device.api");
+		pool.importPackage("com.mrcrayfish.device.api.utils");
 		pool.importPackage("com.mrcrayfish.device.network");
 		pool.importPackage("com.mrcrayfish.device.network.task");
 		//pool.importPackage("com.mrcrayfish.device.object");
 		pool.importPackage("com.mrcrayfish.device.proxy");
-		pool.importPackage("com.mrcrayfish.device");
 
-		pool.importPackage("io.github.lukas2005.DeviceModApps.apps");
 		pool.importPackage("io.github.lukas2005.DeviceModApps");
+		pool.importPackage("io.github.lukas2005.DeviceModApps.apps");
 
         Main.proxy.preInitReflect(e);
 	}

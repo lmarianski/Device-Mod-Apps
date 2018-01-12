@@ -1,14 +1,20 @@
 package io.github.lukas2005.DeviceModApps.proxy;
 
+import com.mrcrayfish.device.api.app.IIcon;
+import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.TextArea;
+import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.network.Router;
 import com.mrcrayfish.device.network.task.MessageSyncApplications;
 import com.mrcrayfish.device.tileentity.TileEntityRouter;
 import io.github.lukas2005.DeviceModApps.*;
+import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtConstructor;
 import javassist.CtMethod;
+import javassist.expr.ExprEditor;
+import javassist.expr.MethodCall;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.audio.SoundManager;
@@ -66,6 +72,35 @@ public class ClientProxy implements IProxy {
 
             // Redefine the TextArea class (replace it with the new bytecode)
             ReflectionManager.instrumentationInstance.redefineClasses(new ClassDefinition(TextArea.class, bytecode));
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+
+        try {
+            // Get the CtClass of the TextArea
+            CtClass cc = ReflectionManager.pool.get(Button.class.getName());
+
+            // Get the method
+            CtMethod method = cc.getDeclaredMethod("setIcon", new CtClass[] {ReflectionManager.pool.get(IIcon.class.getName())});
+
+            method.insertAt(365, "if ($1 instanceof Emoji) {this.iconWidth = 10; this.iconHeight = 10; }");
+
+            CtMethod method1 = cc.getDeclaredMethod("render", new CtClass[] {ReflectionManager.pool.get(Laptop.class.getName()),ReflectionManager.pool.get(Minecraft.class.getName()),ReflectionManager.pool.get(int.class.getName()),ReflectionManager.pool.get(int.class.getName()),ReflectionManager.pool.get(int.class.getName()),ReflectionManager.pool.get(int.class.getName()),ReflectionManager.pool.get(boolean.class.getName()),ReflectionManager.pool.get(float.class.getName())});
+
+            method1.instrument(new ExprEditor() {
+                @Override
+                public void edit(MethodCall m) throws CannotCompileException {
+                    if (m.getClassName().equals(RenderUtil.class.getName()) && m.getMethodName().equals("drawRectWithTexture") && m.getLineNumber() == 236) {
+                        m.replace("if (iconResource == Emoji.ICON_ASSET) {RenderUtil.drawRectWithTexture((double)$3 + contentX, (double)$4 + iconY, (float)iconU, (float)iconV, (int)Emoji.getDrawSize(), (int)Emoji.getDrawSize(), (float)iconWidth, (float)iconHeight, (int)iconSourceWidth, (int)iconSourceHeight);} else {RenderUtil.drawRectWithTexture((double)$3 + contentX, (double)$4 + iconY, (float)iconU, (float)iconV, (int)iconWidth, (int)iconHeight, (float)iconWidth, (float)iconHeight, (int)iconSourceWidth, (int)iconSourceHeight);}");
+                    }
+                }
+            });
+
+            // Get the new bytecode
+            byte[] bytecode = cc.toBytecode();
+
+            // Redefine the TextArea class (replace it with the new bytecode)
+            ReflectionManager.instrumentationInstance.redefineClasses(new ClassDefinition(Button.class, bytecode));
         } catch (Exception e1) {
             e1.printStackTrace();
         }
@@ -144,17 +179,17 @@ public class ClientProxy implements IProxy {
                 e1.printStackTrace();
             }
 
-            try {
-                Class<? extends FileSystem> fileSystemClass = FileSystem.class;
-
-                fileSystemAttachedDriveField = fileSystemClass.getDeclaredField("attachedDrive");
-                fileSystemAttachedDriveColorField = fileSystemClass.getDeclaredField("attachedDriveColor");
-
-                fileSystemAttachedDriveField.setAccessible(true);
-                fileSystemAttachedDriveColorField.setAccessible(true);
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
+//            try {
+//                Class<? extends FileSystem> fileSystemClass = FileSystem.class;
+//
+//                fileSystemAttachedDriveField = fileSystemClass.getDeclaredField("attachedDrive");
+//                fileSystemAttachedDriveColorField = fileSystemClass.getDeclaredField("attachedDriveColor");
+//
+//                fileSystemAttachedDriveField.setAccessible(true);
+//                fileSystemAttachedDriveColorField.setAccessible(true);
+//            } catch (Exception e1) {
+//                e1.printStackTrace();
+//            }
         }
     }
 
