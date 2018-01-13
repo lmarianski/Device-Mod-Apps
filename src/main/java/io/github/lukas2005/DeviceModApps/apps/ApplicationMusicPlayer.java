@@ -50,7 +50,7 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		
 		main.addComponent(playList);
 		
-		final Button play = new Button(20, 100, 10, 20, Icons.PLAY);
+		final Button play = new Button(100, 10, 20, 20, Icons.PLAY);
 		
 		main.addComponent(play);
 		
@@ -307,10 +307,7 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 				if (Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(listedSong.ps)) {
 					try {
 						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					} catch (InterruptedException ignored) {}
 					time += 1000000;
 					progress.setProgress((int) time);
 				}

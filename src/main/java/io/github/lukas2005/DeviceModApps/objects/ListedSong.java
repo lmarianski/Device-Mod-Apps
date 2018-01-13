@@ -12,6 +12,7 @@ public class ListedSong {
 	public File file;
 	public SoundEvent sound;
 	public PositionedSound ps;
+	public long length;
 	
 	public ListedSong(String name, File file) {
 		super();
@@ -19,11 +20,12 @@ public class ListedSong {
 		this.file = file;
 	}
 	
-	public ListedSong(String name, SoundEvent sound) {
+	public ListedSong(String name, SoundEvent sound, long length) {
 		super();
 		this.name = name;
 		this.sound = sound;
 		this.ps = PositionedSoundRecord.getMusicRecord(sound);
+		this.length = length;
 	}
 
 	@Override
