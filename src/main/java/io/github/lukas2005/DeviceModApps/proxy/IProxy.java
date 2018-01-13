@@ -9,8 +9,4 @@ public interface IProxy {
     void preInit(FMLPreInitializationEvent e);
     void init(FMLInitializationEvent e);
     void postInit(FMLPostInitializationEvent e);
-
-    void preInitReflect(FMLPreInitializationEvent e);
-    void initReflect(FMLInitializationEvent e);
-    void postInitReflect(FMLPostInitializationEvent e);
 }

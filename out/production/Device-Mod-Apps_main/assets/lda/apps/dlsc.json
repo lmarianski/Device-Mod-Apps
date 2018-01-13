@@ -1,0 +1,9 @@
+{
+  "name": "MrCrayfish Live Sub Count",
+  "author": "lukas2005",
+  "description": "Just a live sub count app",
+  "version": "0.1",
+  "icon": "lda:textures/icon/dlsc.png",
+  "screenshots": [
+  ]
+}

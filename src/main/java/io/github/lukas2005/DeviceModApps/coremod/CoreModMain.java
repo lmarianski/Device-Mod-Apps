@@ -1,9 +1,7 @@
 package io.github.lukas2005.DeviceModApps.coremod;
 
-import io.github.lukas2005.DeviceModApps.OSValidator;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.FMLInjectionData;
 import net.minecraftforge.fml.relauncher.IFMLCallHook;
@@ -23,7 +21,7 @@ public class CoreModMain implements IFMLLoadingPlugin, IFMLCallHook {
 
     public static File minecraftDir;
 
-    public static String urlBase = "https://github.com/lukas2005/Device-Mod-Apps/blob/master/lib/jxbrowser/lib/";
+    public static String urlBase = "https://github.com/lukas2005/Device-Mod-Apps/blob/master/lib/jxbrowser/lib/%s?raw=true";
 
     public CoreModMain() {
         if (minecraftDir != null)
@@ -54,16 +52,16 @@ public class CoreModMain implements IFMLLoadingPlugin, IFMLCallHook {
 
     @Override
     public String[] getASMTransformerClass() {
-        return null;
+        return new String[]{ClassTransformer.class.getName()};
     }
 
     @Override
     public Void call() {
         if ((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment")) return null;
         try {
-            LaunchClassLoader loader = (LaunchClassLoader) MinecraftServer.class.getClassLoader();
+            LaunchClassLoader loader = (LaunchClassLoader) getClass().getClassLoader();
 
-            String nativeName = "jxbrowser-%s-6.18.jar?raw=true";
+            String nativeName = "jxbrowser-%s-6.18.jar";
 
             if (OSValidator.isWindows()) {
                 nativeName = String.format(nativeName, "win32");
@@ -76,8 +74,8 @@ public class CoreModMain implements IFMLLoadingPlugin, IFMLCallHook {
                 throw new Exception();
             }
 
-            URL nativesUrl = new URL(urlBase + nativeName);
-            File natives = new File(Paths.get(minecraftDir.getAbsolutePath(), "natives", nativeName).toString());
+            URL nativesUrl = new URL(String.format(urlBase, nativeName));
+            File natives = new File(Paths.get(minecraftDir.getAbsolutePath(),"mods", "lda", "natives", nativeName).toString());
 
             if (!natives.exists()) {
                 natives.getParentFile().mkdirs();
@@ -105,4 +103,35 @@ public class CoreModMain implements IFMLLoadingPlugin, IFMLCallHook {
         }
         return null;
     }
+
+    public static class OSValidator {
+
+        private static String OS = System.getProperty("os.name").toLowerCase();
+
+        public static boolean isWindows() {
+
+            return (OS.indexOf("win") >= 0);
+
+        }
+
+        public static boolean isMac() {
+
+            return (OS.indexOf("mac") >= 0);
+
+        }
+
+        public static boolean isUnix() {
+
+            return (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0 );
+
+        }
+
+        public static boolean isSolaris() {
+
+            return (OS.indexOf("sunos") >= 0);
+
+        }
+
+    }
+
 }

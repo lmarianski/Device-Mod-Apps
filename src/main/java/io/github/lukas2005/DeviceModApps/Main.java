@@ -3,11 +3,13 @@ package io.github.lukas2005.DeviceModApps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mrcrayfish.device.api.app.component.TextArea;
+import com.mrcrayfish.device.object.AppInfo;
 import io.github.lukas2005.DeviceModApps.apps.ApplicationMusicPlayer;
 import io.github.lukas2005.DeviceModApps.apps.ApplicationUnofficialAppStore;
 import io.github.lukas2005.DeviceModApps.apps.ModApps;
 import io.github.lukas2005.DeviceModApps.objects.ListedSong;
 import io.github.lukas2005.DeviceModApps.proxy.IProxy;
+import net.minecraft.client.Minecraft;
 import net.minecraft.init.SoundEvents;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -22,7 +24,7 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-@Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, dependencies = "required-after:cdm@[0.2.0-pre4,]")
+@Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, dependencies = "required-after:cdm@[0.2.0,]")
 public class Main {
 
     public static File modDataDir;
@@ -35,6 +37,8 @@ public class Main {
     public static final RemoteClassLoader classLoader = new RemoteClassLoader(Main.class.getClassLoader());
     public static GitHub github;
     public static Gson gson;
+
+    public static ArrayList<AppInfo> alwaysAvailableApps = new ArrayList<>();
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent e) {
@@ -71,14 +75,11 @@ public class Main {
         }
 
         if (!modDataDir.exists()) modDataDir.mkdirs();
-
-        ReflectionManager.preInit(e);
     }
 
     @EventHandler
     public void init(FMLInitializationEvent e) {
         proxy.init(e);
-        ReflectionManager.init(e);
 
         ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Cat", SoundEvents.RECORD_CAT));
         ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Blocks", SoundEvents.RECORD_BLOCKS));
@@ -97,7 +98,6 @@ public class Main {
     @EventHandler
     public void postInit(FMLPostInitializationEvent e) {
         proxy.postInit(e);
-        ReflectionManager.postInit(e);
 
         ModApps.init();
     }

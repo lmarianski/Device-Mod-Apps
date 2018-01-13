@@ -24,10 +24,10 @@ def jxbrowser_version = "6.18"
 
 def core_plugin = "io.github.lukas2005.DeviceModApps.coremod.CoreModMain"
 
-compileJava.options.encoding = 'UTF-8'
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 compileJava {
     sourceCompatibility = targetCompatibility = '1.8'
+	options.encoding = 'UTF-8'
 }
 
 repositories {
@@ -55,6 +55,8 @@ minecraft {
 configurations {
     embed
     compile.extendsFrom(embed)
+	embedCore
+	compile.extendsFrom(embedCore)
 }
 
 dependencies {
@@ -75,12 +77,9 @@ dependencies {
 	compile files("lib/jxbrowser/lib/jxbrowser-mac-"+jxbrowser_version+".jar")
 	compile files("lib/jxbrowser/lib/jxbrowser-win32-"+jxbrowser_version+".jar")
 	
-	embed files("lib/javassist.jar")
+	embedCore files("lib/javassist.jar")
 
 	deobfCompile 'com.github.MrCrayfish:MrCrayfishDeviceMod:8634283b5f'
-
-	// https://mvnrepository.com/artifact/org.apache.openjpa/openjpa
-	embed 'org.apache.openjpa:openjpa:2.4.2'
 
 	// https://mvnrepository.com/artifact/org.kohsuke/github-api
 	embed ('org.kohsuke:github-api:1.90') {
@@ -109,14 +108,75 @@ dependencies {
 
 }
 
-// Add dependencies to the JAR
-jar {
-	manifest {
-		attributes(
-				"FMLCorePluginContainsFMLMod": "true",
-				"FMLCorePlugin": "$core_plugin"
-		)
+task coreJar(type: Jar) {
+	from(sourceSets.main.output) {
+		include 'io/github/lukas2005/DeviceModApps/coremod/**'
 	}
+	manifest.mainAttributes(
+			"Implementation-Title": project.name + "-corePlugin",
+			"Implementation-Version": "${project.version}",
+			"Built-On": "${minecraft.version}-${minecraft.forgeVersion}",
+			"FMLCorePlugin": "$core_plugin"
+	)
+
+	from configurations.embedCore.collect {
+		exclude '.classpath'
+		exclude '.project'
+		exclude 'META-INF/LICENSE.txt'
+		exclude 'META-INF/NOTICE.txt'
+		exclude 'META-INF/LICENSE'
+		exclude 'META-INF/NOTICE'
+		exclude 'META-INF/DEPENDENCIES'
+		it.isDirectory() ? it : zipTree(it)
+	}
+
+	classifier 'corePlugin'
+	group = 'build'
+}
+
+reobf {
+	coreJar {
+		mappingType = 'SEARGE'
+	}
+}
+
+task signCoreJar(type: SignJar) {
+	onlyIf {
+		project.hasProperty('sign_keyStore')
+	}
+	keyPass = findProperty('sign_keyPass')
+	keyStore = findProperty('sign_keyStore')
+	storePass = findProperty('sign_storePass')
+	alias = findProperty('sign_alias')
+
+	inputFile = coreJar.archivePath
+	outputFile = coreJar.archivePath
+	dependsOn reobfCoreJar
+}
+
+jar {
+	dependsOn signCoreJar
+
+//	from(configurations.embed) {
+//		include '*'
+//	}
+	from(coreJar.archivePath.absolutePath) {
+		include '*'
+	}
+	exclude 'io/github/lukas2005/DeviceModApps/coremod/**'
+	def DEPS = coreJar.archivePath.name
+//	configurations.embed.each {
+//		dep -> DEPS += ' ' + dep.getName()
+//	}
+	manifest.mainAttributes(
+			"Implementation-Title": project.name,
+			"Implementation-Version": "${project.version}",
+			"Built-On": "${minecraft.version}-${minecraft.forgeVersion}",
+			"Maven-Artifact":"${project.group}:${archivesBaseName}:${project.version}",
+			"FMLAT": "${project.name}_at.cfg",
+			"ContainedDeps": DEPS
+	)
+	classifier '' //this is the main jar!
 
 	from configurations.embed.collect {
 		exclude '.classpath'
@@ -126,7 +186,6 @@ jar {
 		exclude 'META-INF/LICENSE'
 		exclude 'META-INF/NOTICE'
 		exclude 'META-INF/DEPENDENCIES'
-		exclude 'META-INF/services/javax.annotation.processing.Processor'
 		it.isDirectory() ? it : zipTree(it)
 	}
 }

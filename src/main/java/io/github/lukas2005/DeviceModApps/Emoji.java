@@ -5,9 +5,9 @@ import com.mrcrayfish.device.api.utils.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import scala.actors.threadpool.Arrays;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -25,7 +25,7 @@ public enum Emoji implements IIcon {
     public static final int GRID_SIZE = 20;
 
 
-    public static final UnmodifiableList<Emoji> values = new UnmodifiableList<Emoji>(Arrays.asList(values()));
+    public static final UnmodifiableList<Emoji> values = new UnmodifiableList<>(Arrays.asList(values()));
 
     public static char nextFree = 'ﻼ';
 
@@ -63,6 +63,8 @@ public enum Emoji implements IIcon {
         return ICON_SIZE;
     }
 
+
+    // TODO: REMOVE THIS AFTER MRCRAYFISH WILL MERGE NEW IIcon
     public static int getDrawSize() {
         return 10;
     }
@@ -77,6 +79,7 @@ public enum Emoji implements IIcon {
         return GRID_SIZE;
     }
 
+    // TODO: REMOVE THIS AFTER MRCRAYFISH WILL MERGE NEW IIcon
     @Override
     public int getU() {
         return (ordinal() % GRID_SIZE) * ICON_SIZE;

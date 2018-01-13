@@ -1,7 +1,6 @@
 package io.github.lukas2005.DeviceModApps.apps;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -18,9 +17,7 @@ import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.ItemList;
 import com.mrcrayfish.device.api.app.component.ProgressBar;
 
-import io.github.lukas2005.DeviceModApps.ReflectionManager;
 import io.github.lukas2005.DeviceModApps.objects.ListedSong;
-import io.github.lukas2005.DeviceModApps.proxy.ClientProxy;
 import javazoom.spi.vorbis.sampled.file.VorbisAudioFileReader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;

@@ -1,0 +1,9 @@
+{
+  "name": "Minetunes",
+  "author": "lukas2005",
+  "description": "A music player",
+  "version": "0.1",
+  "icon": "lda:textures/icon/mta.png",
+  "screenshots": [
+  ]
+}
