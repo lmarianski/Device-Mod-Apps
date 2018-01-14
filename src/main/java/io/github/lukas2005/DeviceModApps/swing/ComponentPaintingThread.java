@@ -1,9 +1,7 @@
 package io.github.lukas2005.DeviceModApps.swing;
 
 /**
- *
  * @author lukas2005
- *
  */
 public class ComponentPaintingThread extends Thread {
 
@@ -13,7 +11,7 @@ public class ComponentPaintingThread extends Thread {
 	private SwingWrapper w;
 
 	public ComponentPaintingThread(int width, int height, SwingWrapper w) {
-		super("Swing Wraper Painitng Thread for "+w.c.getName());
+		super("Swing Wraper Painitng Thread for " + w.c.getName());
 
 		this.width = width;
 		this.height = height;
@@ -22,10 +20,10 @@ public class ComponentPaintingThread extends Thread {
 
 	@Override
 	public void run() {
-		while(!Thread.interrupted()) {
+		while (!Thread.interrupted()) {
 			if (!w.frame.isVisible()) w.frame.setVisible(true);
 
-			w.frame.setSize(width+26, height+49);
+			w.frame.setSize(width + 26, height + 49);
 
 			//img.copyData(imgOld.getRaster());
 			w.c.paint(w.g);

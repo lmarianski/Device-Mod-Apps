@@ -42,8 +42,7 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
 	private StandardLayout layoutMain;
 
 	@Override
-	public void init()
-	{
+	public void init() {
 		layoutMain = new StandardLayout("Home", LAYOUT_WIDTH, LAYOUT_HEIGHT, this, null);
 		layoutMain.setIcon(Icons.HOME);
 		setCurrentLayout(layoutMain);
@@ -52,8 +51,7 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
 		btnSearch.setToolTip("Search", "Find a specific application");
 		btnSearch.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
-			if(mouseButton == 0)
-			{
+			if (mouseButton == 0) {
 				//this.setCurrentLayout(new LayoutSearchApps(this, getCurrentLayout()));
 			}
 		});
@@ -63,17 +61,17 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
 		btnManageApps.setToolTip("Manage Apps", "Manage your installed applications");
 		layoutMain.addComponent(btnManageApps);
 
-		knownAppsList = new ItemList<>(60,25,LAYOUT_WIDTH-65,8); /* 8 */
+		knownAppsList = new ItemList<>(60, 25, LAYOUT_WIDTH - 65, 8); /* 8 */
 		knownAppsList.setLoading(true);
 		knownAppsList.setListItemRenderer(new ListItemRenderer<AppStoreAppInfo>(13)/* 13 */ {
 			@Override
 			public void render(AppStoreAppInfo appStoreAppInfo, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected) {
-				ClientProxy.myFontRenderer.drawString(appStoreAppInfo.name,x+5, y+5, !selected ? new Color(0,0,0).getRGB() : new Color(230,158,0).getRGB());
+				ClientProxy.myFontRenderer.drawString(appStoreAppInfo.name, x + 5, y + 5, !selected ? new Color(0, 0, 0).getRGB() : new Color(230, 158, 0).getRGB());
 			}
 		});
 		layoutMain.addComponent(knownAppsList);
 
-		categoriesList = new ItemList<>(5,25,50,8);
+		categoriesList = new ItemList<>(5, 25, 50, 8);
 		categoriesList.setItems(Arrays.asList(AppCategory.values()));
 		categoriesList.setItemClickListener((appCategory, index, mouseButton) -> {
 			knownAppsList.removeAll();

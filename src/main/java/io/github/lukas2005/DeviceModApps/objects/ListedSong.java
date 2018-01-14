@@ -18,13 +18,13 @@ public class ListedSong {
 	public SoundEvent sound;
 	public PositionedSound ps;
 	public long length;
-	
+
 	public ListedSong(String name, File file) {
 		super();
 		this.name = name;
 		this.file = file;
 	}
-	
+
 	public ListedSong(String name, SoundEvent sound, long length) {
 		super();
 		this.name = name;
@@ -45,7 +45,7 @@ public class ListedSong {
 
 			this.ps = constructor.newInstance(sound, SoundCategory.RECORDS, 1.0F, 1.0F, false, 0, ISound.AttenuationType.NONE, 0.0F, 0.0F, 0.0F);
 		} catch (Exception e) {
-			if (ModConfig.DEBUG_MODE)e.printStackTrace();
+			if (ModConfig.DEBUG_MODE) e.printStackTrace();
 			this.ps = PositionedSoundRecord.getMusicRecord(sound);
 		}
 		this.length = length;
@@ -55,5 +55,5 @@ public class ListedSong {
 	public String toString() {
 		return name;
 	}
-	
+
 }

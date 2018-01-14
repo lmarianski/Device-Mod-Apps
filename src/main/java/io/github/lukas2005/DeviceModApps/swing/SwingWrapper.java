@@ -18,9 +18,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /**
- *
  * @author lukas2005
- *
  */
 public class SwingWrapper {
 
@@ -73,11 +71,12 @@ public class SwingWrapper {
 		frame.setVisible(true);
 
 		new Thread(() -> {
-            try {
-                Thread.sleep(500);
-                frame.setState(JFrame.ICONIFIED);
-            } catch (InterruptedException ignored) {}
-        }).start();
+			try {
+				Thread.sleep(500);
+				frame.setState(JFrame.ICONIFIED);
+			} catch (InterruptedException ignored) {
+			}
+		}).start();
 
 		if (c.getName() == null) c.setName("Component");
 
@@ -110,7 +109,7 @@ public class SwingWrapper {
 
 	public void handleMouseClick(int xPosition, int yPosition, int mouseX, int mouseY, int mouseButton) {
 		if (mouseX >= xPosition && mouseY >= yPosition && mouseX < xPosition + this.width && mouseY < yPosition + this.height) {
-			Point p = new Point(Math.round(SwingUtils.map(mouseX-xPosition, 0, width, 0, c.getWidth())), Math.round(SwingUtils.map(mouseY-yPosition, 0, height, 0, c.getHeight())));
+			Point p = new Point(Math.round(SwingUtils.map(mouseX - xPosition, 0, width, 0, c.getWidth())), Math.round(SwingUtils.map(mouseY - yPosition, 0, height, 0, c.getHeight())));
 			Point globalP = p.getLocation();
 			SwingUtilities.convertPointToScreen(globalP, c);
 			if (!(c instanceof BrowserView)) {
@@ -133,7 +132,7 @@ public class SwingWrapper {
 
 	public void handleMouseScroll(int xPosition, int yPosition, int mouseX, int mouseY, boolean direction) {
 		if (mouseX >= xPosition && mouseY >= yPosition && mouseX < xPosition + this.width && mouseY < yPosition + this.height) {
-			Point p = new Point(Math.round(SwingUtils.map(mouseX-xPosition, 0, width, 0, c.getWidth())), Math.round(SwingUtils.map(mouseY-yPosition, 0, height, 0, c.getHeight())));
+			Point p = new Point(Math.round(SwingUtils.map(mouseX - xPosition, 0, width, 0, c.getWidth())), Math.round(SwingUtils.map(mouseY - yPosition, 0, height, 0, c.getHeight())));
 			if (c instanceof BrowserView) {
 				BrowserView view = (BrowserView) c;
 				SwingUtils.forwardMouseScrollEvent(view.getBrowser(), direction ? 5 : -5, p.x, p.y);
@@ -143,7 +142,7 @@ public class SwingWrapper {
 
 	public void handleMouseDrag(int xPosition, int yPosition, int mouseX, int mouseY, int mouseButton) {
 		if (mouseX >= xPosition && mouseY >= yPosition && mouseX < xPosition + this.width && mouseY < yPosition + this.height) {
-			Point p = new Point(Math.round(SwingUtils.map(mouseX-xPosition, 0, width, 0, c.getWidth())), Math.round(SwingUtils.map(mouseY-yPosition, 0, height, 0, c.getHeight())));
+			Point p = new Point(Math.round(SwingUtils.map(mouseX - xPosition, 0, width, 0, c.getWidth())), Math.round(SwingUtils.map(mouseY - yPosition, 0, height, 0, c.getHeight())));
 			Point globalP = p.getLocation();
 			SwingUtilities.convertPointToScreen(globalP, c);
 			if (!(c instanceof BrowserView)) {
@@ -166,7 +165,7 @@ public class SwingWrapper {
 
 	public void handleMouseRelease(int xPosition, int yPosition, int mouseX, int mouseY, int mouseButton) {
 		if (mouseX >= xPosition && mouseY >= yPosition && mouseX < xPosition + this.width && mouseY < yPosition + this.height) {
-			Point p = new Point(Math.round(SwingUtils.map(mouseX-xPosition, 0, width, 0, c.getWidth())), Math.round(SwingUtils.map(mouseY-yPosition, 0, height, 0, c.getHeight())));
+			Point p = new Point(Math.round(SwingUtils.map(mouseX - xPosition, 0, width, 0, c.getWidth())), Math.round(SwingUtils.map(mouseY - yPosition, 0, height, 0, c.getHeight())));
 			Point globalP = p.getLocation();
 			SwingUtilities.convertPointToScreen(globalP, c);
 			if (!(c instanceof BrowserView)) {
@@ -191,7 +190,7 @@ public class SwingWrapper {
 		if (c instanceof BrowserView) {
 			BrowserView view = (BrowserView) c;
 			switch (code) {
-				case(Keyboard.KEY_BACK):
+				case (Keyboard.KEY_BACK):
 					SwingUtils.forwardKeyTypedEvent(view.getBrowser(), KeyCode.VK_BACK);
 					break;
 				default:
@@ -205,6 +204,7 @@ public class SwingWrapper {
 	boolean isTheSameOld = true;
 	int lastMouseX = 0;
 	int lastMouseY = 0;
+
 	public void render(int x, int y, int mouseX, int mouseY) {
 		rc = txt.getDynamicTextureLocation(c.toString(), new DynamicTexture(img));
 		if (!frame.isVisible()) frame.setVisible(true);

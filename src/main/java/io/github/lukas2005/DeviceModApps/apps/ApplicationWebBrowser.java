@@ -26,7 +26,7 @@ public class ApplicationWebBrowser extends ApplicationBase {
 			bc = new BrowserContext(bcp);
 			b = new Browser(BrowserType.LIGHTWEIGHT, bc);
 
-			Layout main = new Layout(300,150);
+			Layout main = new Layout(300, 150);
 			setCurrentLayout(main);
 
 			deviceModView = new WebBrowserComponent(0, 0, main.width, main.height, b);
@@ -34,25 +34,25 @@ public class ApplicationWebBrowser extends ApplicationBase {
 
 			main.addComponent(deviceModView);
 
-			final TextField addressBar = new TextField(10, 5, main.width-30);
+			final TextField addressBar = new TextField(10, 5, main.width - 30);
 			main.addComponent(addressBar);
 
-			Button goButton = new Button(main.width-17, 5, 15, 15, "Go!");
+			Button goButton = new Button(main.width - 17, 5, 15, 15, "Go!");
 			goButton.setClickListener((mouseX, mouseY, mouseButton) -> b.loadURL(addressBar.getText()));
 			main.addComponent(goButton);
 
 			//final Slider scrollBar = new Slider(main.width-5, 10, 100);
 			//main.addComponent(scrollBar);
 
-	        b.addLoadListener(new LoadAdapter() {
-	            @Override
-	            public void onFinishLoadingFrame(FinishLoadingEvent event) {
-	                if (event.isMainFrame()) {
-	                	addressBar.setText(event.getValidatedURL());
-	                    //event.getBrowser().executeJavaScript("document.body.style.overflow = 'hidden';");
-	                }
-	            }
-	        });
+			b.addLoadListener(new LoadAdapter() {
+				@Override
+				public void onFinishLoadingFrame(FinishLoadingEvent event) {
+					if (event.isMainFrame()) {
+						addressBar.setText(event.getValidatedURL());
+						//event.getBrowser().executeJavaScript("document.body.style.overflow = 'hidden';");
+					}
+				}
+			});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

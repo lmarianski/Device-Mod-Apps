@@ -9,12 +9,12 @@ import net.minecraft.client.Minecraft;
 
 public class WebBrowserComponent extends Component {
 
-    private SwingWrapper wrapper;
+	private SwingWrapper wrapper;
 
 	public WebBrowserComponent(int x, int y, int width, int height, Browser b) {
 		super(x, y);
 
-        BrowserView view = new BrowserView(b);
+		BrowserView view = new BrowserView(b);
 
 		this.wrapper = new SwingWrapper(width, height, 1000, 450, view);
 	}
@@ -28,7 +28,7 @@ public class WebBrowserComponent extends Component {
 
 	@Override
 	public void handleMouseClick(int mouseX, int mouseY, int mouseButton) {
-		if(!this.visible || !this.enabled)
+		if (!this.visible || !this.enabled)
 			return;
 		wrapper.handleMouseClick(xPosition, yPosition, mouseX, mouseY, mouseButton);
 	}

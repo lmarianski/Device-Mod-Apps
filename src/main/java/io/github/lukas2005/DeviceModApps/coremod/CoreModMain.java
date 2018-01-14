@@ -18,119 +18,119 @@ import java.util.Map;
 @IFMLLoadingPlugin.MCVersion(Loader.MC_VERSION)
 public class CoreModMain implements IFMLLoadingPlugin, IFMLCallHook {
 
-    public static File minecraftDir;
+	public static File minecraftDir;
 
-    public static String urlBase = "https://github.com/lukas2005/Device-Mod-Apps/blob/master/lib/jxbrowser/lib/%s?raw=true";
+	public static String urlBase = "https://github.com/lukas2005/Device-Mod-Apps/blob/master/lib/jxbrowser/lib/%s?raw=true";
 
-    public CoreModMain() {
-        if (minecraftDir != null)
-            return;
+	public CoreModMain() {
+		if (minecraftDir != null)
+			return;
 
-        minecraftDir = (File) FMLInjectionData.data()[6];
-    }
+		minecraftDir = (File) FMLInjectionData.data()[6];
+	}
 
-    @Override
-    public String getModContainerClass() {
-        return null;
-    }
+	@Override
+	public String getModContainerClass() {
+		return null;
+	}
 
-    @Nullable
-    @Override
-    public String getSetupClass() {
-        return CoreModMain.class.getName();
-    }
+	@Nullable
+	@Override
+	public String getSetupClass() {
+		return CoreModMain.class.getName();
+	}
 
-    @Override
-    public void injectData(Map<String, Object> data) {
-    }
+	@Override
+	public void injectData(Map<String, Object> data) {
+	}
 
-    @Override
-    public String getAccessTransformerClass() {
-        return null;
-    }
+	@Override
+	public String getAccessTransformerClass() {
+		return null;
+	}
 
-    @Override
-    public String[] getASMTransformerClass() {
-        return new String[]{ClassTransformer.class.getName()};
-    }
+	@Override
+	public String[] getASMTransformerClass() {
+		return new String[]{ClassTransformer.class.getName()};
+	}
 
-    @Override
-    public Void call() {
-        if ((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment")) return null;
-        try {
-            LaunchClassLoader loader = (LaunchClassLoader) getClass().getClassLoader();
+	@Override
+	public Void call() {
+		if ((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment")) return null;
+		try {
+			LaunchClassLoader loader = (LaunchClassLoader) getClass().getClassLoader();
 
-            String nativeName = "jxbrowser-%s-6.18.jar";
+			String nativeName = "jxbrowser-%s-6.18.jar";
 
-            if (OSValidator.isWindows()) {
-                nativeName = String.format(nativeName, "win32");
-            } else if (OSValidator.isMac()) {
-                nativeName = String.format(nativeName, "mac");
-            } else if (OSValidator.isUnix()) {
-                nativeName = String.format(nativeName, "linux64");
-            } else {
-                System.err.println("----------------ERROR UNKNOWN OS: NO NATIVE BINARY AVAILABLE----------------");
-                throw new Exception();
-            }
+			if (OSValidator.isWindows()) {
+				nativeName = String.format(nativeName, "win32");
+			} else if (OSValidator.isMac()) {
+				nativeName = String.format(nativeName, "mac");
+			} else if (OSValidator.isUnix()) {
+				nativeName = String.format(nativeName, "linux64");
+			} else {
+				System.err.println("----------------ERROR UNKNOWN OS: NO NATIVE BINARY AVAILABLE----------------");
+				throw new Exception();
+			}
 
-            URL nativesUrl = new URL(String.format(urlBase, nativeName));
-            File natives = new File(Paths.get(minecraftDir.getAbsolutePath(),"mods", "lda", "natives", nativeName).toString());
+			URL nativesUrl = new URL(String.format(urlBase, nativeName));
+			File natives = new File(Paths.get(minecraftDir.getAbsolutePath(), "mods", "lda", "natives", nativeName).toString());
 
-            if (!natives.exists()) {
-                natives.getParentFile().mkdirs();
-                natives.createNewFile();
+			if (!natives.exists()) {
+				natives.getParentFile().mkdirs();
+				natives.createNewFile();
 
-                InputStream is = nativesUrl.openStream();
-                OutputStream os = new FileOutputStream(natives);
+				InputStream is = nativesUrl.openStream();
+				OutputStream os = new FileOutputStream(natives);
 
-                byte[] b = new byte[2048];
-                int length;
+				byte[] b = new byte[2048];
+				int length;
 
-                while ((length = is.read(b)) != -1) {
-                    os.write(b, 0, length);
-                    //Gui.drawRect(0, 0, is.available(), 10, new Color(255, 0, 0).getRGB());
-                    //RenderUtil.drawStringClipped("Downlaoding natives... " + is.available(), 0, 10, 100, new Color(255, 0, 0).getRGB(), false);
-                }
-                is.close();
-                os.close();
-            }
+				while ((length = is.read(b)) != -1) {
+					os.write(b, 0, length);
+					//Gui.drawRect(0, 0, is.available(), 10, new Color(255, 0, 0).getRGB());
+					//RenderUtil.drawStringClipped("Downlaoding natives... " + is.available(), 0, 10, 100, new Color(255, 0, 0).getRGB(), false);
+				}
+				is.close();
+				os.close();
+			}
 
-            loader.addURL(natives.toURI().toURL());
-        } catch (Exception e) {
-            System.err.println("----------------ERROR DURING DOWNLOAD OF NATIVES----------------");
-            e.printStackTrace();
-        }
-        return null;
-    }
+			loader.addURL(natives.toURI().toURL());
+		} catch (Exception e) {
+			System.err.println("----------------ERROR DURING DOWNLOAD OF NATIVES----------------");
+			e.printStackTrace();
+		}
+		return null;
+	}
 
-    public static class OSValidator {
+	public static class OSValidator {
 
-        private static String OS = System.getProperty("os.name").toLowerCase();
+		private static String OS = System.getProperty("os.name").toLowerCase();
 
-        public static boolean isWindows() {
+		public static boolean isWindows() {
 
-            return (OS.indexOf("win") >= 0);
+			return (OS.indexOf("win") >= 0);
 
-        }
+		}
 
-        public static boolean isMac() {
+		public static boolean isMac() {
 
-            return (OS.indexOf("mac") >= 0);
+			return (OS.indexOf("mac") >= 0);
 
-        }
+		}
 
-        public static boolean isUnix() {
+		public static boolean isUnix() {
 
-            return (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0 );
+			return (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0);
 
-        }
+		}
 
-        public static boolean isSolaris() {
+		public static boolean isSolaris() {
 
-            return (OS.indexOf("sunos") >= 0);
+			return (OS.indexOf("sunos") >= 0);
 
-        }
+		}
 
-    }
+	}
 
 }

@@ -27,33 +27,33 @@ import java.util.ArrayList;
 @Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, dependencies = "required-after:cdm@[0.2.0,]")
 public class Main {
 
-    public static File modDataDir;
+	public static File modDataDir;
 
-    public static final ArrayList<WeakReference<TextArea>> textAreas = new ArrayList<>();
+	public static final ArrayList<WeakReference<TextArea>> textAreas = new ArrayList<>();
 
-    @SidedProxy(serverSide = "io.github.lukas2005.DeviceModApps.proxy.ServerProxy", clientSide = "io.github.lukas2005.DeviceModApps.proxy.ClientProxy")
-    public static IProxy proxy = null;
+	@SidedProxy(serverSide = "io.github.lukas2005.DeviceModApps.proxy.ServerProxy", clientSide = "io.github.lukas2005.DeviceModApps.proxy.ClientProxy")
+	public static IProxy proxy = null;
 
-    public static final RemoteClassLoader classLoader = new RemoteClassLoader(Main.class.getClassLoader());
-    public static GitHub github;
-    public static Gson gson;
+	public static final RemoteClassLoader classLoader = new RemoteClassLoader(Main.class.getClassLoader());
+	public static GitHub github;
+	public static Gson gson;
 
-    public static ArrayList<AppInfo> alwaysAvailableApps = new ArrayList<>();
+	public static ArrayList<AppInfo> alwaysAvailableApps = new ArrayList<>();
 
-    @EventHandler
-    public void preInit(FMLPreInitializationEvent e) {
-        proxy.preInit(e);
+	@EventHandler
+	public void preInit(FMLPreInitializationEvent e) {
+		proxy.preInit(e);
 
-        ModConfig.initConfig(e.getSuggestedConfigurationFile());
+		ModConfig.initConfig(e.getSuggestedConfigurationFile());
 
-        try {
-            github = GitHubBuilder.fromCredentials()/*.withOAuthToken("f6710197d10c01c77b8f5a1574c10ee0b57f5e6b", "lukas2005.38@gmail.com")
-                    */.build();
+		try {
+			github = GitHubBuilder.fromCredentials()/*.withOAuthToken("f6710197d10c01c77b8f5a1574c10ee0b57f5e6b", "lukas2005.38@gmail.com")
+					*/.build();
 
-            gson = new GsonBuilder()
-                    .serializeNulls()
-                    .setPrettyPrinting()
-                    .create();
+			gson = new GsonBuilder()
+					.serializeNulls()
+					.setPrettyPrinting()
+					.create();
 
 //            ArrayList<AppStoreAppInfo> list = Main.gson.fromJson("[\n" +
 //                    "  {\n" +
@@ -69,37 +69,37 @@ public class Main {
 //            ArrayList<AppStoreAppInfo> info = new ArrayList<>();
 //            info.add(new AppStoreAppInfo("Mineuim Web Browser", "A web browser in mc!", "", AppCategory.INTERNET, new ArrayList<>()));
 //            System.out.println(gson.toJson(info));
-            //new ApplicationUnofficialAppStore().init();
-        } catch (Exception e1) {
-            e1.printStackTrace();
-        }
+			//new ApplicationUnofficialAppStore().init();
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 
-        if (!modDataDir.exists()) modDataDir.mkdirs();
-    }
+		if (!modDataDir.exists()) modDataDir.mkdirs();
+	}
 
-    @EventHandler
-    public void init(FMLInitializationEvent e) {
-        proxy.init(e);
+	@EventHandler
+	public void init(FMLInitializationEvent e) {
+		proxy.init(e);
 
-        ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Cat", SoundEvents.RECORD_CAT,         183000000));
-        ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Blocks", SoundEvents.RECORD_BLOCKS,   327000000));
-        ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Chirp", SoundEvents.RECORD_CHIRP,     183000000));
-        ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Far", SoundEvents.RECORD_FAR,         152400000));
-        ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Mall", SoundEvents.RECORD_MALL,       190200000));
-        ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Mellohi", SoundEvents.RECORD_MELLOHI, 81600000));
-        ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Stal", SoundEvents.RECORD_STAL,       138000000));
-        ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Strad", SoundEvents.RECORD_STRAD,     184800000));
-        ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Wait", SoundEvents.RECORD_WAIT,       214800000));
-        ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Ward", SoundEvents.RECORD_WARD,       246600000));
-        //ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - 11",    SoundEvents.RECORD_11,        66600000));
-        ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - 13", SoundEvents.RECORD_13,           154800000));
-    }
+		ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Cat", SoundEvents.RECORD_CAT, 183000000));
+		ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Blocks", SoundEvents.RECORD_BLOCKS, 327000000));
+		ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Chirp", SoundEvents.RECORD_CHIRP, 183000000));
+		ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Far", SoundEvents.RECORD_FAR, 152400000));
+		ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Mall", SoundEvents.RECORD_MALL, 190200000));
+		ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Mellohi", SoundEvents.RECORD_MELLOHI, 81600000));
+		ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Stal", SoundEvents.RECORD_STAL, 138000000));
+		ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Strad", SoundEvents.RECORD_STRAD, 184800000));
+		ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Wait", SoundEvents.RECORD_WAIT, 214800000));
+		ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Ward", SoundEvents.RECORD_WARD, 246600000));
+		//ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - 11",    SoundEvents.RECORD_11,        66600000));
+		ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - 13", SoundEvents.RECORD_13, 154800000));
+	}
 
-    @EventHandler
-    public void postInit(FMLPostInitializationEvent e) {
-        proxy.postInit(e);
+	@EventHandler
+	public void postInit(FMLPostInitializationEvent e) {
+		proxy.postInit(e);
 
-        ModApps.init();
-    }
+		ModApps.init();
+	}
 
 }

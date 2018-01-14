@@ -35,9 +35,9 @@ public class ApplicationEmojiKeyboard extends ApplicationBase {
 	private Button addEmojiButton(IIcon e) {
 		Button emojiButton;
 		if (e instanceof Emoji) {
-			emojiButton = new Button(5+(((Emoji)e).ordinal()*17), 5, 15, 15, e);
+			emojiButton = new Button(5 + (((Emoji) e).ordinal() * 17), 5, 15, 15, e);
 		} else {
-			emojiButton = new Button(5+((Emoji.externalValues.indexOf(e)+Emoji.values().length-1)*17), 5, 15, 15, e);
+			emojiButton = new Button(5 + ((Emoji.externalValues.indexOf(e) + Emoji.values().length - 1) * 17), 5, 15, 15, e);
 		}
 		buttonEmojiHashMap.put(emojiButton, e);
 		emojiButton.setClickListener((mouseX, mouseY, mouseButton) -> {
@@ -49,7 +49,7 @@ public class ApplicationEmojiKeyboard extends ApplicationBase {
 				isFocusedField.setAccessible(true);
 				for (WeakReference<TextArea> areaReference : Main.textAreas) {
 					TextArea area = areaReference.get();
-					if (isFocusedField != null && (boolean)isFocusedField.get(area)) {
+					if (isFocusedField != null && (boolean) isFocusedField.get(area)) {
 						if (emoji instanceof Emoji) {
 							area.writeText(Character.toString(((Emoji) emoji).assignedChar));
 						} else {
@@ -68,9 +68,9 @@ public class ApplicationEmojiKeyboard extends ApplicationBase {
 	@Override
 	public void handleKeyTyped(char character, int code) {
 		super.handleKeyTyped(character, code);
-		System.out.println((char)code);
+		System.out.println((char) code);
 	}
-	
+
 	@Override
 	public void load(NBTTagCompound arg0) {
 	}

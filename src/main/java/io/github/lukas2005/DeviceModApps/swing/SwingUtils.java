@@ -17,38 +17,35 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 /**
- *
  * @author lukas2005
- *
  */
 public class SwingUtils {
 
-	public static void click(Component target, int x, int y, int mouseButton)
-	{
-	   MouseEvent press, release, click;
-	   Point point;
-	   long time;
+	public static void click(Component target, int x, int y, int mouseButton) {
+		MouseEvent press, release, click;
+		Point point;
+		long time;
 
-	   point = new Point(x, y);
+		point = new Point(x, y);
 
-	   Graphics g = target.getGraphics();
-	   g.setColor(mouseButton == 1 ? Color.RED : Color.BLUE);
-	   g.drawRoundRect(x, y, 5, 5, 5, 5);
+		Graphics g = target.getGraphics();
+		g.setColor(mouseButton == 1 ? Color.RED : Color.BLUE);
+		g.drawRoundRect(x, y, 5, 5, 5, 5);
 
-	   SwingUtilities.convertPointToScreen(point, target);
+		SwingUtilities.convertPointToScreen(point, target);
 
-	   time    = System.currentTimeMillis();
-	   press   = new MouseEvent(target, MouseEvent.MOUSE_PRESSED,  time, 0, x, y, point.x, point.y, 1, false, mouseButton);
-	   release = new MouseEvent(target, MouseEvent.MOUSE_RELEASED, time, 0, x, y, point.x, point.y, 1, false, mouseButton);
-	   click   = new MouseEvent(target, MouseEvent.MOUSE_CLICKED,  time, 0, x, y, point.x, point.y, 1, false, mouseButton);
+		time = System.currentTimeMillis();
+		press = new MouseEvent(target, MouseEvent.MOUSE_PRESSED, time, 0, x, y, point.x, point.y, 1, false, mouseButton);
+		release = new MouseEvent(target, MouseEvent.MOUSE_RELEASED, time, 0, x, y, point.x, point.y, 1, false, mouseButton);
+		click = new MouseEvent(target, MouseEvent.MOUSE_CLICKED, time, 0, x, y, point.x, point.y, 1, false, mouseButton);
 
-	   target.dispatchEvent(press);
-	   target.dispatchEvent(release);
-	   target.dispatchEvent(click);
+		target.dispatchEvent(press);
+		target.dispatchEvent(release);
+		target.dispatchEvent(click);
 	}
 
 	static public float map(float value, float istart, float istop, float ostart, float ostop) {
-	      return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+		return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
 	}
 
 	/**
@@ -59,62 +56,62 @@ public class SwingUtils {
 	 * @return whether the images are both the same or not.
 	 */
 	public static boolean compareImages(BufferedImage imgA, BufferedImage imgB) {
-	  // The images must be the same size.
-	  if (imgA.getWidth() == imgB.getWidth() && imgA.getHeight() == imgB.getHeight()) {
-	    int width = imgA.getWidth();
-	    int height = imgA.getHeight();
+		// The images must be the same size.
+		if (imgA.getWidth() == imgB.getWidth() && imgA.getHeight() == imgB.getHeight()) {
+			int width = imgA.getWidth();
+			int height = imgA.getHeight();
 
-	    // Loop over every pixel.
-	    for (int y = 0; y < height; y++) {
-	      for (int x = 0; x < width; x++) {
-	        // Compare the pixels for equality.
-	        if (imgA.getRGB(x, y) != imgB.getRGB(x, y)) {
-	          return false;
-	        }
-	      }
-	    }
-	  } else {
-	    return false;
-	  }
+			// Loop over every pixel.
+			for (int y = 0; y < height; y++) {
+				for (int x = 0; x < width; x++) {
+					// Compare the pixels for equality.
+					if (imgA.getRGB(x, y) != imgB.getRGB(x, y)) {
+						return false;
+					}
+				}
+			}
+		} else {
+			return false;
+		}
 
-	  return true;
+		return true;
 	}
 
 	public static BufferedImage resize(BufferedImage img, int newW, int newH) {
-	    Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
-	    BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
+		Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+		BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
 
-	    Graphics2D g2d = dimg.createGraphics();
-	    g2d.drawImage(tmp, 0, 0, null);
-	    g2d.dispose();
+		Graphics2D g2d = dimg.createGraphics();
+		g2d.drawImage(tmp, 0, 0, null);
+		g2d.dispose();
 
-	    return dimg;
+		return dimg;
 	}
 
 
 	public static void forwardMousePressEvent(Browser browser, MouseButtonType buttonType, int x, int y, int globalX, int globalY) {
 		BrowserMouseEventBuilder builder = new BrowserMouseEventBuilder();
 		builder.setEventType(MouseEventType.MOUSE_PRESSED)
-		.setButtonType(buttonType)
-		.setX(x)
-		.setY(y)
-		.setGlobalX(globalX)
-		.setGlobalY(globalY)
-		.setClickCount(1)
-		.setModifiers(new KeyModifiersBuilder().mouseButton().build());
+				.setButtonType(buttonType)
+				.setX(x)
+				.setY(y)
+				.setGlobalX(globalX)
+				.setGlobalY(globalY)
+				.setClickCount(1)
+				.setModifiers(new KeyModifiersBuilder().mouseButton().build());
 		browser.forwardMouseEvent(builder.build());
 	}
 
 	public static void forwardMouseReleaseEvent(Browser browser, MouseButtonType buttonType, int x, int y, int globalX, int globalY) {
 		BrowserMouseEventBuilder builder = new BrowserMouseEventBuilder();
 		builder.setEventType(MouseEventType.MOUSE_RELEASED)
-		.setButtonType(buttonType)
-		.setX(x)
-		.setY(y)
-		.setGlobalX(globalX)
-		.setGlobalY(globalY)
-		.setClickCount(1)
-		.setModifiers(KeyModifiers.NO_MODIFIERS);
+				.setButtonType(buttonType)
+				.setX(x)
+				.setY(y)
+				.setGlobalX(globalX)
+				.setGlobalY(globalY)
+				.setClickCount(1)
+				.setModifiers(KeyModifiers.NO_MODIFIERS);
 		browser.forwardMouseEvent(builder.build());
 	}
 
@@ -149,13 +146,13 @@ public class SwingUtils {
 	public static void forwardMouseScrollEvent(Browser browser, int unitsToScroll, int x, int y) {
 		BrowserMouseEventBuilder builder = new BrowserMouseEventBuilder();
 		builder.setEventType(MouseEventType.MOUSE_WHEEL)
-		.setX(x)
-		.setY(y)
-		.setGlobalX(0)
-		.setGlobalY(0)
-		.setScrollBarPixelsPerLine(25)
-		.setScrollType(MouseScrollType.WHEEL_UNIT_SCROLL)
-		.setUnitsToScroll(unitsToScroll);
+				.setX(x)
+				.setY(y)
+				.setGlobalX(0)
+				.setGlobalY(0)
+				.setScrollBarPixelsPerLine(25)
+				.setScrollType(MouseScrollType.WHEEL_UNIT_SCROLL)
+				.setUnitsToScroll(unitsToScroll);
 		browser.forwardMouseEvent(builder.build());
 	}
 

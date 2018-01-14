@@ -15,19 +15,19 @@ import static io.github.lukas2005.DeviceModApps.apps.ModApps.registerApp;
 
 public class ServerProxy implements IProxy {
 
-    @Override
-    public void preInit(FMLPreInitializationEvent e) {
-        Main.modDataDir = Paths.get(FMLCommonHandler.instance().getMinecraftServerInstance().getDataDirectory().getAbsolutePath(), "mods", Reference.MOD_ID).toFile();
-    }
+	@Override
+	public void preInit(FMLPreInitializationEvent e) {
+		Main.modDataDir = Paths.get(FMLCommonHandler.instance().getMinecraftServerInstance().getDataDirectory().getAbsolutePath(), "mods", Reference.MOD_ID).toFile();
+	}
 
-    @Override
-    public void init(FMLInitializationEvent e) {
+	@Override
+	public void init(FMLInitializationEvent e) {
 
-    }
+	}
 
-    @Override
-    public void postInit(FMLPostInitializationEvent e) {
+	@Override
+	public void postInit(FMLPostInitializationEvent e) {
 
-    }
+	}
 
 }

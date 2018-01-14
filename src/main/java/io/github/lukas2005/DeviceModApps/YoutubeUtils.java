@@ -13,31 +13,31 @@ import com.google.api.services.youtube.model.Thumbnail;
 public class YoutubeUtils {
 
 	private final static String API_KEY = "AIzaSyDR7ghkuYPkCiCuVHddGaXPVUtc9olTHBw"; //Shh! Don't tell anyone! :P
-	
-    public static YouTube youtube = new YouTube.Builder(
-            new NetHttpTransport(),
-            new JacksonFactory(),
-            request -> {
-    }).setApplicationName("lukas2005's Device Mod Apps").setYouTubeRequestInitializer(new YouTubeRequestInitializer(API_KEY)).build();
-	
+
+	public static YouTube youtube = new YouTube.Builder(
+			new NetHttpTransport(),
+			new JacksonFactory(),
+			request -> {
+			}).setApplicationName("lukas2005's Device Mod Apps").setYouTubeRequestInitializer(new YouTubeRequestInitializer(API_KEY)).build();
+
 	public static BigInteger getSubscriberCount(String channelId) throws IOException {
 		YouTube.Channels.List channels = youtube.channels().list("snippet, statistics");
 		channels.setId(channelId);
 
 		ChannelListResponse channelResponse = channels.execute();
-		
+
 		return channelResponse.getItems().get(0).getStatistics().getSubscriberCount();
 	}
-	
+
 	public static String getChannelIcon(String channelId) throws IOException {
 		YouTube.Channels.List channels = youtube.channels().list("snippet, statistics");
 		channels.setId(channelId);
 
 		ChannelListResponse channelResponse = channels.execute();
-		
+
 		Thumbnail thumbnail = (Thumbnail) channelResponse.getItems().get(0).getSnippet().getThumbnails().get("default");
 
 		return thumbnail.getUrl();
 	}
-	
+
 }

@@ -5,11 +5,11 @@ import com.mrcrayfish.device.api.app.Application;
 import java.io.File;
 
 public abstract class ApplicationBase extends Application {
-	
+
 	protected File appDataDir;
-	
+
 	public File getAppDataDir() {
 		return appDataDir;
 	}
-	
+
 }

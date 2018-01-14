@@ -17,14 +17,14 @@ public class ModApps {
 	public static void init() {
 		registerApp(new ResourceLocation(Reference.MOD_ID, "mwb"), ApplicationWebBrowser.class, true);
 		registerApp(new ResourceLocation(Reference.MOD_ID, "mta"), ApplicationMusicPlayer.class, true);
-		
+
 		//registerApp(new ResourceLocation(Reference.MOD_ID, "eka"), ApplicationEmojiKeyboard.class, false);
 		//registerApp(new ResourceLocation(Reference.MOD_ID, "dlsc"), ApplicationDerpfishLiveSubCount.class, false);
 		registerApp(new ResourceLocation(Reference.MOD_ID, "unas"), ApplicationUnofficialAppStore.class, false);
 		//registerApp(new ResourceLocation(Reference.MOD_ID, "hpa"), ApplicationHackPrinters.class, false);
 		//registerApp(new ResourceLocation(Reference.MOD_ID, "cdabcff"), ApplicationCheeseDesigner.class, false);
 	}
-	
+
 	public static void registerApp(ResourceLocation identifier, Class<? extends Application> clazz, boolean needsDataDir) {
 		ApplicationBase app = (ApplicationBase) ApplicationManager.registerApplication(identifier, clazz);
 		APPS.put(identifier, app);

@@ -11,7 +11,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class MyFontRenderer extends LaptopFontRenderer {
 
 	Minecraft mc;
-	
+
 	public MyFontRenderer(Minecraft mc) {
 		//super(mc.gameSettings, new ResourceLocation("textures/font/ascii.png"), mc.renderEngine, false);
 		super(mc);
@@ -20,13 +20,13 @@ public class MyFontRenderer extends LaptopFontRenderer {
 
 	@Override
 	protected float renderDefaultChar(int ch, boolean italic) {
-		if (!Emoji.emojiMapping.containsKey((char)ch) && !Emoji.externalEmojiMapping.containsKey((char)ch)) {
+		if (!Emoji.emojiMapping.containsKey((char) ch) && !Emoji.externalEmojiMapping.containsKey((char) ch)) {
 			return super.renderDefaultChar(ch, italic);
 		} else {
 			return renderEmoji(ch);
 		}
 	}
-	
+
 	@Override
 	protected float renderUnicodeChar(char ch, boolean italic) {
 		if (!Emoji.emojiMapping.containsKey(ch) && !Emoji.externalEmojiMapping.containsKey(ch)) {
@@ -44,22 +44,22 @@ public class MyFontRenderer extends LaptopFontRenderer {
 			return Emoji.emojiMapping.containsKey(ch) ? Emoji.getDrawSize() : Emoji.externalEmojiMapping.get(ch).getIconSize();
 		}
 	}
-	
+
 	public float renderEmoji(int ch) {
 		int returnVal = 0;
 		IIcon emojiToDraw;
 
-		if (Emoji.emojiMapping.containsKey((char)ch)) {
-			emojiToDraw = Emoji.emojiMapping.get((char)ch);
+		if (Emoji.emojiMapping.containsKey((char) ch)) {
+			emojiToDraw = Emoji.emojiMapping.get((char) ch);
 		} else {
-			emojiToDraw = Emoji.externalEmojiMapping.get((char)ch);
+			emojiToDraw = Emoji.externalEmojiMapping.get((char) ch);
 		}
 
 		if (emojiToDraw != null) {
-			emojiToDraw.draw(mc, (int)this.posX, (int)this.posY);
+			emojiToDraw.draw(mc, (int) this.posX, (int) this.posY);
 			returnVal = emojiToDraw instanceof Emoji ? Emoji.getDrawSize() : emojiToDraw.getIconSize();
 		}
 		return returnVal;
 	}
-	
+
 }
