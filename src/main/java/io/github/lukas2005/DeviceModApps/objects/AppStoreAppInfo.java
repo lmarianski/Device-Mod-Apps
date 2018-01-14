@@ -62,4 +62,10 @@ public class AppStoreAppInfo {
     public String toString() {
         return name + ":" + shortDescription + ":" + category;
     }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode()+shortDescription.hashCode()+category.hashCode();
+    }
+
 }
