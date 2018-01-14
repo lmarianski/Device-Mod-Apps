@@ -1,5 +1,6 @@
 package io.github.lukas2005.DeviceModApps;
 
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
@@ -29,7 +30,7 @@ public class ModConfig {
                     "false", // Default value
                     "Enable the debug mode (useful for reporting issues)"); // Comment
 
-            DEBUG_MODE = debugModeProp.getBoolean(); // Get the boolean value, also set the property value to boolean
+            DEBUG_MODE = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment") || debugModeProp.getBoolean();
         } catch (Exception e) {
             // Failed reading/writing, just continue
         } finally {

@@ -25,13 +25,13 @@ import net.minecraft.util.SoundCategory;
 
 public class ApplicationMusicPlayer extends ApplicationBase {
 	
-	ItemList<ListedSong> playList;
-	
 	public static ArrayList<ListedSong> defaultRecords = new ArrayList<>();
 	
 	boolean isPlaying = false;
 	
 	public SoundPlayingThread soundThread;
+
+	ItemList<ListedSong> playList;
 	
 	@Override
 	public void init() {
@@ -51,7 +51,7 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		main.addComponent(playList);
 		
 		final Button play = new Button(100, 10, 20, 20, Icons.PLAY);
-		
+		play.setEnabled(false);
 		main.addComponent(play);
 		
 		final Button pause = new Button(130, 10, 20, 20, Icons.PAUSE);
@@ -71,11 +71,10 @@ public class ApplicationMusicPlayer extends ApplicationBase {
                     soundThread = new SoundPlayingThread(playList.getSelectedItem(), progress);
                     soundThread.addEndedListener(() -> {
 						if (soundThread != null) {
-							soundThread.close();
 							soundThread = null;
 							isPlaying = false;
-							pause.setEnabled(false);
-							stop.setEnabled(false);
+							pause.setEnabled(isPlaying);
+							stop.setEnabled(isPlaying);
 							play.setEnabled(!isPlaying);
 						}
 					});
@@ -85,11 +84,11 @@ public class ApplicationMusicPlayer extends ApplicationBase {
                 }
                 isPlaying = true;
                 if (playList.getSelectedItem().ps == null) {
-                    pause.setEnabled(isPlaying);
+                    pause.setEnabled(true);
                 } else {
                     pause.setEnabled(false);
                 }
-                stop.setEnabled(true);
+                stop.setEnabled(isPlaying);
                 play.setEnabled(!isPlaying);
             }
         });
@@ -98,12 +97,8 @@ public class ApplicationMusicPlayer extends ApplicationBase {
             if (soundThread != null) {
                 soundThread.pause();
                 isPlaying = false;
-                if (playList.getSelectedItem().ps == null) {
-                    pause.setEnabled(isPlaying);
-                } else {
-                    pause.setEnabled(false);
-                }
-                stop.setEnabled(true);
+				pause.setEnabled(isPlaying);
+                stop.setEnabled(!isPlaying);
                 play.setEnabled(!isPlaying);
             }
         });
@@ -113,16 +108,14 @@ public class ApplicationMusicPlayer extends ApplicationBase {
                 soundThread.close();
                 soundThread = null;
                 isPlaying = false;
-                if (playList.getSelectedItem().ps == null) {
-                    pause.setEnabled(isPlaying);
-                } else {
-                    pause.setEnabled(false);
-                }
-                stop.setEnabled(false);
+				pause.setEnabled(isPlaying);
+                stop.setEnabled(isPlaying);
                 play.setEnabled(!isPlaying);
             }
         });
-		
+
+		playList.setItemClickListener((listedSong, index, mouseButton) -> play.setEnabled(!isPlaying));
+
 	}
 	
 	@Override
@@ -212,24 +205,20 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 					progress.setMax((int) clip.getMicrosecondLength());
 					
 					if (progressUpdateThread == null) {
-						progressUpdateThread = new Thread("Progressbar Update Thread") {
-							@Override
-							public void run() {
-								while (!Thread.interrupted()) {
-									progress.setProgress((int) clip.getMicrosecondPosition()); // /1000000
-								}
-							}
-						};
-						
+						progressUpdateThread = new Thread(() -> {
+                            while (!Thread.interrupted()) {
+                            	progress.setProgress((int) clip.getMicrosecondPosition()); // /1000000
+                            }
+						}, "Progressbar Update Thread");
 						progressUpdateThread.start();
 					}
 				}
 
 				float volume = Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.RECORDS);
-			    FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);        
-			    gainControl.setValue(20f * (float) Math.log10(volume));
+				FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+				gainControl.setValue(20f * (float) Math.log10(volume));
 				
-			    Minecraft.getMinecraft().getSoundHandler().stopSounds();
+				Minecraft.getMinecraft().getSoundHandler().stopSounds();
 				if (isAlive()) {
 					clip.start();
 				} else {
@@ -237,11 +226,18 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 				}
 			} else {
 				Minecraft mc = Minecraft.getMinecraft();
-				
-				mc.getSoundHandler().stopSounds();
-				mc.getSoundHandler().playSound(listedSong.ps);
 
-				start();
+				if (progress != null) {
+					progress.setMax((int) listedSong.length);
+				}
+
+				mc.getSoundHandler().stopSounds();
+				if (isAlive()) {
+					mc.getSoundHandler().playSound(listedSong.ps);
+				} else {
+					start();
+					mc.getSoundHandler().playSound(listedSong.ps);
+				}
 			}
 		}
 		
@@ -257,9 +253,10 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 				clip.stop();
 				clip.close();
 			} else {
-				
 				Minecraft.getMinecraft().getSoundHandler().stopSound(listedSong.ps);
 			}
+			time = 0;
+			if (progress != null) progress.setProgress((int) time);
 			if (progressUpdateThread != null) progressUpdateThread.interrupt();
 			this.interrupt();
 		}
@@ -284,7 +281,7 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 			              false);
 			      audioInputStream=AudioSystem.getAudioInputStream(targetFormat, in);
 			    }
-			    catch(UnsupportedAudioFileException ue) { System.out.println("\nUnsupported Audio"); }
+			    catch(UnsupportedAudioFileException ue) { System.out.println("Unsupported Audio"); }
 			    return audioInputStream;
 			  }
 		
@@ -300,16 +297,21 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 				try {
 					Thread.sleep((clip.getMicrosecondLength()-time)/1000);
 				} catch (InterruptedException ignored) {}
+				close();
 				for (Runnable run : listeners) {
 					new Thread(run).start();
 				}
 			} else {
-				if (Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(listedSong.ps)) {
+				while (Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(listedSong.ps)) {
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(100);
 					} catch (InterruptedException ignored) {}
-					time += 1000000;
-					progress.setProgress((int) time);
+					time += 100000;
+					if (progress != null) progress.setProgress((int) time);
+				}
+				close();
+				for (Runnable run : listeners) {
+					new Thread(run).start();
 				}
 			}
 		}

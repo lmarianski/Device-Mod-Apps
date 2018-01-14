@@ -68,14 +68,10 @@ public class ApplicationWebBrowser extends ApplicationBase {
 
 	@Override
 	public void load(NBTTagCompound tagCompound) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void save(NBTTagCompound tagCompound) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

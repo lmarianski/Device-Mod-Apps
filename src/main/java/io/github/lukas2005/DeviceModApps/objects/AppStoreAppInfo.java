@@ -41,7 +41,7 @@ public class AppStoreAppInfo {
                 classes.add(Main.classLoader.loadClass(url.toString()));
             } catch (Exception e) {
                 System.err.println("Error loading class from url: " + url.toString() + " Message: "+e.getMessage());
-                if ((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment") || ModConfig.DEBUG_MODE) e.printStackTrace();
+                if (ModConfig.DEBUG_MODE) e.printStackTrace();
             }
         }
     }

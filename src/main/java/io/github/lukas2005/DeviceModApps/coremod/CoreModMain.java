@@ -2,10 +2,9 @@ package io.github.lukas2005.DeviceModApps.coremod;
 
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.relauncher.FMLInjectionData;
-import net.minecraftforge.fml.relauncher.IFMLCallHook;
-import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
+import net.minecraftforge.fml.relauncher.*;
 
 import javax.annotation.Nullable;
 import java.io.File;
