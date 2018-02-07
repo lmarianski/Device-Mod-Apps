@@ -5,9 +5,12 @@ import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.ItemList;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
+import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.programs.system.ApplicationFileBrowser;
 import com.mrcrayfish.device.programs.system.layout.StandardLayout;
 import io.github.lukas2005.DeviceModApps.Main;
 import io.github.lukas2005.DeviceModApps.Utils;
+import io.github.lukas2005.DeviceModApps.apps.layouts.AppStoreAppLayout;
 import io.github.lukas2005.DeviceModApps.objects.AppCategory;
 import io.github.lukas2005.DeviceModApps.objects.AppStoreAppInfo;
 import io.github.lukas2005.DeviceModApps.proxy.ClientProxy;
@@ -23,20 +26,23 @@ import org.kohsuke.github.GitHub;
 
 import java.awt.*;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
+import java.util.*;
 import java.util.List;
 
 public class ApplicationUnofficialAppStore extends ApplicationBase {
 
 	public static final int LAYOUT_WIDTH = 250;
 	public static final int LAYOUT_HEIGHT = 150;
+
 	private volatile LinkedHashSet<String> repos = new LinkedHashSet<String>(Arrays.asList(new String[]{"lukas2005/Device-Mod-Apps"}));
 	private volatile ArrayList<AppStoreAppInfo> knownApps = new ArrayList<>();
-	private volatile LinkedHashSet<String> jars = new LinkedHashSet<>();
-	private ArrayList<AppStoreAppInfo> installedApps = new ArrayList<>();
+
+	private volatile HashMap<String, String> jars = new HashMap<>();
+	public volatile LinkedHashSet<URL> installedJars = new LinkedHashSet<>();
+
+	public ArrayList<AppStoreAppInfo> installedApps = new ArrayList<>();
 	private ItemList<AppStoreAppInfo> knownAppsList;
 	private ItemList<AppCategory> categoriesList;
 	private StandardLayout layoutMain;
@@ -61,12 +67,23 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
 		btnManageApps.setToolTip("Manage Apps", "Manage your installed applications");
 		layoutMain.addComponent(btnManageApps);
 
-		knownAppsList = new ItemList<>(60, 25, LAYOUT_WIDTH - 65, 8); /* 8 */
+		knownAppsList = new ItemList<>(60, 25, LAYOUT_WIDTH - 65, 4); /* 8 */
 		knownAppsList.setLoading(true);
-		knownAppsList.setListItemRenderer(new ListItemRenderer<AppStoreAppInfo>(13)/* 13 */ {
+		knownAppsList.setListItemRenderer(new ListItemRenderer<AppStoreAppInfo>(27)/* 13 */ {
+
+			private final Color ITEM_BACKGROUND = Color.decode("0x9E9E9E");
+			private final Color ITEM_SELECTED = Color.decode("0x757575");
+
 			@Override
 			public void render(AppStoreAppInfo appStoreAppInfo, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected) {
-				ClientProxy.myFontRenderer.drawString(appStoreAppInfo.name, x + 5, y + 5, !selected ? new Color(0, 0, 0).getRGB() : new Color(230, 158, 0).getRGB());
+				Gui.drawRect(x, y, x + width, y + height, selected ? ITEM_SELECTED.getRGB() : ITEM_BACKGROUND.getRGB());
+				ClientProxy.myFontRenderer.drawString(appStoreAppInfo.name, x + 5, (y+6)-(9/2), 0xFFFFFF);
+				ClientProxy.myFontRenderer.drawString(appStoreAppInfo.shortDescription, x + 5, (y+18)-(9/2), 0xFFFFFF);
+			}
+		});
+		knownAppsList.setItemClickListener((appInfo, index, mouseButton) -> {
+			if (mouseButton == 0) {
+				setCurrentLayout(new AppStoreAppLayout(LAYOUT_WIDTH, LAYOUT_HEIGHT, this, layoutMain, appInfo));
 			}
 		});
 		layoutMain.addComponent(knownAppsList);
@@ -87,6 +104,8 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
 	public void doUpdateFromGithub() {
 		knownAppsList.setLoading(true);
 		knownApps.clear();
+		installedApps.clear();
+		installedJars.clear();
 		jars.clear();
 		new Thread(() -> {
 			GitHub github = Main.github;
@@ -129,7 +148,7 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
 							if (!libsContent.isEmpty()) {
 								for (GHContent libContent : libsContent) {
 									if (libContent.isFile() && !libContent.getName().endsWith("(2).jar") && libContent.getName().endsWith(".jar")) {
-										jars.add(libContent.getDownloadUrl());
+										jars.put(repo, libContent.getDownloadUrl());
 									} else if (libContent.isDirectory()) {
 										if (!(libContent.getName().equals("doc") || libContent.getName().equals("javadoc")))
 											addToLibContent.addAll(repository.getDirectoryContent(libContent.getPath()));
@@ -162,9 +181,9 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
 	}
 
 	public void loadAllLibJars() {
-		for (String jarUrl : jars) {
+		for (URL jarUrl : installedJars) {
 			//System.out.println(jarUrl);
-			for (Class c : Utils.loadAllClassesFromRemoteJar(jarUrl)) {
+			for (Class c : Utils.loadAllClassesFromRemoteJar(jarUrl.toString())) {
 				//System.out.println(c.getName());
 			}
 		}

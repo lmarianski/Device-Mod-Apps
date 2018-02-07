@@ -23,6 +23,7 @@ import org.kohsuke.github.GitHubBuilder;
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Random;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, dependencies = "required-after:cdm@[0.2.0,]")
 public class Main {
@@ -37,6 +38,8 @@ public class Main {
 	public static final RemoteClassLoader classLoader = new RemoteClassLoader(Main.class.getClassLoader());
 	public static GitHub github;
 	public static Gson gson;
+
+	public static final Random rand = new Random();
 
 	public static ArrayList<AppInfo> alwaysAvailableApps = new ArrayList<>();
 
