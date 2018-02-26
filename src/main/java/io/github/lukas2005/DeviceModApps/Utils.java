@@ -13,9 +13,11 @@ import java.awt.event.KeyEvent;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
@@ -130,6 +132,16 @@ public class Utils {
 			}
 		}
 		return classes;
+	}
+
+	public static String formatNumber(Object num) {
+		DecimalFormat f = new DecimalFormat("###,###");
+		f.setRoundingMode(RoundingMode.HALF_UP);
+		return f.format(num);
+	}
+
+	public static String formatNumberString(String s) {
+		return formatNumber(Integer.parseInt(s));
 	}
 
 }

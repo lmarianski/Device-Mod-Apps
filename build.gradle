@@ -57,6 +57,8 @@ configurations {
     compile.extendsFrom(embed)
 	embedCore
 	compile.extendsFrom(embedCore)
+	jarInJarEmbed
+	compile.extendsFrom(jarInJarEmbed)
 }
 
 dependencies {
@@ -79,7 +81,7 @@ dependencies {
 	
 	embedCore files("lib/javassist.jar")
 
-	deobfCompile 'com.github.MrCrayfish:MrCrayfishDeviceMod:8634283b5f'
+	deobfCompile 'com.github.MrCrayfish:MrCrayfishDeviceMod:0807546f65b3493657264937f244cf89e8b5b308'
 
 	// https://mvnrepository.com/artifact/org.kohsuke/github-api
 	embed ('org.kohsuke:github-api:1.90') {
@@ -165,9 +167,11 @@ jar {
 	}
 	exclude 'io/github/lukas2005/DeviceModApps/coremod/**'
 	def DEPS = coreJar.archivePath.name
-//	configurations.embed.each {
-//		dep -> DEPS += ' ' + dep.getName()
-//	}
+
+	configurations.jarInJarEmbed.each {
+		dep -> DEPS += ' ' + dep.getName()
+	}
+
 	manifest.mainAttributes(
 			"Implementation-Title": project.name,
 			"Implementation-Version": "${project.version}",

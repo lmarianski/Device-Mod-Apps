@@ -78,7 +78,6 @@ public class ClassTransformer implements IClassTransformer {
 				CtMethod method = cc.getDeclaredMethod("setIcon", new CtClass[]{pool.get(IIcon.class.getName())});
 
 				// TODO: REMOVE THIS AFTER MRCRAYFISH WILL MERGE NEW IIcon
-
 				method.insertAfter("if ($1 instanceof Emoji) {this.iconWidth = 10; this.iconHeight = 10; updateSize(); }");
 //
 //                CtMethod method1 = cc.getDeclaredMethod("render", new CtClass[] {pool.get(Laptop.class.getName()),

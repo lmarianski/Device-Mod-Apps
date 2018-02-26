@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mrcrayfish.device.api.app.component.TextArea;
 import com.mrcrayfish.device.object.AppInfo;
+import io.github.lukas2005.DeviceModApps.apps.ApplicationDerpfishLiveSubCount;
 import io.github.lukas2005.DeviceModApps.apps.ApplicationMusicPlayer;
 import io.github.lukas2005.DeviceModApps.apps.ApplicationUnofficialAppStore;
 import io.github.lukas2005.DeviceModApps.apps.ModApps;
@@ -25,7 +26,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Random;
 
-@Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, dependencies = "required-after:cdm@[0.2.0,]")
+@Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, dependencies = "required-after:cdm@[0.3.0,]")
 public class Main {
 
 	public static File modDataDir;
@@ -73,6 +74,7 @@ public class Main {
 //            info.add(new AppStoreAppInfo("Mineuim Web Browser", "A web browser in mc!", "", AppCategory.INTERNET, new ArrayList<>()));
 //            System.out.println(gson.toJson(info));
 			//new ApplicationUnofficialAppStore().init();
+			System.out.println(YoutubeUtils.getChannelIcon(ApplicationDerpfishLiveSubCount.MRCRAYFISH_CHANNEL_ID));
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}

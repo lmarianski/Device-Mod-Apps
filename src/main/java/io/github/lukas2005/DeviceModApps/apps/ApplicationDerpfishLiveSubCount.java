@@ -6,6 +6,7 @@ import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.app.component.Text;
 
+import io.github.lukas2005.DeviceModApps.Utils;
 import io.github.lukas2005.DeviceModApps.YoutubeUtils;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -22,9 +23,13 @@ public class ApplicationDerpfishLiveSubCount extends ApplicationBase {
 	@Override
 	public void init() {
 		Layout main = new Layout(200, 130);
-		setCurrentLayout(main);
 
-		Image derpfishFace = new Image(10, 10, 50, 50, "http://yt3.ggpht.com/-3GSWfHL9moQ/AAAAAAAAAAI/AAAAAAAAAAA/0tcO6ddi8eY/s88-c-k-no-mo-rj-c0xffffff/photo.jpg");
+		Image derpfishFace = null;
+		try {
+			derpfishFace = new Image(10, 10, 50, 50, YoutubeUtils.getChannelIcon(MRCRAYFISH_CHANNEL_ID));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		Text derpfishName = new Text("MrCrayfish", 65, 20, main.width);
 		final Text derpfishSubCount = new Text("0", 65, 30, main.width);
 
@@ -32,7 +37,12 @@ public class ApplicationDerpfishLiveSubCount extends ApplicationBase {
 		main.addComponent(derpfishSubCount);
 		main.addComponent(derpfishFace);
 
-		Image derpfishDevFace = new Image(10, 70, 50, 50, "http://yt3.ggpht.com/-AzEP6eQw3Nc/AAAAAAAAAAI/AAAAAAAAAAA/BKsMPLothZE/s88-c-k-no-mo-rj-c0xffffff/photo.jpg");
+		Image derpfishDevFace = null;
+		try {
+			derpfishDevFace = new Image(10, 70, 50, 50, YoutubeUtils.getChannelIcon(MRCRAYFISHDEV_CHANNEL_ID));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		Text derpfishDevName = new Text("MrCrayfishDev", 65, 80, main.width);
 		final Text derpfishDevSubCount = new Text("0", 65, 90, main.width);
 
@@ -50,8 +60,8 @@ public class ApplicationDerpfishLiveSubCount extends ApplicationBase {
 			public void run() {
 				while (!Thread.interrupted()) {
 					try {
-						derpfishSubCount.setText(YoutubeUtils.getSubscriberCount(MRCRAYFISH_CHANNEL_ID).toString());
-						derpfishDevSubCount.setText(YoutubeUtils.getSubscriberCount(MRCRAYFISHDEV_CHANNEL_ID).toString());
+						derpfishSubCount.setText(Utils.formatNumber(YoutubeUtils.getSubscriberCount(MRCRAYFISH_CHANNEL_ID)));
+						derpfishDevSubCount.setText(Utils.formatNumber(YoutubeUtils.getSubscriberCount(MRCRAYFISHDEV_CHANNEL_ID)));
 						Thread.sleep(5000);
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -63,6 +73,7 @@ public class ApplicationDerpfishLiveSubCount extends ApplicationBase {
 		};
 
 		subUpdateThread.start();
+		setCurrentLayout(main);
 	}
 
 	@Override
