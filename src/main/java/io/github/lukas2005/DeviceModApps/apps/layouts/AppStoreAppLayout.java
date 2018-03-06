@@ -1,12 +1,10 @@
 package io.github.lukas2005.DeviceModApps.apps.layouts;
 
-import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.programs.system.layout.StandardLayout;
-import io.github.lukas2005.DeviceModApps.Main;
 import io.github.lukas2005.DeviceModApps.apps.ApplicationUnofficialAppStore;
 import io.github.lukas2005.DeviceModApps.apps.ModApps;
 import io.github.lukas2005.DeviceModApps.objects.AppStoreAppInfo;
@@ -50,7 +48,7 @@ public class AppStoreAppLayout extends StandardLayout {
 			((ApplicationUnofficialAppStore)app).loadAllLibJars();
 			try {
 				appInfo.loadClasses();
-				ModApps.registerApp(new ResourceLocation(Main.rand.nextInt()+""), appInfo.getClasses().get(appInfo.getClasses().size()-1), false);
+				ModApps.registerApp(new ResourceLocation(appInfo.id), appInfo.getClasses().get(appInfo.getClasses().size()-1), false);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}

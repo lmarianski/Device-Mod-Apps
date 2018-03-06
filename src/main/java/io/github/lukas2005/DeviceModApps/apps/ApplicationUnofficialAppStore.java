@@ -36,7 +36,7 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
 	public static final int LAYOUT_WIDTH = 250;
 	public static final int LAYOUT_HEIGHT = 150;
 
-	private volatile LinkedHashSet<String> repos = new LinkedHashSet<String>(Arrays.asList(new String[]{"lukas2005/Device-Mod-Apps"}));
+	private volatile LinkedHashSet<String> repos = new LinkedHashSet<>(Arrays.asList("lukas2005/Device-Mod-Apps"));
 	private volatile ArrayList<AppStoreAppInfo> knownApps = new ArrayList<>();
 
 	private volatile HashMap<String, String> jars = new HashMap<>();
