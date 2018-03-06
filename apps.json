@@ -1,6 +1,7 @@
 [
   {
     "name": "Mineium Web Browser",
+	"id": "lda:mwb",
     "short_description": "A web browser in mc!",
     "description": "",
     "category": "INTERNET",

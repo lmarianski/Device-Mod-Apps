@@ -17,6 +17,7 @@ public class AppStoreAppInfo {
 	public String name;
 	@SerializedName("short_description")
 	public String shortDescription;
+	public String id;
 	public String description;
 	public AppCategory category;
 
@@ -25,8 +26,9 @@ public class AppStoreAppInfo {
 
 	private LinkedHashSet<Class> classes;
 
-	public AppStoreAppInfo(String name, String shortDescription, String description, AppCategory category, ArrayList<URL> urls, ArrayList<String> jars) {
+	public AppStoreAppInfo(String name, String id, String shortDescription, String description, AppCategory category, ArrayList<URL> urls, ArrayList<String> jars) {
 		this.name = name;
+		this.id = id;
 		this.shortDescription = shortDescription;
 		this.description = description;
 		this.category = category;
