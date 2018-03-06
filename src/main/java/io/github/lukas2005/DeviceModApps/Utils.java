@@ -1,11 +1,19 @@
 package io.github.lukas2005.DeviceModApps;
 
+import com.teamdev.jxbrowser.chromium.*;
+import com.teamdev.jxbrowser.chromium.dom.By;
+import com.teamdev.jxbrowser.chromium.dom.DOMDocument;
+import com.teamdev.jxbrowser.chromium.dom.DOMElement;
+import com.teamdev.jxbrowser.chromium.events.FinishLoadingEvent;
+import com.teamdev.jxbrowser.chromium.events.LoadAdapter;
+import com.teamdev.jxbrowser.chromium.events.StartLoadingEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.Sys;
 import sun.net.www.protocol.jar.JarURLConnection;
 
 import java.awt.*;
@@ -142,6 +150,81 @@ public class Utils {
 
 	public static String formatNumberString(String s) {
 		return formatNumber(Integer.parseInt(s));
+	}
+
+	/**
+	 * Browser init code
+	 * @param dataDir
+	 * @return
+	 */
+	public static Browser initJXBrowser(File dataDir) {
+		BrowserPreferences.setChromiumSwitches("--remote-debugging-port=9222");
+
+		BrowserContextParams bcp = new BrowserContextParams(dataDir.getAbsolutePath(), "en-us");
+		BrowserContext bc = new BrowserContext(bcp);
+		Browser b = new Browser(BrowserType.LIGHTWEIGHT, bc);
+
+//		b.addLoadListener(new LoadAdapter() {
+//			@Override
+//			public void onFinishLoadingFrame(FinishLoadingEvent e) {
+//				if (e.isMainFrame()) {
+//					DOMDocument document = e.getBrowser().getDocument();
+//				}
+//			}
+//		});
+
+		return b;
+	}
+
+	/**
+	 * Used for loading in some js scripts on-the-fly (mainly for making the website work better with the browser
+	 * @param url
+	 * @param integrity
+	 */
+	public static void loadScriptInJXBrowser(Browser b, String url, String integrity) {
+		b.executeJavaScript("function loadScript(url, integrity, callback, callbackParams) {\n" +
+				"    // Adding the script tag to the head as suggested before\n" +
+				"    let head = document.getElementsByTagName('head')[0];\n" +
+				"    let script = document.createElement('script');\n" +
+				"    script.type = 'text/javascript';\n" +
+				"    script.src = url;\n" +
+				"if (integrity != null && integrity != \"null\") {\n" +
+				"script.integrity = integrity;\n" +
+				"script.crossorigin = \"anonymous\";\n" +
+				"}\n" +
+				"    if (callback != null) {\n" +
+				"let func = function() {\n" +
+				"if (callbackParams != null) {\n" +
+				"callback(callbackParams[0], callbackParams[1], callbackParams[2]);\n" +
+				"} else {\n" +
+				"callback();\n" +
+				"}\n" +
+				"}\n" +
+				"script.onreadystatechange = func;\n" +
+				"script.onload = func;\n" +
+				"} else {\n" +
+				"lock = true;\n" +
+				"let call = function() {\n" +
+				"lock = false;\n" +
+				"}\n" +
+				"script.onreadystatechange = call;\n" +
+				"script.onload = call;\n" +
+				"while (lock) {}\n" +
+				"}\n" +
+				"\n" +
+				"loaded.push(url);\n" +
+				"\n" +
+				"    // Fire the loading\n" +
+				"    head.appendChild(script);\n" +
+				"} loadScript(\""+url+"\", \""+integrity+"\")");
+	}
+
+	/**
+	 * Used for loading in some js scripts on-the-fly (mainly for making the website work better with the browser
+	 * @param url
+	 */
+	public static void loadScriptInJXBrowser(Browser b, String url) {
+		loadScriptInJXBrowser(b, url, null);
 	}
 
 }

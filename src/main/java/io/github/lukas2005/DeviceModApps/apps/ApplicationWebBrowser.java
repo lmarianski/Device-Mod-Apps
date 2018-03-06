@@ -4,11 +4,9 @@ import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.TextField;
 import com.teamdev.jxbrowser.chromium.Browser;
-import com.teamdev.jxbrowser.chromium.BrowserContext;
-import com.teamdev.jxbrowser.chromium.BrowserContextParams;
-import com.teamdev.jxbrowser.chromium.BrowserType;
 import com.teamdev.jxbrowser.chromium.events.FinishLoadingEvent;
 import com.teamdev.jxbrowser.chromium.events.LoadAdapter;
+import io.github.lukas2005.DeviceModApps.Utils;
 import io.github.lukas2005.DeviceModApps.components.WebBrowserComponent;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -16,25 +14,22 @@ public class ApplicationWebBrowser extends ApplicationBase {
 
 	Browser b;
 	WebBrowserComponent deviceModView;
-	BrowserContextParams bcp;
-	BrowserContext bc;
+	TextField addressBar;
 
 	@Override
 	public void init() {
 		try {
-			bcp = new BrowserContextParams(getAppDataDir().getAbsolutePath(), "en-us");
-			bc = new BrowserContext(bcp);
-			b = new Browser(BrowserType.LIGHTWEIGHT, bc);
-
 			Layout main = new Layout(300, 150);
 			setCurrentLayout(main);
+
+			b = Utils.initJXBrowser(getAppDataDir());
 
 			deviceModView = new WebBrowserComponent(0, 0, main.width, main.height, b);
 			b.loadURL("https://google.com");
 
 			main.addComponent(deviceModView);
 
-			final TextField addressBar = new TextField(10, 5, main.width - 30);
+			addressBar = new TextField(10, 5, main.width - 30);
 			main.addComponent(addressBar);
 
 			Button goButton = new Button(main.width - 17, 5, 15, 15, "Go!");
@@ -49,12 +44,22 @@ public class ApplicationWebBrowser extends ApplicationBase {
 				public void onFinishLoadingFrame(FinishLoadingEvent event) {
 					if (event.isMainFrame()) {
 						addressBar.setText(event.getValidatedURL());
-						//event.getBrowser().executeJavaScript("document.body.style.overflow = 'hidden';");
+						//event.getBrowser().executeJavaScript("document.body.innerHtml =\"<h1>KILL YOURSELF<\\hq1\"");
 					}
 				}
 			});
+			System.out.println(b.getRemoteDebuggingURL());
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void handleKeyReleased(char character, int code) {
+		super.handleKeyReleased(character, code);
+
+		if (code == 28) { // ENTER
+			b.loadURL(addressBar.getText());
 		}
 	}
 

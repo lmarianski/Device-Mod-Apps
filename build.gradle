@@ -33,6 +33,7 @@ compileJava {
 repositories {
 	maven { url 'https://jitpack.io' }
 	maven { url 'http://repo.jenkins-ci.org/releases' }
+	maven { url = "https://mrcrayfish.com/maven" }
 }
 
 minecraft {
@@ -81,7 +82,7 @@ dependencies {
 	
 	embedCore files("lib/javassist.jar")
 
-	deobfCompile 'com.github.MrCrayfish:MrCrayfishDeviceMod:0807546f65b3493657264937f244cf89e8b5b308'
+	compile 'com.mrcrayfish:device-api:0.3.0-1.12.2'
 
 	// https://mvnrepository.com/artifact/org.kohsuke/github-api
 	embed ('org.kohsuke:github-api:1.90') {

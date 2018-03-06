@@ -16,7 +16,7 @@ public class WebBrowserComponent extends Component {
 
 		BrowserView view = new BrowserView(b);
 
-		this.wrapper = new SwingWrapper(width, height, 1000, 450, view);
+		this.wrapper = new SwingWrapper(width, height, width*4, height*4, view);
 	}
 
 	/*

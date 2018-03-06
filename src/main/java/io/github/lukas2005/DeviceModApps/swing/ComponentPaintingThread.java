@@ -26,6 +26,8 @@ public class ComponentPaintingThread extends Thread {
 			w.frame.setSize(width + 26, height + 49);
 
 			//img.copyData(imgOld.getRaster());
+			//w.g.setColor(Color.WHITE);
+			//w.g.fillRect(0,0, w.c.getWidth(), w.c.getHeight());
 			w.c.paint(w.g);
 			//img.flush();
 

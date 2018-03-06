@@ -77,6 +77,8 @@ public class CoreModMain implements IFMLLoadingPlugin, IFMLCallHook {
 			File natives = new File(Paths.get(minecraftDir.getAbsolutePath(), "mods", "lda", "natives", nativeName).toString());
 
 			if (!natives.exists()) {
+				System.out.println("DOWNLOADING NATIVES THE GAME MAY FREEZE FOR SOME PERIOD OF TIME");
+
 				natives.getParentFile().mkdirs();
 				natives.createNewFile();
 
@@ -89,7 +91,7 @@ public class CoreModMain implements IFMLLoadingPlugin, IFMLCallHook {
 				while ((length = is.read(b)) != -1) {
 					os.write(b, 0, length);
 					//Gui.drawRect(0, 0, is.available(), 10, new Color(255, 0, 0).getRGB());
-					//RenderUtil.drawStringClipped("Downlaoding natives... " + is.available(), 0, 10, 100, new Color(255, 0, 0).getRGB(), false);
+					//RenderUtil.drawStringClipped("Downloading natives... " + is.available(), 0, 10, 100, new Color(255, 0, 0).getRGB(), false);
 				}
 				is.close();
 				os.close();
@@ -97,7 +99,7 @@ public class CoreModMain implements IFMLLoadingPlugin, IFMLCallHook {
 
 			loader.addURL(natives.toURI().toURL());
 		} catch (Exception e) {
-			System.err.println("----------------ERROR DURING DOWNLOAD OF NATIVES----------------");
+			System.err.println("----------------ERROR DURING THE DOWNLOAD OF NATIVES----------------");
 			e.printStackTrace();
 		}
 		return null;
