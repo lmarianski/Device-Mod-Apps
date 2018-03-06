@@ -48,7 +48,7 @@ public class AppStoreAppLayout extends StandardLayout {
 			((ApplicationUnofficialAppStore)app).loadAllLibJars();
 			try {
 				appInfo.loadClasses();
-				ModApps.registerApp(new ResourceLocation(appInfo.id), appInfo.getClasses().get(appInfo.getClasses().size()-1), false);
+				ModApps.registerApp(new ResourceLocation(appInfo.id), appInfo.getClasses().get(appInfo.getClasses().size()-1), appInfo.needsDataDir);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}

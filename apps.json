@@ -5,6 +5,7 @@
     "short_description": "A web browser in mc!",
     "description": "",
     "category": "INTERNET",
+	"needsDataDir": "true",
     "urls": [
       "https://github.com/lukas2005/Device-Mod-Apps/blob/master/out/production/Device-Mod-Apps_main/io/github/lukas2005/DeviceModApps/swing/SwingUtils.class?raw=true",
       "https://github.com/lukas2005/Device-Mod-Apps/blob/master/out/production/Device-Mod-Apps_main/io/github/lukas2005/DeviceModApps/swing/SwingWrapper.class?raw=true",

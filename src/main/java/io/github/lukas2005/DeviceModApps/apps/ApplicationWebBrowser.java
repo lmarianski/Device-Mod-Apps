@@ -67,8 +67,12 @@ public class ApplicationWebBrowser extends ApplicationBase {
 	public void onClose() {
 		super.onClose();
 
-		b.dispose();
-		deviceModView.dispose();
+		try {
+			b.dispose();
+			deviceModView.dispose();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

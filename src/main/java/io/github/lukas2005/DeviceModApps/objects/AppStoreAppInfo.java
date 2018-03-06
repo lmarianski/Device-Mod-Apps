@@ -20,19 +20,25 @@ public class AppStoreAppInfo {
 	public String id;
 	public String description;
 	public AppCategory category;
+	public boolean needsDataDir;
 
 	public ArrayList<URL> urls;
 	public ArrayList<URL> libs;
 
 	private LinkedHashSet<Class> classes;
 
-	public AppStoreAppInfo(String name, String id, String shortDescription, String description, AppCategory category, ArrayList<URL> urls, ArrayList<String> jars) {
+	public AppStoreAppInfo(String name, String id, String shortDescription, String description, AppCategory category, ArrayList<URL> urls, ArrayList<String> jars, boolean needsDataDir) {
 		this.name = name;
 		this.id = id;
 		this.shortDescription = shortDescription;
 		this.description = description;
 		this.category = category;
 		this.urls = urls;
+		this.needsDataDir = needsDataDir;
+	}
+
+	public AppStoreAppInfo(String name, String id, String shortDescription, String description, AppCategory category, ArrayList<URL> urls, ArrayList<String> jars) {
+		this(name, id, shortDescription, description, category, urls, jars, false);
 	}
 
 	public void loadClasses() throws ClassNotFoundException {
