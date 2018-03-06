@@ -39,14 +39,14 @@ public class ApplicationWebBrowser extends ApplicationBase {
 			//final Slider scrollBar = new Slider(main.width-5, 10, 100);
 			//main.addComponent(scrollBar);
 
-//			b.addLoadListener(new LoadAdapter() {
-//				@Override
-//				public void onFinishLoadingFrame(FinishLoadingEvent event) {
-//					if (event.isMainFrame()) {
-//						addressBar.setText(event.getValidatedURL());
-//					}
-//				}
-//			});
+			b.addLoadListener(new LoadAdapter() {
+				@Override
+				public void onFinishLoadingFrame(FinishLoadingEvent event) {
+					if (event.isMainFrame()) {
+						addressBar.setText(event.getValidatedURL());
+					}
+				}
+			});
 			System.out.println(b.getRemoteDebuggingURL());
 		} catch (Exception e) {
 			e.printStackTrace();

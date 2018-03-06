@@ -42,6 +42,9 @@ public class RemoteClassLoader extends ClassLoader {
 
 	@Override
 	public Class loadClass(String urlS) throws ClassNotFoundException {
+		if (urlS.matches(".*ApplicationWebBrowser.*")){
+			System.out.println("APP");
+		}
 		try {
 			if (classes.containsKey(urlS)) return classes.get(urlS);
 			URL url = new URL(urlS);
