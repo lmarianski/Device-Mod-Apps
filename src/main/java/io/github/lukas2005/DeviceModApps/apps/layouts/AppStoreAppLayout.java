@@ -41,16 +41,23 @@ public class AppStoreAppLayout extends StandardLayout {
 		Label longDesc = new Label(appInfo.description, 20, 44);
 		addComponent(longDesc);
 
-		Button btnInstall = new Button(width-45, height-25, 40, 20, "Install!");
+		Button btnInstall = new Button(width-45, height-25, 40, 20, ((ApplicationUnofficialAppStore)app).installedApps.contains(appInfo) ? "Uninstall" : "Install");
 		btnInstall.setClickListener((mouseX, mouseY, mouseButton) -> {
-			((ApplicationUnofficialAppStore)app).installedApps.add(appInfo);
-			((ApplicationUnofficialAppStore)app).installedJars.addAll(appInfo.libs);
-			((ApplicationUnofficialAppStore)app).loadAllLibJars();
-			try {
-				appInfo.loadClasses();
-				ModApps.registerApp(new ResourceLocation(appInfo.id), appInfo.getClasses().get(appInfo.getClasses().size()-1), appInfo.needsDataDir);
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+			if (!((ApplicationUnofficialAppStore)app).installedApps.contains(appInfo)) {
+				((ApplicationUnofficialAppStore) app).installedApps.add(appInfo);
+				((ApplicationUnofficialAppStore) app).installedJars.addAll(appInfo.libs);
+				((ApplicationUnofficialAppStore) app).loadAllLibJars();
+				try {
+					appInfo.loadClasses();
+					ModApps.registerApp(new ResourceLocation(appInfo.id), appInfo.getClasses().get(appInfo.getClasses().size() - 1), appInfo.needsDataDir);
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+				btnInstall.setText("Uninstall");
+			} else {
+				((ApplicationUnofficialAppStore) app).installedApps.remove(appInfo);
+				appInfo.unloadClasses();
+				btnInstall.setText("Install");
 			}
 		});
 		addComponent(btnInstall);

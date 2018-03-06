@@ -69,6 +69,7 @@ public class ApplicationHackPrinters extends ApplicationBase {
 						taskPrint.setCallback(((nbtTagCompound, success) -> {
 							if (!success) {
 								System.out.println("Failed to hack printer id: " + printer.getId() + " Pos: " + printer.getPos());
+								printers.remove(printer);
 							} else {
 								System.out.println("Hacked printer id: " + printer.getId() + " Pos: " + printer.getPos());
 							}

@@ -1,4 +1,4 @@
-package io.github.lukas2005.DeviceModApps;
+package io.github.lukas2005.DeviceModApps.classloader;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

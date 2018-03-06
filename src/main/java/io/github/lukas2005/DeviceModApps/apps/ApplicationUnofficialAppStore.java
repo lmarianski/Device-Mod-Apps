@@ -4,6 +4,8 @@ import com.google.gson.reflect.TypeToken;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.ItemList;
+import com.mrcrayfish.device.api.app.component.Label;
+import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.programs.system.ApplicationFileBrowser;
@@ -20,14 +22,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import org.apache.commons.io.IOUtils;
-import org.kohsuke.github.GHContent;
-import org.kohsuke.github.GHRepository;
-import org.kohsuke.github.GitHub;
+import org.kohsuke.github.*;
 
 import java.awt.*;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 
@@ -51,7 +52,6 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
 	public void init() {
 		layoutMain = new StandardLayout("Home", LAYOUT_WIDTH, LAYOUT_HEIGHT, this, null);
 		layoutMain.setIcon(Icons.HOME);
-		setCurrentLayout(layoutMain);
 
 		Button btnSearch = new Button(214, 2, Icons.SEARCH);
 		btnSearch.setToolTip("Search", "Find a specific application");
@@ -98,6 +98,7 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
 		});
 		layoutMain.addComponent(categoriesList);
 
+		setCurrentLayout(layoutMain);
 		doUpdateFromGithub();
 	}
 

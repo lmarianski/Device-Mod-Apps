@@ -6,11 +6,11 @@ import com.mrcrayfish.device.api.app.component.TextArea;
 import com.mrcrayfish.device.object.AppInfo;
 import io.github.lukas2005.DeviceModApps.apps.ApplicationDerpfishLiveSubCount;
 import io.github.lukas2005.DeviceModApps.apps.ApplicationMusicPlayer;
-import io.github.lukas2005.DeviceModApps.apps.ApplicationUnofficialAppStore;
 import io.github.lukas2005.DeviceModApps.apps.ModApps;
+import io.github.lukas2005.DeviceModApps.classloader.MultiClassLoader;
+import io.github.lukas2005.DeviceModApps.classloader.RemoteClassLoader;
 import io.github.lukas2005.DeviceModApps.objects.ListedSong;
 import io.github.lukas2005.DeviceModApps.proxy.IProxy;
-import net.minecraft.client.Minecraft;
 import net.minecraft.init.SoundEvents;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -19,7 +19,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.kohsuke.github.GitHub;
-import org.kohsuke.github.GitHubBuilder;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -36,7 +35,7 @@ public class Main {
 	@SidedProxy(serverSide = "io.github.lukas2005.DeviceModApps.proxy.ServerProxy", clientSide = "io.github.lukas2005.DeviceModApps.proxy.ClientProxy")
 	public static IProxy proxy = null;
 
-	public static final RemoteClassLoader classLoader = new RemoteClassLoader(Main.class.getClassLoader());
+	public static final MultiClassLoader classLoader = new MultiClassLoader(Main.class.getClassLoader());
 	public static GitHub github;
 	public static Gson gson;
 
@@ -51,8 +50,7 @@ public class Main {
 		ModConfig.initConfig(e.getSuggestedConfigurationFile());
 
 		try {
-			github = GitHubBuilder.fromCredentials()/*.withOAuthToken("f6710197d10c01c77b8f5a1574c10ee0b57f5e6b", "lukas2005.38@gmail.com")
-					*/.build();
+			github = GitHub.connectAnonymously();
 
 			gson = new GsonBuilder()
 					.serializeNulls()
@@ -61,7 +59,7 @@ public class Main {
 
 //            ArrayList<AppStoreAppInfo> list = Main.gson.fromJson("[\n" +
 //                    "  {\n" +
-//                    "    \"name\": \"Mineuim Web Browser\",\n" +
+//                    "    \"name\": \"Mineium Web Browser\",\n" +
 //                    "    \"shortDescription\": \"A web browser in mc!\",\n" +
 //                    "    \"description\": \"\",\n" +
 //                    "    \"category\": \"INTERNET\",\n" +
@@ -98,13 +96,13 @@ public class Main {
 		ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - Ward", SoundEvents.RECORD_WARD, 246600000));
 		//ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - 11",    SoundEvents.RECORD_11,        66600000));
 		ApplicationMusicPlayer.registerDefaultSong(new ListedSong("C418 - 13", SoundEvents.RECORD_13, 154800000));
+
+		ModApps.init();
 	}
 
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent e) {
 		proxy.postInit(e);
-
-		ModApps.init();
 	}
 
 }

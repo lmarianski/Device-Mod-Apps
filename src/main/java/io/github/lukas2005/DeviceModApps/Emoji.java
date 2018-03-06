@@ -17,7 +17,7 @@ public enum Emoji implements IIcon {
 	CHROME('ﻼ'),
 	SMILE('ﻻ'),
 	DERPFISH('ﻺ'),
-	POOP('ﻹ');
+	CHEESE('ﻹ');
 
 	public static final ResourceLocation ICON_ASSET = new ResourceLocation(Reference.MOD_ID, "textures/gui/emoji.png");
 

@@ -5,6 +5,7 @@ import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import io.github.lukas2005.DeviceModApps.Main;
 import io.github.lukas2005.DeviceModApps.ModConfig;
 import io.github.lukas2005.DeviceModApps.Utils;
+import io.github.lukas2005.DeviceModApps.classloader.RemoteClassLoader;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -44,9 +45,9 @@ public class AppStoreAppInfo {
 	public void loadClasses() throws ClassNotFoundException {
 		if (classes == null) classes = new LinkedHashSet<>();
 		for (URL url : urls) {
-			Main.classLoader.prefix = Utils.buildStringWithoutLast('.', url.getPath().substring(75).split("/")).replace("/", ".");
+			Main.classLoader.addClassLoaderForApp(this).prefix = Utils.buildStringWithoutLast('.', url.getPath().substring(75).split("/")).replace("/", ".");
 			try {
-				classes.add(Main.classLoader.loadClass(url.toString()));
+				classes.add(Main.classLoader.loadClass(this, url.toString()));
 			} catch (Exception e) {
 				System.err.println("Error loading class from url: " + url.toString() + " Message: " + e.getMessage());
 				if (ModConfig.DEBUG_MODE) e.printStackTrace();
@@ -56,10 +57,14 @@ public class AppStoreAppInfo {
 
 	public void reloadClasses() throws ClassNotFoundException {
 		classes.clear();
+		unloadClasses();
 		for (URL url : urls) {
-			Main.classLoader.removeFromCache(url.toString());
 			classes.add(Main.classLoader.loadClass(url.toString()));
 		}
+	}
+
+	public void unloadClasses() {
+		Main.classLoader.unloadApp(this);
 	}
 
 	public ArrayList<Class> getClasses() {

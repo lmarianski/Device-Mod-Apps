@@ -44,7 +44,6 @@ public class ApplicationWebBrowser extends ApplicationBase {
 				public void onFinishLoadingFrame(FinishLoadingEvent event) {
 					if (event.isMainFrame()) {
 						addressBar.setText(event.getValidatedURL());
-						//event.getBrowser().executeJavaScript("document.body.innerHtml =\"<h1>KILL YOURSELF<\\hq1\"");
 					}
 				}
 			});
