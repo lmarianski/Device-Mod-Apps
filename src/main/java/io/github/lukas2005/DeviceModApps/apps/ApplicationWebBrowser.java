@@ -14,7 +14,7 @@ public class ApplicationWebBrowser extends ApplicationBase {
 
 	Browser b;
 	WebBrowserComponent deviceModView;
-	TextField addressBar;
+	public TextField addressBar;
 
 	@Override
 	public void init() {
