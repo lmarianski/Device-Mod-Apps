@@ -36,8 +36,13 @@ public class MultiClassLoader extends ClassLoader {
 	}
 
 	public RemoteClassLoader addClassLoaderForApp(AppStoreAppInfo appInfo) {
-		RemoteClassLoader classLoader = new RemoteClassLoader(this);
-		loaderMap.put(appInfo, classLoader);
+		RemoteClassLoader classLoader;
+		if (!loaderMap.containsKey(appInfo)) {
+			classLoader = new RemoteClassLoader(this);
+			loaderMap.put(appInfo, classLoader);
+		} else {
+			classLoader = (RemoteClassLoader) loaderMap.get(appInfo);
+		}
 		return classLoader;
 	}
 

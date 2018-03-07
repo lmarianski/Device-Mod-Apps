@@ -105,8 +105,6 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
 	public void doUpdateFromGithub() {
 		knownAppsList.setLoading(true);
 		knownApps.clear();
-		installedApps.clear();
-		installedJars.clear();
 		jars.clear();
 		new Thread(() -> {
 			GitHub github = Main.github;
@@ -199,6 +197,12 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
 				repos.add(list.getStringTagAt(i));
 			}
 		}
+		if (tagCompound.hasKey("installedApps")) {
+			NBTTagList list = (NBTTagList) tagCompound.getTag("installedApps");
+			for (int i = 0; i < list.tagCount(); i++) {
+				installedApps.add(AppStoreAppInfo.readFromNBT(list.getStringTagAt(i)));
+			}
+		}
 	}
 
 	@Override
@@ -208,5 +212,10 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
 			list.appendTag(new NBTTagString(r));
 		}
 		tagCompound.setTag("repos", list);
+		NBTTagList list2 = new NBTTagList();
+		for (AppStoreAppInfo r : installedApps) {
+			list2.appendTag(r.saveToNBT());
+		}
+		tagCompound.setTag("installedApps", list2);
 	}
 }

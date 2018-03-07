@@ -7,6 +7,9 @@ import io.github.lukas2005.DeviceModApps.ModConfig;
 import io.github.lukas2005.DeviceModApps.Utils;
 import io.github.lukas2005.DeviceModApps.classloader.RemoteClassLoader;
 import net.minecraft.launchwrapper.Launch;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import java.net.URL;
@@ -71,6 +74,14 @@ public class AppStoreAppInfo {
 		return new ArrayList<>(classes);
 	}
 
+	public NBTTagString saveToNBT() {
+		return new NBTTagString(Main.gson.toJson(this));
+	}
+
+	public static AppStoreAppInfo readFromNBT(String s) {
+		return Main.gson.fromJson(s, AppStoreAppInfo.class);
+	}
+
 	@Override
 	public String toString() {
 		return name + ":" + shortDescription + ":" + category;
@@ -78,7 +89,11 @@ public class AppStoreAppInfo {
 
 	@Override
 	public int hashCode() {
-		return name.hashCode() + shortDescription.hashCode() + category.hashCode();
+		return toString().hashCode();
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		return hashCode() == obj.hashCode();
+	}
 }

@@ -25,6 +25,8 @@ public class AppStoreAppLayout extends StandardLayout {
 	public void init() {
 		setIcon(Icons.HOME);
 
+		System.out.println(appInfo.hashCode());
+
 		Button btnPrev = new Button(214, 2, Icons.ARROW_LEFT);
 		btnPrev.setToolTip("Back", "Go back to the app list");
 		btnPrev.setClickListener((mouseX, mouseY, mouseButton) ->
@@ -55,6 +57,7 @@ public class AppStoreAppLayout extends StandardLayout {
 				}
 				btnInstall.setText("Uninstall");
 			} else {
+				ModApps.unregisterApp(new ResourceLocation(appInfo.id));
 				((ApplicationUnofficialAppStore) app).installedApps.remove(appInfo);
 				appInfo.unloadClasses();
 				btnInstall.setText("Install");
