@@ -114,7 +114,6 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
 					if (repository.getName().equals("Device-Mod-Apps")) {
 						GHContent content = repository.getFileContent("app-repos.json", "unofficial-app-store");
 						String jsonString = IOUtils.toString(content.read(), Charset.defaultCharset());
-						GitHub.
 						ArrayList<String> list = Main.gson.fromJson(jsonString, new TypeToken<List<String>>() {
 						}.getType());
 
