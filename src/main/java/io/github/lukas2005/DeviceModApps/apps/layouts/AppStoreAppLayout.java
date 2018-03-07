@@ -57,10 +57,14 @@ public class AppStoreAppLayout extends StandardLayout {
 				}
 				btnInstall.setText("Uninstall");
 			} else {
-				ModApps.unregisterApp(new ResourceLocation(appInfo.id));
-				((ApplicationUnofficialAppStore) app).installedApps.remove(appInfo);
-				appInfo.unloadClasses();
-				btnInstall.setText("Install");
+				try {
+					ModApps.unregisterApp(new ResourceLocation(appInfo.id));
+					((ApplicationUnofficialAppStore) app).installedApps.remove(appInfo);
+					appInfo.unloadClasses();
+					btnInstall.setText("Install");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		addComponent(btnInstall);

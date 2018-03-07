@@ -149,6 +149,16 @@ public class ClassTransformer implements IClassTransformer {
 					returnBytecode = cc.toBytecode();
 					break;
 				}
+				case "com.mrcrayfish.device.api.ApplicationManager": {
+					// Get the CtClass
+					CtClass cc = pool.get(name);
+
+					CtField f = cc.getDeclaredField("APP_INFO");
+					f.setModifiers(f.getModifiers() & ~Modifier.FINAL);
+
+					returnBytecode = cc.toBytecode();
+					break;
+				}
 //				case "com.mrcrayfish.device.core.Laptop": {
 //					// Get the CtClass
 //					CtClass cc = pool.get(name);

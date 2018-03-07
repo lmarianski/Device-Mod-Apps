@@ -3,7 +3,9 @@ package io.github.lukas2005.DeviceModApps.apps;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.proxy.CommonProxy;
 import com.teamdev.jxbrowser.chromium.Browser;
 import io.github.lukas2005.DeviceModApps.Main;
 import io.github.lukas2005.DeviceModApps.Reference;
@@ -11,6 +13,7 @@ import io.github.lukas2005.DeviceModApps.Utils;
 import io.github.lukas2005.DeviceModApps.components.WebBrowserComponent;
 import io.github.lukas2005.DeviceModApps.swing.SwingWrapper;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -57,20 +60,23 @@ public class ModApps {
 
 			HashMap APP_INFO = (HashMap) appInfoField.get(null);
 			APP_INFO.remove(identifier);
-			Utils.setFinalStatic(appInfoField, APP_INFO);
 
-			Class proxyClass = MrCrayfishDeviceMod.proxy.getClass();
-			Field allowedAppsField = appManagerClass.getDeclaredField("allowedApps");
+			Class proxyClass = CommonProxy.class;
+			Field allowedAppsField = proxyClass.getDeclaredField("allowedApps");
 			allowedAppsField.setAccessible(true);
 
 			List<AppInfo> allowedApps = (List) allowedAppsField.get(MrCrayfishDeviceMod.proxy);
-			for (AppInfo info : allowedApps) {
-				if (info.getId() == identifier) {
-					allowedApps.remove(info);
-					break;
+			if (allowedApps != null) {
+				for (AppInfo info : allowedApps) {
+					if (info.getId() == identifier) {
+						allowedApps.remove(info);
+						break;
+					}
 				}
 			}
-			allowedAppsField.set(MrCrayfishDeviceMod.proxy, allowedApps);
+
+			java.util.List<Application> applications = ReflectionHelper.getPrivateValue(Laptop.class, null, "APPLICATIONS");
+			applications.remove(APPS.get(identifier));
 
 			APPS.remove(identifier);
 		} catch (Exception e) {
