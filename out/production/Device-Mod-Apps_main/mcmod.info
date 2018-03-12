@@ -5,10 +5,10 @@
   "description": "Mod that contains all of my apps for the Device Mod",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "",
+  "url": "https://github.com/lukas2005/Device-Mod-Apps",
   "updateUrl": "",
   "authorList": ["lukas2005"],
-  "credits": "Mr Crayfish for the Device Mod and teamdev for the awesome JxBrowser library (https://goo.gl/Ys9cdZ) that Mineuim Web Browser uses",
+  "credits": "Mr Crayfish for the Device Mod and teamdev for the awesome JxBrowser library (https://goo.gl/Ys9cdZ) that Mineium Web Browser uses",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
