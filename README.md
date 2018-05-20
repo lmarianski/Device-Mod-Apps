@@ -1,7 +1,7 @@
-
 # Device Mod Apps
 This is a repo with all my apps for the Mr Crayfish Device Mod (https://www.youtube.com/watch?v=qswUbwKbVzE)
 CurseForge: https://minecraft.curseforge.com/projects/device-mod-apps
+Discord: https://discord.gg/An4gV3x
 
 # App listing
 ## Mineium Web Browser
