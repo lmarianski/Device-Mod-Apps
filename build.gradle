@@ -93,6 +93,8 @@ dependencies {
 		exclude group: 'com.google.guava'
 	}
 
+	compile 'com.github.lukas2005:Device-Essentials:21f9e02c18a231d85e69bcfa6c1415682af07927'
+
 	// real examples
     //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
     //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env

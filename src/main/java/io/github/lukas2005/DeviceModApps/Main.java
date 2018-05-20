@@ -25,7 +25,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Random;
 
-@Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, dependencies = "required-after:cdm@[0.3.0,]")
+@Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, dependencies = "required-after:cdm@[0.3.0,], device_essentials@[0.0.1,]")
 public class Main {
 
 	public static File modDataDir;
@@ -42,6 +42,8 @@ public class Main {
 	public static final Random rand = new Random();
 
 	public static ArrayList<AppInfo> alwaysAvailableApps = new ArrayList<>();
+
+	static {io.github.lukas2005.device_essentials.Main.registerTestApps = false;}
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent e) {

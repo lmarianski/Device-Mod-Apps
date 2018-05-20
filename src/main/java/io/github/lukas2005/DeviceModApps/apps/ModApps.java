@@ -32,13 +32,14 @@ public class ModApps {
 
 		registerApp(new ResourceLocation(Reference.MOD_ID, "mta"), ApplicationMusicPlayer.class, true);
 
+		registerApp(new ResourceLocation(Reference.MOD_ID, "pan"), ApplicationPixelAnimator.class, false);
 		registerApp(new ResourceLocation(Reference.MOD_ID, "eka"), ApplicationEmojiKeyboard.class, false);
 		registerApp(new ResourceLocation(Reference.MOD_ID, "dlsc"), ApplicationDerpfishLiveSubCount.class, false);
 		//registerApp(new ResourceLocation(Reference.MOD_ID, "unas"), ApplicationUnofficialAppStore.class, false);
 		//registerApp(new ResourceLocation(Reference.MOD_ID, "hpa"), ApplicationHackPrinters.class, false);
 	}
 
-	public static ApplicationBase registerApp(ResourceLocation identifier, Class<? extends Application> clazz, boolean needsDataDir) {
+	public static ApplicationBase registerApp(ResourceLocation identifier, Class<? extends ApplicationBase> clazz, boolean needsDataDir) {
 		ApplicationBase app = (ApplicationBase) ApplicationManager.registerApplication(identifier, clazz);
 		APPS.put(identifier, app);
 		if (needsDataDir) {
