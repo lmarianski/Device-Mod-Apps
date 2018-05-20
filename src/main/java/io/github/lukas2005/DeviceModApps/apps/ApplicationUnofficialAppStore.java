@@ -49,7 +49,7 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
 	private StandardLayout layoutMain;
 
 	@Override
-	public void init() {
+	public void init(NBTTagCompound nbt) {
 		layoutMain = new StandardLayout("Home", LAYOUT_WIDTH, LAYOUT_HEIGHT, this, null);
 		layoutMain.setIcon(Icons.HOME);
 

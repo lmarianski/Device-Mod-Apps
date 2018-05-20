@@ -20,7 +20,7 @@ public class ApplicationEmojiKeyboard extends ApplicationBase {
 	HashMap<Button, IIcon> buttonEmojiHashMap = new HashMap<>();
 
 	@Override
-	public void init() {
+	public void init(NBTTagCompound nbt) {
 		System.out.println(Main.textAreas.size());
 		Layout main = new Layout();
 		setCurrentLayout(main);

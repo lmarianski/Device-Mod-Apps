@@ -17,7 +17,7 @@ public class ApplicationWebBrowser extends ApplicationBase {
 	public TextField addressBar;
 
 	@Override
-	public void init() {
+	public void init(NBTTagCompound nbt) {
 		try {
 			Layout main = new Layout(300, 150);
 			setCurrentLayout(main);

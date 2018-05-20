@@ -6,12 +6,8 @@ import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.proxy.CommonProxy;
-import com.teamdev.jxbrowser.chromium.Browser;
 import io.github.lukas2005.DeviceModApps.Main;
 import io.github.lukas2005.DeviceModApps.Reference;
-import io.github.lukas2005.DeviceModApps.Utils;
-import io.github.lukas2005.DeviceModApps.components.WebBrowserComponent;
-import io.github.lukas2005.DeviceModApps.swing.SwingWrapper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 

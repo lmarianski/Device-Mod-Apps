@@ -32,7 +32,7 @@ public class ApplicationHackPrinters extends ApplicationBase {
 	private Picture selectedPic = null;
 
 	@Override
-	public void init() {
+	public void init(NBTTagCompound nbt) {
 		Layout main = new Layout();
 		setCurrentLayout(main);
 

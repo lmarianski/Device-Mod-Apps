@@ -21,7 +21,9 @@ public enum Emoji implements IIcon {
 
 	public static final ResourceLocation ICON_ASSET = new ResourceLocation(Reference.MOD_ID, "textures/gui/emoji.png");
 
-	public static final int ICON_SIZE = 64;
+	public static final int ICON_SIZE = 10;
+	public static final int TEXTURE_SIZE = 64;
+
 	public static final int GRID_SIZE = 20;
 
 
@@ -63,12 +65,6 @@ public enum Emoji implements IIcon {
 		return ICON_SIZE;
 	}
 
-
-	// TODO: REMOVE THIS AFTER MRCRAYFISH WILL MERGE NEW IIcon
-	public static int getDrawSize() {
-		return 10;
-	}
-
 	@Override
 	public int getGridWidth() {
 		return GRID_SIZE;
@@ -79,7 +75,21 @@ public enum Emoji implements IIcon {
 		return GRID_SIZE;
 	}
 
-	// TODO: REMOVE THIS AFTER MRCRAYFISH WILL MERGE NEW IIcon
+	@Override
+	public int getSourceHeight() {
+		return TEXTURE_SIZE;
+	}
+
+	@Override
+	public int getSourceWidth() {
+		return TEXTURE_SIZE;
+	}
+
+	@Override
+	public int getOrdinal() {
+		return ordinal();
+	}
+
 	@Override
 	public int getU() {
 		return (ordinal() % GRID_SIZE) * ICON_SIZE;
@@ -88,15 +98,5 @@ public enum Emoji implements IIcon {
 	@Override
 	public int getV() {
 		return (ordinal() / GRID_SIZE) * ICON_SIZE;
-	}
-
-	@Override
-	public void draw(Minecraft mc, int x, int y) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F);
-		mc.getTextureManager().bindTexture(getIconAsset());
-		int size = getIconSize();
-		int assetWidth = getGridWidth() * size;
-		int assetHeight = getGridHeight() * size;
-		RenderUtil.drawRectWithTexture(x, y, getU(), getV(), getDrawSize(), getDrawSize(), size, size, assetWidth, assetHeight);
 	}
 }

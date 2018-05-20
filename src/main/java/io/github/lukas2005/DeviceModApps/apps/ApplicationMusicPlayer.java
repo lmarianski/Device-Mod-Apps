@@ -34,7 +34,7 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 	ItemList<ListedSong> playList;
 
 	@Override
-	public void init() {
+	public void init(NBTTagCompound nbt) {
 		Layout main = new Layout();
 		setCurrentLayout(main);
 

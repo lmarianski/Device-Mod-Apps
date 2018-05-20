@@ -21,7 +21,7 @@ public class ApplicationDerpfishLiveSubCount extends ApplicationBase {
 	public static final String MRCRAYFISHDEV_CHANNEL_ID = "UC4GuSW24-hQTAz2fSWt0_Vw";
 
 	@Override
-	public void init() {
+	public void init(NBTTagCompound nbt) {
 		Layout main = new Layout(200, 130);
 
 		Image derpfishFace = null;

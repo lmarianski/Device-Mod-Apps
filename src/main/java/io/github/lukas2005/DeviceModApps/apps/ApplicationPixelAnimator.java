@@ -22,7 +22,7 @@ public class ApplicationPixelAnimator extends ApplicationBase {
 	Layout layoutAnimationPreview;
 
 	@Override
-	public void init() {
+	public void init(NBTTagCompound nbt) {
 		Layout layoutLoadImages = new Layout(50, 100);
 
 		Button loadImage = UIUtils.createCenteredButton(layoutLoadImages, true, false, 10, 5, 0, 50 - 5 / 2);
@@ -51,8 +51,8 @@ public class ApplicationPixelAnimator extends ApplicationBase {
 		final Image[] image = new Image[1];
 		layoutAnimationPreview = new Layout() {
 			@Override
-			protected void handleOnLoad() {
-				super.handleOnLoad();
+			public void handleLoad() {
+				super.handleLoad();
 				currentFrame = frames.get(0);
 
 				Image im = new Image(10, 10, 0, 0, currentFrame.getWidth(), currentFrame.getHeight(), Utils.pictureToResourceLocation(currentFrame));

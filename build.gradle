@@ -82,7 +82,7 @@ dependencies {
 	
 	embedCore files("lib/javassist.jar")
 
-	compile 'com.mrcrayfish:device-api:0.3.0-1.12.2'
+	compile 'com.mrcrayfish:device-api:0.4.0-1.12.2'
 
 	// https://mvnrepository.com/artifact/org.kohsuke/github-api
 	embed ('org.kohsuke:github-api:1.90') {
