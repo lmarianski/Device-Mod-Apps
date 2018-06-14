@@ -3,7 +3,7 @@
   "author": "lukas2005",
   "description": "An app that allow you to animate pixel painter drawings!",
   "version": "0.1",
-  "icon": "lda:textures/icon/pan.png",
+  "icon": "lda:textures/app/icon/pan.png",
   "screenshots": [
   ]
 }

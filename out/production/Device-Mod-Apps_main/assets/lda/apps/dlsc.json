@@ -1,9 +1,10 @@
 {
   "name": "MrCrayfish Live Sub Count",
   "author": "lukas2005",
-  "description": "Just a live sub count app",
+  "description": "Just a live sub count app for our favorite YouTuber",
   "version": "0.1",
-  "icon": "lda:textures/icon/dlsc.png",
+  "icon": "lda:textures/app/icon/dlsc.png",
   "screenshots": [
+    "lda:textures/app/images/dlsc_img_1.png"
   ]
 }

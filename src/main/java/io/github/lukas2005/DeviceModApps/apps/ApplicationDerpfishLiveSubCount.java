@@ -6,11 +6,11 @@ import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.app.component.Text;
 
-import io.github.lukas2005.DeviceModApps.Utils;
+import io.github.lukas2005.DeviceModApps.utils.Utils;
 import io.github.lukas2005.DeviceModApps.YoutubeUtils;
 import net.minecraft.nbt.NBTTagCompound;
 
-/*
+/**
  * Don't tell anyone that i called MrCrayfish a Derpfish here!
  */
 public class ApplicationDerpfishLiveSubCount extends ApplicationBase {

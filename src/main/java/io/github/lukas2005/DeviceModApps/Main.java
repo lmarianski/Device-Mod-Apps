@@ -5,13 +5,12 @@ import com.google.gson.GsonBuilder;
 import com.mrcrayfish.device.api.app.component.TextArea;
 import com.mrcrayfish.device.object.AppInfo;
 import io.github.lukas2005.DeviceModApps.apps.ApplicationDerpfishLiveSubCount;
-import io.github.lukas2005.DeviceModApps.apps.ApplicationMusicPlayer;
 import io.github.lukas2005.DeviceModApps.apps.ModApps;
 import io.github.lukas2005.DeviceModApps.classloader.MultiClassLoader;
-import io.github.lukas2005.DeviceModApps.classloader.RemoteClassLoader;
-import io.github.lukas2005.DeviceModApps.objects.ListedSong;
 import io.github.lukas2005.DeviceModApps.proxy.IProxy;
+import net.minecraft.client.Minecraft;
 import net.minecraft.init.SoundEvents;
+import net.minecraftforge.fml.common.MinecraftDummyContainer;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -25,12 +24,10 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Random;
 
-@Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, dependencies = "required-after:cdm@[0.3.0,], device_essentials@[0.0.1,]")
+@Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, dependencies = "required-after:cdm@[0.4.0,]; required-after:device_essentials;")
 public class Main {
 
 	public static File modDataDir;
-
-	public static final ArrayList<WeakReference<TextArea>> textAreas = new ArrayList<>();
 
 	@SidedProxy(serverSide = "io.github.lukas2005.DeviceModApps.proxy.ServerProxy", clientSide = "io.github.lukas2005.DeviceModApps.proxy.ClientProxy")
 	public static IProxy proxy = null;
@@ -44,6 +41,8 @@ public class Main {
 	public static ArrayList<AppInfo> alwaysAvailableApps = new ArrayList<>();
 
 	static {io.github.lukas2005.device_essentials.Main.registerTestApps = false;}
+
+	public static WeakReference<TextArea> lastFocusedTextArea = null;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent e) {
@@ -78,7 +77,6 @@ public class Main {
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-
 		if (!modDataDir.exists()) modDataDir.mkdirs();
 	}
 

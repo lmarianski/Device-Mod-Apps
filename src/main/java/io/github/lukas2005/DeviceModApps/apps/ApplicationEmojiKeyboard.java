@@ -21,7 +21,6 @@ public class ApplicationEmojiKeyboard extends ApplicationBase {
 
 	@Override
 	public void init(NBTTagCompound nbt) {
-		System.out.println(Main.textAreas.size());
 		Layout main = new Layout();
 		setCurrentLayout(main);
 		for (Emoji e : Emoji.values()) {
@@ -41,22 +40,17 @@ public class ApplicationEmojiKeyboard extends ApplicationBase {
 		}
 		buttonEmojiHashMap.put(emojiButton, e);
 		emojiButton.setClickListener((mouseX, mouseY, mouseButton) -> {
-			IIcon emoji = /*buttonEmojiHashMap.get(emojiButton)*/e;
-			Class<TextArea> textAreaClass = TextArea.class;
-			Field isFocusedField = null;
+			IIcon emoji = e;
 			try {
-				isFocusedField = textAreaClass.getDeclaredField("isFocused");
-				isFocusedField.setAccessible(true);
-				for (WeakReference<TextArea> areaReference : Main.textAreas) {
-					TextArea area = areaReference.get();
-					if (isFocusedField != null && (boolean) isFocusedField.get(area)) {
+				if (Main.lastFocusedTextArea != null) {
+					TextArea area = Main.lastFocusedTextArea.get();
+					if (area != null) {
 						if (emoji instanceof Emoji) {
 							area.writeText(Character.toString(((Emoji) emoji).assignedChar));
 						} else {
 							area.writeText(Character.toString((Character) Emoji.externalEmojiMapping.keySet().toArray()[Emoji.externalValues.indexOf(emoji)]));
 						}
 					}
-					area = null;
 				}
 			} catch (Exception e1) {
 				e1.printStackTrace();

@@ -1,16 +1,10 @@
 package io.github.lukas2005.DeviceModApps.objects;
 
 import com.google.gson.annotations.SerializedName;
-import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import io.github.lukas2005.DeviceModApps.Main;
 import io.github.lukas2005.DeviceModApps.ModConfig;
-import io.github.lukas2005.DeviceModApps.Utils;
-import io.github.lukas2005.DeviceModApps.classloader.RemoteClassLoader;
-import net.minecraft.launchwrapper.Launch;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
+import io.github.lukas2005.DeviceModApps.utils.Utils;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import java.net.URL;
 import java.util.ArrayList;

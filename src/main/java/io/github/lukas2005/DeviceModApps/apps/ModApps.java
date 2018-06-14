@@ -7,6 +7,7 @@ import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.proxy.CommonProxy;
 import io.github.lukas2005.DeviceModApps.Main;
+import io.github.lukas2005.DeviceModApps.ModConfig;
 import io.github.lukas2005.DeviceModApps.Reference;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -21,17 +22,19 @@ public class ModApps {
 
 	public static HashMap<ResourceLocation, ApplicationBase> APPS = new HashMap<>();
 
-	public static ApplicationWebBrowser webBrowser;
+	//public static ApplicationWebBrowser webBrowser;
 
 	public static void init() {
-		webBrowser = (ApplicationWebBrowser) registerApp(new ResourceLocation(Reference.MOD_ID, "mwb"), ApplicationWebBrowser.class, true);
-
-		registerApp(new ResourceLocation(Reference.MOD_ID, "mta"), ApplicationMusicPlayer.class, true);
-
-		registerApp(new ResourceLocation(Reference.MOD_ID, "pan"), ApplicationPixelAnimator.class, false);
-		registerApp(new ResourceLocation(Reference.MOD_ID, "eka"), ApplicationEmojiKeyboard.class, false);
+		registerApp(new ResourceLocation(Reference.MOD_ID, "mwb") , ApplicationWebBrowser.class          , true);
+		registerApp(new ResourceLocation(Reference.MOD_ID, "mta") , ApplicationMusicPlayer.class         , true);
+		registerApp(new ResourceLocation(Reference.MOD_ID, "eka") , ApplicationEmojiKeyboard.class       , false);
 		registerApp(new ResourceLocation(Reference.MOD_ID, "dlsc"), ApplicationDerpfishLiveSubCount.class, false);
-		//registerApp(new ResourceLocation(Reference.MOD_ID, "unas"), ApplicationUnofficialAppStore.class, false);
+
+		// Debug only not ready for release apps.
+		if (ModConfig.DEBUG_MODE) {
+			registerApp(new ResourceLocation(Reference.MOD_ID, "pan"), ApplicationPixelAnimator.class, false);
+			registerApp(new ResourceLocation(Reference.MOD_ID, "unas"), ApplicationUnofficialAppStore.class, false);
+		}
 		//registerApp(new ResourceLocation(Reference.MOD_ID, "hpa"), ApplicationHackPrinters.class, false);
 	}
 
@@ -62,7 +65,7 @@ public class ModApps {
 			Field allowedAppsField = proxyClass.getDeclaredField("allowedApps");
 			allowedAppsField.setAccessible(true);
 
-			List<AppInfo> allowedApps = (List) allowedAppsField.get(MrCrayfishDeviceMod.proxy);
+			List<AppInfo> allowedApps = (List<AppInfo>) allowedAppsField.get(MrCrayfishDeviceMod.proxy);
 			if (allowedApps != null) {
 				for (AppInfo info : allowedApps) {
 					if (info.getId() == identifier) {

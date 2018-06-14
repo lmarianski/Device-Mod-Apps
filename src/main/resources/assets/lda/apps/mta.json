@@ -3,7 +3,9 @@
   "author": "lukas2005",
   "description": "A music player",
   "version": "0.1",
-  "icon": "lda:textures/icon/mta.png",
+  "icon": "lda:textures/app/icon/mta.png",
   "screenshots": [
+    "lda:textures/app/images/mta_img_1.png",
+    "lda:textures/app/images/mta_img_2.png"
   ]
 }

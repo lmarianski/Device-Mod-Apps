@@ -1,116 +1,145 @@
 package io.github.lukas2005.DeviceModApps.apps;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Objects;
-
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.FloatControl;
-import javax.sound.sampled.UnsupportedAudioFileException;
-
+import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.ItemList;
+import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.ProgressBar;
-
-import io.github.lukas2005.DeviceModApps.objects.ListedSong;
-import javazoom.spi.vorbis.sampled.file.VorbisAudioFileReader;
-import net.minecraft.client.Minecraft;
+import com.mrcrayfish.device.core.Laptop;
+import io.github.lukas2005.DeviceModApps.utils.Utils;
+import io.github.lukas2005.DeviceModApps.utils.sound.Sound;
+import io.github.lukas2005.DeviceModApps.utils.sound.SoundPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.SoundCategory;
+
+import javax.annotation.Nullable;
+import javax.rmi.CORBA.Util;
+import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 
 public class ApplicationMusicPlayer extends ApplicationBase {
 
-	public static ArrayList<ListedSong> defaultRecords = new ArrayList<>();
+	public static ArrayList<Sound> defaultRecords = new ArrayList<>();
 
 	boolean isPlaying = false;
 
-	public SoundPlayingThread soundThread;
+	public SoundPlayer soundThread;
+	Thread progressBarUpdateThread;
 
-	ItemList<ListedSong> playList;
+	ItemList<Sound> playList = new ItemList<>(5, 5, 75, 6);
 
 	@Override
 	public void init(NBTTagCompound nbt) {
 		Layout main = new Layout();
 		setCurrentLayout(main);
 
-		playList = new ItemList<>(5, 5, 75, 6);
-
-
-		for (ListedSong e : defaultRecords) {
+		for (Sound e : defaultRecords) {
 			if (!playList.getItems().contains(e)) {
 				playList.addItem(e);
 				markDirty();
 			}
 		}
 
+		//try {
+			//playList.addItem(new Sound("Sample Audio from URL", new URL("https://www.sample-videos.com/audio/mp3/wave.mp3")));
+			//playList.addItem(new Sound("WD2 Song", new File("D:\\Im a Watch Dog (Watch Dogs 2 Song).mp3")));
+		//} catch (IOException e) {
+		//	e.printStackTrace();
+		//}
+
 		main.addComponent(playList);
 
-		final Button play = new Button(100, 10, 20, 20, Icons.PLAY);
+		Button add = new Button(85, 80, 10, 10, Icons.PLUS);
+		main.addComponent(add);
+
+		Button remove = new Button(85, 65, 10, 10, Icons.TRASH);
+		main.addComponent(remove);
+
+		Button play = new Button(100, 10, 20, 20, Icons.PLAY);
 		play.setEnabled(false);
 		main.addComponent(play);
 
-		final Button pause = new Button(130, 10, 20, 20, Icons.PAUSE);
+		Button pause = new Button(130, 10, 20, 20, Icons.PAUSE);
 		pause.setEnabled(false);
 		main.addComponent(pause);
 
-		final Button stop = new Button(160, 10, 20, 20, Icons.STOP);
+		Button stop = new Button(160, 10, 20, 20, Icons.STOP);
 		stop.setEnabled(false);
 		main.addComponent(stop);
 
-		final ProgressBar progress = new ProgressBar(100, 50, 80, 10);
+		ProgressBar progress = new ProgressBar(100, 50, 80, 10);
 		main.addComponent(progress);
+
+		add.setClickListener((mouseX, mouseY, mouseButton) -> openDialog(new PickSongSource(this)));
+
+		remove.setClickListener((mouseX, mouseY, mouseButton) -> playList.removeItem(playList.getSelectedIndex()));
 
 		play.setClickListener((mouseX, mouseY, mouseButton) -> {
 			if (playList.getSelectedItem() != null) {
 				if (soundThread == null) {
-					soundThread = new SoundPlayingThread(playList.getSelectedItem(), progress);
-					soundThread.addEndedListener(() -> {
-						if (soundThread != null) {
-							soundThread = null;
-							isPlaying = false;
-							pause.setEnabled(isPlaying);
-							stop.setEnabled(isPlaying);
-							play.setEnabled(!isPlaying);
-						}
+					soundThread = new SoundPlayer(playList.getSelectedItem(), Laptop.getPos());
+					soundThread.addEndListener(() -> {
+						soundThread = null;
+						isPlaying = false;
+
+						pause.setEnabled(false);
+						stop.setEnabled(false);
+						play.setEnabled(true);
+
+						progress.setProgress(0);
+
+						progressBarUpdateThread.interrupt();
 					});
+					soundThread.addStartListener(() -> {
+						progressBarUpdateThread = new Thread(() -> {
+							progress.setMax((int) soundThread.getLength());
+							while (!Thread.currentThread().isInterrupted()) {
+								if (soundThread != null) progress.setProgress((int) soundThread.getTime());
+							}
+						});
+						progressBarUpdateThread.start();
+					});
+
 					soundThread.play();
 				} else {
 					soundThread.play();
 				}
 				isPlaying = true;
-				if (playList.getSelectedItem().ps == null) {
-					pause.setEnabled(true);
-				} else {
-					pause.setEnabled(false);
-				}
-				stop.setEnabled(isPlaying);
-				play.setEnabled(!isPlaying);
+				pause.setEnabled(true);
+				stop.setEnabled(true);
+				play.setEnabled(false);
 			}
 		});
 
 		pause.setClickListener((mouseX, mouseY, mouseButton) -> {
 			if (soundThread != null) {
 				soundThread.pause();
+
 				isPlaying = false;
-				pause.setEnabled(isPlaying);
-				stop.setEnabled(!isPlaying);
-				play.setEnabled(!isPlaying);
+				pause.setEnabled(false);
+				stop.setEnabled(true);
+				play.setEnabled(true);
 			}
 		});
 
 		stop.setClickListener((mouseX, mouseY, mouseButton) -> {
 			if (soundThread != null) {
 				soundThread.close();
-				soundThread = null;
+
 				isPlaying = false;
-				pause.setEnabled(isPlaying);
-				stop.setEnabled(isPlaying);
-				play.setEnabled(!isPlaying);
+				pause.setEnabled(false);
+				stop.setEnabled(false);
+				play.setEnabled(true);
 			}
 		});
 
@@ -118,15 +147,16 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 
 	}
 
+
 	@Override
 	public void load(NBTTagCompound nbt) {
 		NBTTagCompound songList = nbt.getCompoundTag("songList");
 		//playList.removeAll();
 		for (String key : songList.getKeySet()) {
-			if (Objects.equals(songList.getString(key + "_type"), "FILE")) {
-				playList.addItem(new ListedSong(key, new File(songList.getString(key))));
-			} else {
-				// Need to figure out how to do this
+			try {
+				playList.addItem(new Sound(key, songList.getString(key)));
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -134,13 +164,9 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 	@Override
 	public void save(NBTTagCompound nbt) {
 		NBTTagCompound songList = new NBTTagCompound();
-		for (ListedSong s : playList.getItems()) {
-			if (s.file != null) {
-				songList.setString(s.name + "_type", "FILE");
-				songList.setString(s.name, s.file.getAbsolutePath());
-			} else {
-				songList.setString(s.name + "_type", "SOUNDEVENT");
-				songList.setString(s.name, s.sound.getSoundName().toString());
+		for (Sound s : playList.getItems()) {
+			if (!defaultRecords.contains(s)) {
+				songList.setString(s.name, s.dataString);
 			}
 		}
 		nbt.setTag("songList", songList);
@@ -154,168 +180,113 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		}
 	}
 
-	public static void registerDefaultSong(ListedSong listedSong) {
+	public static void registerDefaultSong(Sound listedSong) {
 		defaultRecords.add(listedSong);
 	}
 
-	public static class SoundPlayingThread extends Thread {
+	public static class PickSongSource extends Dialog {
 
-		ListedSong listedSong;
+		ApplicationMusicPlayer musicPlayer;
 
-		File audioFile;
-		Clip clip;
-
-		public long time = 0;
-
-		ProgressBar progress;
-		Thread progressUpdateThread;
-
-
-		private ArrayList<Runnable> listeners = new ArrayList<>();
-
-		public SoundPlayingThread(ListedSong listedSong, ProgressBar progress) {
-			this.listedSong = listedSong;
-			this.audioFile = listedSong.file;
-			this.progress = progress;
-
-			if (audioFile != null) {
-				try {
-					AudioInputStream audioInputStream;
-					if (audioFile.getName().endsWith(".ogg") || audioFile.getName().endsWith(".mp3")) {
-						audioInputStream = createFromOgg(audioFile);
-					} else { // wav
-						audioInputStream = AudioSystem.getAudioInputStream(audioFile);
-					}
-					clip = AudioSystem.getClip();
-					clip.open(audioInputStream);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
+		public PickSongSource(ApplicationMusicPlayer musicPlayer) {
+			this.musicPlayer = musicPlayer;
 		}
 
-		public SoundPlayingThread(ListedSong listedSong) {
-			this(listedSong, null);
-		}
-
-		public void play() {
-			if (clip != null) {
-				if (progress != null) {
-					progress.setMax((int) clip.getMicrosecondLength());
-
-					if (progressUpdateThread == null) {
-						progressUpdateThread = new Thread(() -> {
-							while (!Thread.interrupted()) {
-								progress.setProgress((int) clip.getMicrosecondPosition()); // /1000000
-							}
-						}, "Progressbar Update Thread");
-						progressUpdateThread.start();
-					}
-				}
-
-				float volume = Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.RECORDS);
-				FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-				gainControl.setValue(20f * (float) Math.log10(volume));
-
-				Minecraft.getMinecraft().getSoundHandler().stopSounds();
-				if (isAlive()) {
-					clip.start();
-				} else {
-					start();
-				}
-			} else {
-				Minecraft mc = Minecraft.getMinecraft();
-
-				if (progress != null) {
-					progress.setMax((int) listedSong.length);
-				}
-
-				mc.getSoundHandler().stopSounds();
-				if (isAlive()) {
-					mc.getSoundHandler().playSound(listedSong.ps);
-				} else {
-					start();
-					mc.getSoundHandler().playSound(listedSong.ps);
-				}
-			}
-		}
-
-		public void pause() {
-			if (clip != null) {
-				time = clip.getMicrosecondPosition();
-				clip.stop();
-			}
-		}
-
-		public void close() {
-			if (clip != null) {
-				clip.stop();
-				clip.close();
-			} else {
-				Minecraft.getMinecraft().getSoundHandler().stopSound(listedSong.ps);
-			}
-			time = 0;
-			if (progress != null) progress.setProgress((int) time);
-			if (progressUpdateThread != null) progressUpdateThread.interrupt();
-			this.interrupt();
-		}
-
-		AudioInputStream createFromOgg(File fileIn) throws Exception {
-			AudioInputStream audioInputStream = null;
-			AudioFormat targetFormat;
-			try {
-				AudioInputStream in = null;
-				if (fileIn.getName().endsWith(".ogg")) {
-					VorbisAudioFileReader vb = new VorbisAudioFileReader();
-					in = vb.getAudioInputStream(fileIn);
-				}
-				AudioFormat baseFormat = in != null ? in.getFormat() : null;
-				targetFormat = new AudioFormat(
-						AudioFormat.Encoding.PCM_SIGNED,
-						baseFormat.getSampleRate(),
-						16,
-						baseFormat.getChannels(),
-						baseFormat.getChannels() * 2,
-						baseFormat.getSampleRate(),
-						false);
-				audioInputStream = AudioSystem.getAudioInputStream(targetFormat, in);
-			} catch (UnsupportedAudioFileException ue) {
-				System.out.println("Unsupported Audio");
-			}
-			return audioInputStream;
-		}
-
-		public void addEndedListener(Runnable run) {
-			listeners.add(run);
-		}
+		Thread fileChooserThread;
 
 		@Override
-		public void run() {
-			if (clip != null) {
-				clip.start();
-				clip.setMicrosecondPosition(time);
-				try {
-					Thread.sleep((clip.getMicrosecondLength() - time) / 1000);
-				} catch (InterruptedException ignored) {
-				}
-				close();
-				for (Runnable run : listeners) {
-					new Thread(run).start();
-				}
-			} else {
-				while (Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(listedSong.ps)) {
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException ignored) {
+		public void init(@Nullable NBTTagCompound intent) {
+			super.init(intent);
+			Layout main = new Layout(150, 50);
+			setLayout(main);
+
+			String labelMsg = "Pick audio source:";
+			int labelWidth = Laptop.fontRenderer.getStringWidth(labelMsg);
+			Label label = new Label(labelMsg, main.width / 2 - labelWidth/2, 10);
+			main.addComponent(label);
+
+			int buttonWidth = 40;
+
+			Button url = new Button(10, main.height/2, buttonWidth, 15, "From url");
+			url.setToolTip("Type in a url", "");
+			main.addComponent(url);
+
+			Button file = new Button(buttonWidth + 15, main.height/2, buttonWidth, 15, "From file");
+			url.setToolTip("Pick a file from your laptop", "");
+			file.setEnabled(false);
+			main.addComponent(file);
+
+			Button fileFromPc = new Button(buttonWidth * 2 + 20, main.height/2, buttonWidth, 15, "From PC");
+			fileFromPc.setToolTip("Pick a file from your pc (outside mc!)", "");
+			main.addComponent(fileFromPc);
+
+			url.setClickListener((mouseX, mouseY, mouseButton) -> {
+				Dialog.Input input = new Dialog.Input();
+				openDialog(input);
+				input.setResponseHandler((success, s) -> {
+					if (success) {
+						try {
+							URL url1 = new URL(s);
+
+							String mime = Utils.tika.detect(url1);
+
+							if (mime.contains("audio")) {
+								String[] urlSplit = s.split("/");
+								musicPlayer.playList.addItem(new Sound(urlSplit[urlSplit.length-1], url1));
+							} else {
+								openDialog(new Dialog.Message("Error: URL must point to a audio file!"));
+							}
+						} catch (MalformedURLException e) {
+							openDialog(new Dialog.Message("Error: Malformed URL!"));
+						} catch (IOException e) {
+							e.printStackTrace();
+							openDialog(new Dialog.Message("Error: Something went wrong!"));
+						}
 					}
-					time += 100000;
-					if (progress != null) progress.setProgress((int) time);
-				}
-				close();
-				for (Runnable run : listeners) {
-					new Thread(run).start();
-				}
-			}
+					this.close();
+					return true;
+				});
+			});
+
+			fileFromPc.setClickListener((mouseX, mouseY, mouseButton) -> {
+				JFileChooser fc = new JFileChooser();
+
+				fc.setMultiSelectionEnabled(true);
+				fc.setFileFilter(new FileFilter() {
+					@Override
+					public boolean accept(File f) {
+						try {
+							return !f.isFile() || Utils.tika.detect(f).contains("audio");
+						} catch (FileNotFoundException ignored) {
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						return false;
+					}
+
+					@Override
+					public String getDescription() {
+						return "Audio Files";
+					}
+				});
+
+				if (fileChooserThread != null && fileChooserThread.isAlive()) fileChooserThread.interrupt();
+				fileChooserThread = new Thread(() -> {
+					if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+						for (File chosenFile : fc.getSelectedFiles()) {
+
+							String[] pSplit = chosenFile.getAbsolutePath().split(File.separator.equals("\\") ? "\\\\" : File.separator);
+							try {
+								musicPlayer.playList.addItem(new Sound(pSplit[pSplit.length - 1], chosenFile));
+								this.close();
+							} catch (IOException e) {
+								openDialog(new Dialog.Message("Error: Something went wrong!"));
+							}
+						}
+					}
+				}, "File Chooser Thread");
+				fileChooserThread.start();
+			});
 		}
 	}
 }

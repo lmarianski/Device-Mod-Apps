@@ -1,29 +1,35 @@
-package io.github.lukas2005.DeviceModApps;
+package io.github.lukas2005.DeviceModApps.utils;
 
 import com.teamdev.jxbrowser.chromium.*;
-import com.teamdev.jxbrowser.chromium.dom.By;
-import com.teamdev.jxbrowser.chromium.dom.DOMDocument;
-import com.teamdev.jxbrowser.chromium.dom.DOMElement;
-import com.teamdev.jxbrowser.chromium.events.FinishLoadingEvent;
-import com.teamdev.jxbrowser.chromium.events.LoadAdapter;
-import com.teamdev.jxbrowser.chromium.events.StartLoadingEvent;
+import javazoom.spi.mpeg.sampled.file.MpegAudioFileReader;
+import javazoom.spi.vorbis.sampled.file.VorbisAudioFileReader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.Sys;
+import org.apache.tika.Tika;
+import org.apache.tika.mime.MimeTypes;
 import sun.net.www.protocol.jar.JarURLConnection;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.RoundingMode;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.channels.Channel;
+import java.nio.channels.Channels;
+import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -32,6 +38,10 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class Utils {
+
+	final static double EPSILON = 1e-12;
+
+	public static final Tika tika = new Tika();
 
 	@SideOnly(Side.CLIENT)
 	public static void pressUnicode(Robot r, int key_code) {
@@ -65,8 +75,13 @@ public class Utils {
 	}
 
 	public static File getResourceAsFile(String resource) throws IOException {
-		String[] splitRes = resource.split("[.]");
-		return streamToFile(getResourceAsStream(resource), Files.createTempFile("tmp", "." + splitRes[splitRes.length - 1]).toFile());
+		String[] splitRes = resource.split("\\.");
+		return saveStreamToFile(getResourceAsStream(resource), Files.createTempFile("tmp", "." + splitRes[splitRes.length - 1]).toFile());
+	}
+
+	public static File getResourceAsFile(ResourceLocation resource) throws IOException {
+		String[] splitRes = resource.getResourcePath().split("\\.");
+		return saveStreamToFile(getResourceAsStream(resource), Files.createTempFile("tmp", "." + splitRes[splitRes.length - 1]).toFile());
 	}
 
 	public static InputStream getResourceAsStream(String resource) {
@@ -91,17 +106,31 @@ public class Utils {
 		return builder.toString();
 	}
 
-	public static File streamToFile(InputStream initialStream, File out) throws IOException {
-		byte[] buffer = new byte[initialStream.available()];
-		initialStream.read(buffer);
+	public static File saveStreamToFile(InputStream inputStream, File out) throws IOException {
+		FileOutputStream outputStream = new FileOutputStream(out);
 
-		OutputStream outStream = new FileOutputStream(out);
-		outStream.write(buffer);
+		outputStream.getChannel().transferFrom(Channels.newChannel(inputStream), 0, inputStream.available());
 
-		outStream.close();
-		out.deleteOnExit();
-
+		outputStream.close();
 		return out;
+	}
+
+	public static PipedInputStream readFromStreamToNewStream(InputStream in) throws IOException {
+		PipedInputStream pipeOut = new PipedInputStream();
+		PipedOutputStream pipeIn = new PipedOutputStream(pipeOut);
+		byte[] buffer = new byte[1024];
+
+		int numBytes;
+		do {
+			numBytes = in.read(buffer);
+			if (numBytes == -1) {
+				break;
+			}
+
+			pipeIn.write(buffer, 0, numBytes);
+		} while(numBytes >= 1024);
+
+		return pipeOut;
 	}
 
 	public static ArrayList<Class> loadAllClassesFromRemoteJar(String path) {
@@ -150,30 +179,6 @@ public class Utils {
 
 	public static String formatNumberString(String s) {
 		return formatNumber(Integer.parseInt(s));
-	}
-
-	/**
-	 * Browser init code
-	 * @param dataDir
-	 * @return
-	 */
-	public static Browser initJXBrowser(File dataDir) {
-		BrowserPreferences.setChromiumSwitches("--remote-debugging-port=9222");
-
-		BrowserContextParams bcp = new BrowserContextParams(dataDir.getAbsolutePath(), "en-us");
-		BrowserContext bc = new BrowserContext(bcp);
-		Browser b = new Browser(BrowserType.LIGHTWEIGHT, bc);
-
-//		b.addLoadListener(new LoadAdapter() {
-//			@Override
-//			public void onFinishLoadingFrame(FinishLoadingEvent e) {
-//				if (e.isMainFrame()) {
-//					DOMDocument document = e.getBrowser().getDocument();
-//				}
-//			}
-//		});
-
-		return b;
 	}
 
 	/**
@@ -227,4 +232,99 @@ public class Utils {
 		loadScriptInJXBrowser(b, url, null);
 	}
 
+	@SideOnly(Side.CLIENT)
+	public static InputStream getInputStreamForSoundEvent(SoundEvent soundEvent) throws IOException {
+		return getResourceAsStream(Minecraft.getMinecraft().getSoundHandler().getAccessor(soundEvent.getSoundName()).cloneEntry().getSoundAsOggLocation());
+	}
+
+	public static byte[] readBytesFromStream(InputStream inputStream, boolean rewindStream) throws IOException {
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		byte[] buffer = new byte[1024];
+
+		if (rewindStream && !inputStream.markSupported()) inputStream = new BufferedInputStream(inputStream);
+
+		if (rewindStream) inputStream.mark(inputStream.available());
+
+		int numBytes;
+		do {
+			numBytes = inputStream.read(buffer);
+			if (numBytes == -1) {
+				break;
+			}
+
+			outputStream.write(buffer, 0, numBytes);
+		} while(numBytes >= 1024);
+
+		if (rewindStream) inputStream.reset();
+
+		return outputStream.toByteArray();
+	}
+
+
+	public static double map(double valueCoord1,
+							 double startCoord1, double endCoord1,
+							 double startCoord2, double endCoord2) {
+
+		if (Math.abs(endCoord1 - startCoord1) < EPSILON) {
+			throw new ArithmeticException("/ 0");
+		}
+
+		double offset = startCoord2;
+		double ratio = (endCoord2 - startCoord2) / (endCoord1 - startCoord1);
+		return ratio * (valueCoord1 - startCoord1) + offset;
+	}
+
+	private static VorbisAudioFileReader vb = new VorbisAudioFileReader();
+	private static MpegAudioFileReader mpeg = new MpegAudioFileReader();
+	public static AudioInputStream getAudioInputStream(InputStream stream) throws Exception {
+		AudioInputStream audioInputStream = null;
+		try {
+			AudioInputStream in;
+			AudioFormat format;
+
+			String mimetype = "unknown";
+
+			try {
+				mimetype = tika.detect(stream);
+			} catch (Exception ignored) {}
+
+			AudioFormat baseFormat;
+			switch (mimetype) {
+				case "audio/vorbis":
+					in = vb.getAudioInputStream(stream);
+
+					baseFormat = in.getFormat();
+					format = new AudioFormat(
+							AudioFormat.Encoding.PCM_SIGNED,
+							baseFormat.getSampleRate(),
+							16,
+							baseFormat.getChannels(),
+							baseFormat.getChannels() * 2,
+							baseFormat.getSampleRate(),
+							false);
+					break;
+				case "audio/mpeg":
+					in = mpeg.getAudioInputStream(stream);
+
+					baseFormat = in.getFormat();
+					format = new AudioFormat(
+							AudioFormat.Encoding.PCM_SIGNED,
+							baseFormat.getSampleRate(),
+							16,
+							baseFormat.getChannels(),
+							baseFormat.getChannels() * 2,
+							baseFormat.getSampleRate(),
+							false);
+					break;
+				default:
+					in = AudioSystem.getAudioInputStream(stream);
+					format = in.getFormat();
+			}
+
+			audioInputStream = AudioSystem.getAudioInputStream(format, in);
+		} catch (UnsupportedAudioFileException e) {
+			e.printStackTrace();
+		}
+		return audioInputStream;
+	}
 }

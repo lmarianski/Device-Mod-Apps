@@ -1,9 +1,10 @@
 {
   "name": "Emoji Keyboard",
   "author": "lukas2005",
-  "description": "An Emoji Keyboard",
+  "description": "An Emoji Keyboard. Select a text area click on one of the buttons and enjoy your emojis :P",
   "version": "0.1",
-  "icon": "lda:textures/icon/eka.png",
+  "icon": "lda:textures/app/icon/eka.png",
   "screenshots": [
+    "lda:textures/app/images/eka_img_1.png"
   ]
 }

@@ -1,9 +1,11 @@
 {
   "name": "Mineium Web Browser",
   "author": "lukas2005",
-  "description": "A web browser in mc",
+  "description": "A real web browser in mc!",
   "version": "0.1",
-  "icon": "lda:textures/icon/mwb.png",
+  "icon": "lda:textures/app/icon/mwb.png",
   "screenshots": [
+    "lda:textures/app/images/mwb_img_1.png",
+    "lda:textures/app/images/mwb_img_2.png"
   ]
 }

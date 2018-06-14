@@ -1,56 +1,76 @@
 package io.github.lukas2005.DeviceModApps.apps;
 
 import com.mrcrayfish.device.api.app.Layout;
-import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.api.app.component.TextField;
-import com.teamdev.jxbrowser.chromium.Browser;
+import com.mrcrayfish.device.api.app.component.*;
+import com.mrcrayfish.device.core.Laptop;
+import com.teamdev.jxbrowser.chromium.*;
 import com.teamdev.jxbrowser.chromium.events.FinishLoadingEvent;
 import com.teamdev.jxbrowser.chromium.events.LoadAdapter;
-import io.github.lukas2005.DeviceModApps.Utils;
+import com.teamdev.jxbrowser.chromium.events.StartLoadingEvent;
+import io.github.lukas2005.DeviceModApps.utils.Utils;
 import io.github.lukas2005.DeviceModApps.components.WebBrowserComponent;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
+
+import java.io.File;
 
 public class ApplicationWebBrowser extends ApplicationBase {
 
 	Browser b;
-	WebBrowserComponent deviceModView;
+	WebBrowserComponent browserView;
 	public TextField addressBar;
 
 	@Override
 	public void init(NBTTagCompound nbt) {
-		try {
-			Layout main = new Layout(300, 150);
-			setCurrentLayout(main);
+		Layout main = new Layout(300, 150);
+		setCurrentLayout(main);
 
-			b = Utils.initJXBrowser(getAppDataDir());
+		Spinner spinner = new Spinner(main.width / 2 - 12 / 2, main.height / 2 - 12 / 2);
+		main.addComponent(spinner);
 
-			deviceModView = new WebBrowserComponent(0, 0, main.width, main.height, b);
-			b.loadURL("https://google.com");
+		addressBar = new TextField(10, 5, main.width - 30);
+		main.addComponent(addressBar);
 
-			main.addComponent(deviceModView);
+		Button goButton = new Button(main.width - 17, 5, 15, 15, "Go!");
+		goButton.setClickListener((mouseX, mouseY, mouseButton) -> b.loadURL(addressBar.getText()));
+		main.addComponent(goButton);
 
-			addressBar = new TextField(10, 5, main.width - 30);
-			main.addComponent(addressBar);
+		//final Slider scrollBar = new Slider(main.width-5, 10, 100);
+		//main.addComponent(scrollBar);
 
-			Button goButton = new Button(main.width - 17, 5, 15, 15, "Go!");
-			goButton.setClickListener((mouseX, mouseY, mouseButton) -> b.loadURL(addressBar.getText()));
-			main.addComponent(goButton);
 
-			//final Slider scrollBar = new Slider(main.width-5, 10, 100);
-			//main.addComponent(scrollBar);
+		new Thread(() -> {
+			try {
+				b = initJXBrowser(getAppDataDir());
 
-			b.addLoadListener(new LoadAdapter() {
-				@Override
-				public void onFinishLoadingFrame(FinishLoadingEvent event) {
-					if (event.isMainFrame()) {
-						addressBar.setText(event.getValidatedURL());
+				browserView = new WebBrowserComponent(0, 0, main.width, main.height, b);
+				b.loadURL("https://google.com");
+
+				b.addLoadListener(new LoadAdapter() {
+
+					@Override
+					public void onStartLoadingFrame(StartLoadingEvent event) {
+						spinner.setVisible(true);
 					}
-				}
-			});
-			System.out.println(b.getRemoteDebuggingURL());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+
+					@Override
+					public void onFinishLoadingFrame(FinishLoadingEvent event) {
+						if (event.isMainFrame()) {
+							spinner.setVisible(false);
+							addressBar.setText(event.getValidatedURL());
+						}
+					}
+				});
+
+				main.addComponent(browserView);
+				main.components.remove(browserView);
+				main.components.add(0, browserView);
+
+				System.out.println(b.getRemoteDebuggingURL());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}).start();
 	}
 
 	@Override
@@ -68,11 +88,36 @@ public class ApplicationWebBrowser extends ApplicationBase {
 
 		try {
 			b.dispose();
-			deviceModView.dispose();
+			browserView.dispose();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
+	/**
+	 * Browser init code
+	 * @param dataDir
+	 * @return
+	 */
+	public static Browser initJXBrowser(File dataDir) {
+		BrowserPreferences.setChromiumSwitches("--remote-debugging-port=9222");
+
+		BrowserContextParams bcp = new BrowserContextParams(dataDir.getAbsolutePath(), "en-us");
+		BrowserContext bc = new BrowserContext(bcp);
+		Browser b = new Browser(BrowserType.LIGHTWEIGHT, bc);
+
+//		b.addLoadListener(new LoadAdapter() {
+//			@Override
+//			public void onFinishLoadingFrame(FinishLoadingEvent e) {
+//				if (e.isMainFrame()) {
+//					DOMDocument document = e.getBrowser().getDocument();
+//				}
+//			}
+//		});
+
+		return b;
+	}
+
 
 	@Override
 	public void load(NBTTagCompound tagCompound) {

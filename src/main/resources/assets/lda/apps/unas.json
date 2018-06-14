@@ -3,7 +3,7 @@
   "author": "lukas2005",
   "description": "An apps store app which downloads apps from github!",
   "version": "0.1",
-  "icon": "lda:textures/icon/unas.png",
+  "icon": "lda:textures/app/icon/unas.png",
   "screenshots": [
   ]
 }

@@ -11,7 +11,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ClassTransformer implements IClassTransformer {
 
-	public static ClassPool pool = ClassPool.getDefault();
+	private static ClassPool pool = ClassPool.getDefault();
+
+	private static CtClass CtInteger;
+	private static CtClass CtString;
+	private static CtClass CtIIcon;
+	private static CtClass CtMessageContext;
 
 	static {
 		pool.insertClassPath(new LoaderClassPath(CoreModMain.class.getClassLoader()));
@@ -33,6 +38,15 @@ public class ClassTransformer implements IClassTransformer {
 
 		pool.importPackage("io.github.lukas2005.DeviceModApps");
 		pool.importPackage("io.github.lukas2005.DeviceModApps.apps");
+
+		try {
+			CtInteger = pool.get(Integer.class.getName());
+			CtString  = pool.get(String.class.getName());
+			CtIIcon   = pool.get(IIcon.class.getName());
+			CtMessageContext = pool.get(MessageContext.class.getName());
+		} catch (NotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -48,52 +62,28 @@ public class ClassTransformer implements IClassTransformer {
 		}
 
 		try {
+			// Get the CtClass
+			CtClass cc = pool.get(name);
+
 			switch (name) {
 				case "com.mrcrayfish.device.api.app.component.TextArea": {
-					// Get the CtClass of the TextArea
-					CtClass cc = pool.get(name);
+					// Get the handleMouseClick method
+					CtMethod method = cc.getDeclaredMethod("handleMouseClick");
 
-					// Get the first (and only) constructor
-					CtConstructor[] consts = cc.getDeclaredConstructors();
-					CtConstructor constructor = consts[0];
+					// Inject code
+					method.insertAfter("if (this.isFocused) io.github.lukas2005.DeviceModApps.Main.lastFocusedTextArea = new WeakReference(this);");
 
-					// Inject this line of code
-					constructor.insertAfter("Main.textAreas.add(new WeakReference(this));");
-
-					// Get the new bytecode
-					returnBytecode = cc.toBytecode();
 					break;
 				}
 				case "com.teamdev.jxbrowser.chromium.BrowserContextParams": {
-					// Get the CtClass of the TextArea
-					CtClass cc = pool.get(name);
+					CtMethod method = cc.getDeclaredMethod("setAcceptLanguage", new CtClass[]{CtString});
 
-					CtMethod method = cc.getDeclaredMethod("setAcceptLanguage", new CtClass[]{pool.get(String.class.getName())});
-
-					// Inject this line of code
+					// Inject code
 					method.setBody("d = \"en-us\";");
 
-					// Get the new bytecode
-					returnBytecode = cc.toBytecode();
-					break;
-				}
-				case "com.mrcrayfish.device.api.app.component.Button": {
-					// Get the CtClass of the TextArea
-					CtClass cc = pool.get(name);
-					// Get the method
-					CtMethod method = cc.getDeclaredMethod("setIcon", new CtClass[]{pool.get(IIcon.class.getName())});
-
-					// TODO: REMOVE THIS AFTER MRCRAYFISH WILL MERGE NEW IIcon
-					method.insertAfter("if ($1 instanceof Emoji) {this.iconWidth = 10; this.iconHeight = 10; updateSize(); }");
-
-					// Get the new bytecode
-					returnBytecode = cc.toBytecode();
 					break;
 				}
 				case "com.mrcrayfish.device.network.Router": {
-					// Get the CtClass of the Router
-					CtClass cc = pool.get(name);
-
 					// Get the first (and only) constructor
 					CtConstructor[] consts = cc.getDeclaredConstructors();
 					CtConstructor constructor = consts[0];
@@ -101,14 +91,9 @@ public class ClassTransformer implements IClassTransformer {
 					// Inject this line of code
 					constructor.insertAfter("ApplicationHackPrinters.routers.add(new WeakReference(this));");
 
-					// Get the new bytecode
-					returnBytecode = cc.toBytecode();
 					break;
 				}
 				case "com.mrcrayfish.device.tileentity.TileEntityRouter": {
-					// Get the CtClass
-					CtClass cc = pool.get(name);
-
 					// Get the first (and only) constructor
 					CtConstructor[] consts = cc.getDeclaredConstructors();
 					CtConstructor constructor = consts[0];
@@ -120,48 +105,32 @@ public class ClassTransformer implements IClassTransformer {
 //
 //                readFromNbt.insertAt(85, "PacketHandler.INSTANCE.sendToServer(new MessageSyncBlock(pos));");
 
-					// Get the new bytecode
-					returnBytecode = cc.toBytecode();
 					break;
 				}
 				case "com.mrcrayfish.device.network.task.MessageSyncApplications": {
-					// Get the CtClass of the TextArea
-					CtClass cc = pool.get(name);
-
 					// Get the method to inject
-					CtMethod onMessage = cc.getDeclaredMethod("onMessage", new CtClass[]{cc, pool.get(MessageContext.class.getName())});
+					CtMethod onMessage = cc.getDeclaredMethod("onMessage", new CtClass[]{cc, CtMessageContext});
 
 					// Replace the method body with my own one
-					StringBuilder builder = new StringBuilder();
 
-					builder.append("{ \n");
-					builder.append("ArrayList apps = new ArrayList($1.allowedApps); \n");
-					//builder.append("apps.add(ApplicationManager.getApplication(new ResourceLocation(\""+ Reference.MOD_ID+"\", \"hpa\").toString())); \n");
-					builder.append("apps.addAll(Main.alwaysAvailableApps); \n");
-					builder.append("ReflectionHelper.setPrivateValue(CommonProxy.class, MrCrayfishDeviceMod.proxy, apps, new String[]{\"allowedApps\"}); \n");
-					builder.append("return null; \n");
-					builder.append("}");
+					String code = "{ \n" +
+							"ArrayList apps = new ArrayList($1.allowedApps); \n" +
+							"apps.addAll(Main.alwaysAvailableApps); \n" +
+							"ReflectionHelper.setPrivateValue(CommonProxy.class, MrCrayfishDeviceMod.proxy, apps, new String[]{\"allowedApps\"}); \n" +
+							"return null; \n" +
+							"}";
+					onMessage.setBody(code);
 
-					onMessage.setBody(builder.toString());
-
-					// Get the new bytecode
-					returnBytecode = cc.toBytecode();
 					break;
 				}
 				case "com.mrcrayfish.device.api.ApplicationManager": {
-					// Get the CtClass
-					CtClass cc = pool.get(name);
 
 					CtField f = cc.getDeclaredField("APP_INFO");
 					f.setModifiers(f.getModifiers() & ~Modifier.FINAL);
 
-					returnBytecode = cc.toBytecode();
 					break;
 				}
 //				case "com.mrcrayfish.device.core.Laptop": {
-//					// Get the CtClass
-//					CtClass cc = pool.get(name);
-//
 //					CtMethod onGuiClosed;
 //					try {
 //						onGuiClosed = cc.getDeclaredMethod("onGuiClosed");
@@ -184,10 +153,13 @@ public class ClassTransformer implements IClassTransformer {
 //						}
 //					});
 //
-//					// Get the new bytecode
-//					returnBytecode = cc.toBytecode();
 //					break;
 //				}
+			}
+
+			if (cc.isModified()) {
+				// Get the new bytecode
+				returnBytecode = cc.toBytecode();
 			}
 		} catch (Exception e1) {
 			e1.printStackTrace();
