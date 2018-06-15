@@ -1,4 +1,5 @@
-# Device Mod Apps
+# Device Mod Apps [![Project](http://cf.way2muchnoise.eu/short_284797.svg)](https://minecraft.curseforge.com/projects/284797)
+
 This is a repo with all my apps for the Mr Crayfish Device Mod (https://www.youtube.com/watch?v=qswUbwKbVzE)
 CurseForge: https://minecraft.curseforge.com/projects/device-mod-apps
 Discord: https://discord.gg/An4gV3x
