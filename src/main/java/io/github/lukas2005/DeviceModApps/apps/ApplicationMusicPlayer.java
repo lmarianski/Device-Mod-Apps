@@ -8,23 +8,19 @@ import com.mrcrayfish.device.api.app.component.ItemList;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.ProgressBar;
 import com.mrcrayfish.device.core.Laptop;
-import io.github.lukas2005.DeviceModApps.utils.Utils;
 import io.github.lukas2005.DeviceModApps.utils.sound.Sound;
 import io.github.lukas2005.DeviceModApps.utils.sound.SoundPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import org.apache.tika.Tika;
 
 import javax.annotation.Nullable;
-import javax.rmi.CORBA.Util;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class ApplicationMusicPlayer extends ApplicationBase {
@@ -37,6 +33,9 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 	Thread progressBarUpdateThread;
 
 	ItemList<Sound> playList = new ItemList<>(5, 5, 75, 6);
+
+	private static Tika tika = new Tika();
+
 
 	@Override
 	public void init(NBTTagCompound nbt) {
@@ -87,6 +86,7 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 		play.setClickListener((mouseX, mouseY, mouseButton) -> {
 			if (playList.getSelectedItem() != null) {
 				if (soundThread == null) {
+
 					soundThread = new SoundPlayer(playList.getSelectedItem(), Laptop.getPos());
 					soundThread.addEndListener(() -> {
 						soundThread = null;
@@ -228,7 +228,7 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 						try {
 							URL url1 = new URL(s);
 
-							String mime = Utils.tika.detect(url1);
+							String mime = tika.detect(url1);
 
 							if (mime.contains("audio")) {
 								String[] urlSplit = s.split("/");
@@ -240,7 +240,7 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 							openDialog(new Dialog.Message("Error: Malformed URL!"));
 						} catch (IOException e) {
 							e.printStackTrace();
-							openDialog(new Dialog.Message("Error: Something went wrong!"));
+							openDialog(new Dialog.Message("Error: "+e.getMessage()));
 						}
 					}
 					this.close();
@@ -256,7 +256,7 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 					@Override
 					public boolean accept(File f) {
 						try {
-							return !f.isFile() || Utils.tika.detect(f).contains("audio");
+							return !f.isFile() || tika.detect(f).contains("audio");
 						} catch (FileNotFoundException ignored) {
 						} catch (IOException e) {
 							e.printStackTrace();

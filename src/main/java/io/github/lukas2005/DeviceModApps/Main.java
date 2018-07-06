@@ -8,9 +8,6 @@ import io.github.lukas2005.DeviceModApps.apps.ApplicationDerpfishLiveSubCount;
 import io.github.lukas2005.DeviceModApps.apps.ModApps;
 import io.github.lukas2005.DeviceModApps.classloader.MultiClassLoader;
 import io.github.lukas2005.DeviceModApps.proxy.IProxy;
-import net.minecraft.client.Minecraft;
-import net.minecraft.init.SoundEvents;
-import net.minecraftforge.fml.common.MinecraftDummyContainer;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -24,7 +21,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Random;
 
-@Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, dependencies = "required-after:cdm@[0.4.0,]; required-after:device_essentials;")
+@Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, dependencies = "required-after:cdm@[0.4.0,]")
 public class Main {
 
 	public static File modDataDir;
@@ -40,7 +37,7 @@ public class Main {
 
 	public static ArrayList<AppInfo> alwaysAvailableApps = new ArrayList<>();
 
-	static {io.github.lukas2005.device_essentials.Main.registerTestApps = false;}
+	//static {io.github.lukas2005.device_essentials.Main.registerTestApps = false;}
 
 	public static WeakReference<TextArea> lastFocusedTextArea = null;
 

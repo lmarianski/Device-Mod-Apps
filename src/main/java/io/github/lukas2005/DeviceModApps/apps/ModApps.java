@@ -32,7 +32,7 @@ public class ModApps {
 
 		// Debug only not ready for release apps.
 		if (ModConfig.DEBUG_MODE) {
-			registerApp(new ResourceLocation(Reference.MOD_ID, "pan"), ApplicationPixelAnimator.class, false);
+			//registerApp(new ResourceLocation(Reference.MOD_ID, "pan"), ApplicationPixelAnimator.class, false);
 			registerApp(new ResourceLocation(Reference.MOD_ID, "unas"), ApplicationUnofficialAppStore.class, false);
 		}
 		//registerApp(new ResourceLocation(Reference.MOD_ID, "hpa"), ApplicationHackPrinters.class, false);

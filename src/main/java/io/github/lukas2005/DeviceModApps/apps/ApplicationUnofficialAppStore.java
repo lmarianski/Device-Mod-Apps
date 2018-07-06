@@ -7,7 +7,6 @@ import com.mrcrayfish.device.api.app.component.ItemList;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.programs.system.layout.StandardLayout;
 import io.github.lukas2005.DeviceModApps.Main;
-import io.github.lukas2005.DeviceModApps.utils.Utils;
 import io.github.lukas2005.DeviceModApps.apps.layouts.AppStoreAppLayout;
 import io.github.lukas2005.DeviceModApps.objects.AppCategory;
 import io.github.lukas2005.DeviceModApps.objects.AppStoreAppInfo;
@@ -32,7 +31,7 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
 	public static final int LAYOUT_WIDTH = 250;
 	public static final int LAYOUT_HEIGHT = 150;
 
-	private volatile LinkedHashSet<String> repos = new LinkedHashSet<>(Arrays.asList("lukas2005/Device-Mod-Apps"));
+	private volatile LinkedHashSet<String> repos = new LinkedHashSet<>(Collections.singletonList("lukas2005/Device-Mod-Apps"));
 	private volatile ArrayList<AppStoreAppInfo> knownApps = new ArrayList<>();
 
 	private volatile HashMap<String, String> jars = new HashMap<>();
@@ -52,9 +51,9 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
 		btnSearch.setToolTip("Search", "Find a specific application");
 		btnSearch.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
-			if (mouseButton == 0) {
-				//this.setCurrentLayout(new LayoutSearchApps(this, getCurrentLayout()));
-			}
+//			if (mouseButton == 0) {
+//				this.setCurrentLayout(new LayoutSearchApps(this, getCurrentLayout()));
+//			}
 		});
 		layoutMain.addComponent(btnSearch);
 
@@ -164,7 +163,6 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
 						categoriesList.setSelectedIndex(0);
 					} catch (Exception e) {
 						e.printStackTrace();
-						continue;
 					}
 				}
 			} catch (IOException e) {
@@ -174,12 +172,12 @@ public class ApplicationUnofficialAppStore extends ApplicationBase {
 	}
 
 	public void loadAllLibJars() {
-		for (URL jarUrl : installedJars) {
-			//System.out.println(jarUrl);
-			for (Class c : Utils.loadAllClassesFromRemoteJar(jarUrl.toString())) {
-				//System.out.println(c.getName());
-			}
-		}
+//		for (URL jarUrl : installedJars) {
+//			System.out.println(jarUrl);
+//			for (Class c : Utils.loadAllClassesFromRemoteJar(jarUrl.toString())) {
+//				System.out.println(c.getName());
+//			}
+//		}
 	}
 
 

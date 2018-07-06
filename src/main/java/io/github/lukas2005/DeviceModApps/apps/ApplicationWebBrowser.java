@@ -1,15 +1,14 @@
 package io.github.lukas2005.DeviceModApps.apps;
 
 import com.mrcrayfish.device.api.app.Layout;
-import com.mrcrayfish.device.api.app.component.*;
-import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.api.app.component.Button;
+import com.mrcrayfish.device.api.app.component.Spinner;
+import com.mrcrayfish.device.api.app.component.TextField;
 import com.teamdev.jxbrowser.chromium.*;
 import com.teamdev.jxbrowser.chromium.events.FinishLoadingEvent;
 import com.teamdev.jxbrowser.chromium.events.LoadAdapter;
 import com.teamdev.jxbrowser.chromium.events.StartLoadingEvent;
-import io.github.lukas2005.DeviceModApps.utils.Utils;
 import io.github.lukas2005.DeviceModApps.components.WebBrowserComponent;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.io.File;
@@ -104,7 +103,6 @@ public class ApplicationWebBrowser extends ApplicationBase {
 
 		BrowserContextParams bcp = new BrowserContextParams(dataDir.getAbsolutePath(), "en-us");
 		BrowserContext bc = new BrowserContext(bcp);
-		Browser b = new Browser(BrowserType.LIGHTWEIGHT, bc);
 
 //		b.addLoadListener(new LoadAdapter() {
 //			@Override
@@ -115,7 +113,7 @@ public class ApplicationWebBrowser extends ApplicationBase {
 //			}
 //		});
 
-		return b;
+		return new Browser(BrowserType.LIGHTWEIGHT, bc);
 	}
 
 

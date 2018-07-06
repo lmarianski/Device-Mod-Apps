@@ -7,10 +7,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.FloatControl;
+import javax.annotation.Nullable;
+import javax.sound.sampled.*;
 import java.io.Closeable;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -38,16 +38,16 @@ public class SoundPlayer implements Closeable {
 	private ArrayList<Runnable> startListeners = new ArrayList<>();
 	private ArrayList<Runnable> pauseListeners = new ArrayList<>();
 
-	public SoundPlayer(Sound sound, BlockPos pos) {
+	public SoundPlayer(Sound sound, @Nullable BlockPos pos) {
 		this.sound = sound;
 
 		setupThread = new Thread(() -> {
 			try {
 				clip = AudioSystem.getClip();
 
-				//InputStream stream = new ByteArrayInputStream(Utils.readBytesFromStream(this.sound.stream, true));
-
-				clip.open(Utils.getAudioInputStream(this.sound.createNewStream()));
+				//long time = System.currentTimeMillis();
+				clip.open(getAudioInputStream(this.sound.createNewStream()));
+				//System.out.println(System.currentTimeMillis()-time);
 				gain = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
 
 				this.length = clip.getMicrosecondLength();
@@ -68,7 +68,7 @@ public class SoundPlayer implements Closeable {
 					double mult = 1;
 					if (pos != null) {
 						BlockPos playerPos = Minecraft.getMinecraft().player.getPosition();
-						double distance = Math.sqrt(Math.pow(playerPos.getX()-pos.getX(), 2) + Math.pow(playerPos.getY()-pos.getY(), 2) + Math.pow(playerPos.getZ()-pos.getZ(), 2));
+						double distance = Utils.distance(playerPos, pos);
 						if (distance <= 10) {
 							mult = Utils.map(distance, 0, 10, 1, 0);
 						} else {
@@ -192,6 +192,29 @@ public class SoundPlayer implements Closeable {
 
 	private void start() {
 		executor.execute(this::run);
+	}
+
+	private static AudioInputStream getAudioInputStream(InputStream stream) throws Exception {
+		AudioInputStream audioInputStream = null;
+		try {
+			AudioInputStream in = AudioSystem.getAudioInputStream(stream);
+
+			AudioFormat baseFormat = in.getFormat();
+			AudioFormat format = new AudioFormat(
+					AudioFormat.Encoding.PCM_SIGNED,
+					baseFormat.getSampleRate(),
+					16,
+					baseFormat.getChannels(),
+					baseFormat.getChannels() * 2,
+					baseFormat.getSampleRate(),
+					false
+			);
+
+			audioInputStream = AudioSystem.getAudioInputStream(format, in);
+		} catch (UnsupportedAudioFileException e) {
+			e.printStackTrace();
+		}
+		return audioInputStream;
 	}
 
 	private void run() {

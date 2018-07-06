@@ -2,7 +2,6 @@ package io.github.lukas2005.DeviceModApps.coremod;
 
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.*;
 
@@ -60,7 +59,7 @@ public class CoreModMain implements IFMLLoadingPlugin, IFMLCallHook {
 		try {
 			LaunchClassLoader loader = (LaunchClassLoader) getClass().getClassLoader();
 
-			String nativeName = "jxbrowser-%s-6.18.jar";
+			String nativeName = "jxbrowser-%s-@JxBrowserVersion@.jar";
 
 			if (OSValidator.isWindows()) {
 				nativeName = String.format(nativeName, "win32");
@@ -111,25 +110,25 @@ public class CoreModMain implements IFMLLoadingPlugin, IFMLCallHook {
 
 		public static boolean isWindows() {
 
-			return (OS.indexOf("win") >= 0);
+			return (OS.contains("win"));
 
 		}
 
 		public static boolean isMac() {
 
-			return (OS.indexOf("mac") >= 0);
+			return (OS.contains("mac"));
 
 		}
 
 		public static boolean isUnix() {
 
-			return (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0);
+			return (OS.contains("nix") || OS.contains("nux") || OS.indexOf("aix") > 0);
 
 		}
 
 		public static boolean isSolaris() {
 
-			return (OS.indexOf("sunos") >= 0);
+			return (OS.contains("sunos"));
 
 		}
 

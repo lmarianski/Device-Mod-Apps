@@ -1,9 +1,6 @@
 package io.github.lukas2005.DeviceModApps;
 
 import com.mrcrayfish.device.api.app.IIcon;
-import com.mrcrayfish.device.api.utils.RenderUtil;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Notifications Sample</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+    <script type="text/javascript">
+
+        let notification;
+
+        let showNotification = function() {
+            if (Notification.permission === 'granted') {
+                _showNotification();
+            } else {
+                Notification.requestPermission(function (permission) {
+                    if (permission === "granted") {
+                        _showNotification();
+                    }
+                });
+            }
+        };
+
+        let _showNotification = function() {
+            notification = new Notification('Yoda says:', {type: 0, body: 'Powerful you have become, the dark side I sense in you.'});
+        };
+
+        let closeNotification = function() {
+            if (notification) {
+                notification.close();
+            }
+        };
+
+    </script>
+    <div>
+        <button onclick="showNotification()">Show notification</button>
+        <button onclick="closeNotification()">Close notification</button>
+    </div>
+</body>
+</html>

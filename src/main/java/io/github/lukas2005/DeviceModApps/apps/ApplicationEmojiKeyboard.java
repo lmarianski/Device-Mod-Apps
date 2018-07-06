@@ -1,8 +1,5 @@
 package io.github.lukas2005.DeviceModApps.apps;
 
-import java.lang.ref.WeakReference;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.mrcrayfish.device.api.app.IIcon;
@@ -12,7 +9,6 @@ import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.TextArea;
 import io.github.lukas2005.DeviceModApps.Emoji;
 import io.github.lukas2005.DeviceModApps.Main;
-import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class ApplicationEmojiKeyboard extends ApplicationBase {
@@ -40,15 +36,14 @@ public class ApplicationEmojiKeyboard extends ApplicationBase {
 		}
 		buttonEmojiHashMap.put(emojiButton, e);
 		emojiButton.setClickListener((mouseX, mouseY, mouseButton) -> {
-			IIcon emoji = e;
 			try {
 				if (Main.lastFocusedTextArea != null) {
 					TextArea area = Main.lastFocusedTextArea.get();
 					if (area != null) {
-						if (emoji instanceof Emoji) {
-							area.writeText(Character.toString(((Emoji) emoji).assignedChar));
+						if (e instanceof Emoji) {
+							area.writeText(Character.toString(((Emoji) e).assignedChar));
 						} else {
-							area.writeText(Character.toString((Character) Emoji.externalEmojiMapping.keySet().toArray()[Emoji.externalValues.indexOf(emoji)]));
+							area.writeText(Character.toString((Character) Emoji.externalEmojiMapping.keySet().toArray()[Emoji.externalValues.indexOf(e)]));
 						}
 					}
 				}

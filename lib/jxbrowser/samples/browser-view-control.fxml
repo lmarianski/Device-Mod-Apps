@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.teamdev.jxbrowser.chromium.javafx.BrowserView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<BorderPane fx:controller="BrowserViewControl" xmlns:fx="http://javafx.com/fxml">
+    <top>
+        <TextField fx:id="textField" text="http://www.google.com" onAction="#loadURL"/>
+    </top>
+    <center>
+        <BrowserView fx:id="browserView"/>
+    </center>
+</BorderPane>

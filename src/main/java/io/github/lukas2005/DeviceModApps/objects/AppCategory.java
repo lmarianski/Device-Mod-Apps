@@ -4,5 +4,5 @@ public enum AppCategory {
 	INTERNET,
 	TRADING,
 	FUN,
-	GAMES;
+	GAMES
 }

@@ -1,6 +1,5 @@
 package io.github.lukas2005.DeviceModApps.utils.sound;
 
-import com.google.api.client.util.Base64;
 import io.github.lukas2005.DeviceModApps.utils.Utils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -8,7 +7,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.io.*;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Objects;
@@ -67,8 +65,7 @@ public class Sound {
 				URLConnection conn = url.openConnection();
 				conn.connect();
 
-				InputStream urlStream = conn.getInputStream();
-				stream = urlStream;
+				stream = conn.getInputStream();
 				break;
 		}
 

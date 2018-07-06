@@ -39,7 +39,7 @@ public class AppStoreAppInfo {
 		this(name, id, shortDescription, description, category, urls, jars, false);
 	}
 
-	public void loadClasses() throws ClassNotFoundException {
+	public void loadClasses() {
 		if (classes == null) classes = new LinkedHashSet<>();
 		for (URL url : urls) {
 			Main.classLoader.addClassLoaderForApp(this).prefix = Utils.buildStringWithoutLast('.', url.getPath().substring(75).split("/")).replace("/", ".");
@@ -88,6 +88,6 @@ public class AppStoreAppInfo {
 
 	@Override
 	public boolean equals(Object obj) {
-		return hashCode() == obj.hashCode();
+		return obj instanceof AppStoreAppInfo && hashCode() == obj.hashCode();
 	}
 }

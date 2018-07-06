@@ -49,12 +49,10 @@ public class AppStoreAppLayout extends StandardLayout {
 				((ApplicationUnofficialAppStore) app).installedApps.add(appInfo);
 				((ApplicationUnofficialAppStore) app).installedJars.addAll(appInfo.libs);
 				((ApplicationUnofficialAppStore) app).loadAllLibJars();
-				try {
-					appInfo.loadClasses();
-					ModApps.registerApp(new ResourceLocation(appInfo.id), appInfo.getClasses().get(appInfo.getClasses().size() - 1), appInfo.needsDataDir);
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				}
+
+				appInfo.loadClasses();
+				ModApps.registerApp(new ResourceLocation(appInfo.id), appInfo.getClasses().get(appInfo.getClasses().size() - 1), appInfo.needsDataDir);
+
 				btnInstall.setText("Uninstall");
 			} else {
 				try {

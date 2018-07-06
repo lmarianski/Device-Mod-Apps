@@ -1,35 +1,29 @@
 package io.github.lukas2005.DeviceModApps.utils;
 
-import com.teamdev.jxbrowser.chromium.*;
-import javazoom.spi.mpeg.sampled.file.MpegAudioFileReader;
-import javazoom.spi.vorbis.sampled.file.VorbisAudioFileReader;
+import com.teamdev.jxbrowser.chromium.Browser;
+import com.teamdev.jxbrowser.chromium.dom.By;
+import com.teamdev.jxbrowser.chromium.dom.DOMDocument;
+import com.teamdev.jxbrowser.chromium.dom.DOMElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.tika.Tika;
-import org.apache.tika.mime.MimeTypes;
 import sun.net.www.protocol.jar.JarURLConnection;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.RoundingMode;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.channels.Channel;
 import java.nio.channels.Channels;
-import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -40,8 +34,6 @@ import java.util.jar.JarFile;
 public class Utils {
 
 	final static double EPSILON = 1e-12;
-
-	public static final Tika tika = new Tika();
 
 	@SideOnly(Side.CLIENT)
 	public static void pressUnicode(Robot r, int key_code) {
@@ -65,7 +57,7 @@ public class Utils {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public static void registerFontRenderer(Minecraft mc, FontRenderer renderer) throws Exception {
+	public static void registerFontRenderer(Minecraft mc, FontRenderer renderer) {
 		if (mc.gameSettings.language != null) {
 			renderer.setUnicodeFlag(mc.isUnicode());
 			renderer.setBidiFlag(mc.getLanguageManager().isCurrentLanguageBidirectional());
@@ -100,7 +92,7 @@ public class Utils {
 		StringBuilder builder = new StringBuilder();
 		int i = 0;
 		for (String part : parts) {
-			if (!(i >= parts.length - 1)) builder.append(part + separator);
+			if (!(i >= parts.length - 1)) builder.append(part).append(separator);
 			i++;
 		}
 		return builder.toString();
@@ -186,42 +178,20 @@ public class Utils {
 	 * @param url
 	 * @param integrity
 	 */
-	public static void loadScriptInJXBrowser(Browser b, String url, String integrity) {
-		b.executeJavaScript("function loadScript(url, integrity, callback, callbackParams) {\n" +
-				"    // Adding the script tag to the head as suggested before\n" +
-				"    let head = document.getElementsByTagName('head')[0];\n" +
-				"    let script = document.createElement('script');\n" +
-				"    script.type = 'text/javascript';\n" +
-				"    script.src = url;\n" +
-				"if (integrity != null && integrity != \"null\") {\n" +
-				"script.integrity = integrity;\n" +
-				"script.crossorigin = \"anonymous\";\n" +
-				"}\n" +
-				"    if (callback != null) {\n" +
-				"let func = function() {\n" +
-				"if (callbackParams != null) {\n" +
-				"callback(callbackParams[0], callbackParams[1], callbackParams[2]);\n" +
-				"} else {\n" +
-				"callback();\n" +
-				"}\n" +
-				"}\n" +
-				"script.onreadystatechange = func;\n" +
-				"script.onload = func;\n" +
-				"} else {\n" +
-				"lock = true;\n" +
-				"let call = function() {\n" +
-				"lock = false;\n" +
-				"}\n" +
-				"script.onreadystatechange = call;\n" +
-				"script.onload = call;\n" +
-				"while (lock) {}\n" +
-				"}\n" +
-				"\n" +
-				"loaded.push(url);\n" +
-				"\n" +
-				"    // Fire the loading\n" +
-				"    head.appendChild(script);\n" +
-				"} loadScript(\""+url+"\", \""+integrity+"\")");
+	public static void loadScriptInJXBrowser(Browser b, String url, @Nullable String integrity) {
+		DOMDocument document = b.getDocument();
+		DOMElement head = document.getDocumentElement().findElement(By.tagName("head"));
+
+		DOMElement script = document.createElement("script");
+		script.setAttribute("type", "text/javascript");
+		script.setAttribute("src", url);
+
+		if (integrity != null && !integrity.isEmpty()) {
+			script.setAttribute("integrity", integrity);
+			script.setAttribute("crossorigin", "anonymous");
+		}
+
+		head.appendChild(script);
 	}
 
 	/**
@@ -269,62 +239,15 @@ public class Utils {
 			throw new ArithmeticException("/ 0");
 		}
 
-		double offset = startCoord2;
 		double ratio = (endCoord2 - startCoord2) / (endCoord1 - startCoord1);
-		return ratio * (valueCoord1 - startCoord1) + offset;
+		return ratio * (valueCoord1 - startCoord1) + startCoord2;
 	}
 
-	private static VorbisAudioFileReader vb = new VorbisAudioFileReader();
-	private static MpegAudioFileReader mpeg = new MpegAudioFileReader();
-	public static AudioInputStream getAudioInputStream(InputStream stream) throws Exception {
-		AudioInputStream audioInputStream = null;
-		try {
-			AudioInputStream in;
-			AudioFormat format;
+	public static double distance(double x1, double y1, double z1, double x2, double y2, double z2) {
+		return Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2) + Math.pow(z1-z2, 2));
+	}
 
-			String mimetype = "unknown";
-
-			try {
-				mimetype = tika.detect(stream);
-			} catch (Exception ignored) {}
-
-			AudioFormat baseFormat;
-			switch (mimetype) {
-				case "audio/vorbis":
-					in = vb.getAudioInputStream(stream);
-
-					baseFormat = in.getFormat();
-					format = new AudioFormat(
-							AudioFormat.Encoding.PCM_SIGNED,
-							baseFormat.getSampleRate(),
-							16,
-							baseFormat.getChannels(),
-							baseFormat.getChannels() * 2,
-							baseFormat.getSampleRate(),
-							false);
-					break;
-				case "audio/mpeg":
-					in = mpeg.getAudioInputStream(stream);
-
-					baseFormat = in.getFormat();
-					format = new AudioFormat(
-							AudioFormat.Encoding.PCM_SIGNED,
-							baseFormat.getSampleRate(),
-							16,
-							baseFormat.getChannels(),
-							baseFormat.getChannels() * 2,
-							baseFormat.getSampleRate(),
-							false);
-					break;
-				default:
-					in = AudioSystem.getAudioInputStream(stream);
-					format = in.getFormat();
-			}
-
-			audioInputStream = AudioSystem.getAudioInputStream(format, in);
-		} catch (UnsupportedAudioFileException e) {
-			e.printStackTrace();
-		}
-		return audioInputStream;
+	public static double distance(BlockPos pos1, BlockPos pos2) {
+		return distance(pos1.getX(), pos1.getY(), pos1.getZ(), pos2.getX(), pos2.getY(), pos2.getZ());
 	}
 }

@@ -59,14 +59,12 @@ public class RemoteClassLoader extends ClassLoader {
 	 * makes you be able to load fresh this class again
 	 */
 	public void removeFromCache(String url) {
-		if (classes.containsKey(url)) classes.remove(url);
+		classes.remove(url);
 	}
 
 	private byte[] loadClassFileData(URL url) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		InputStream is = null;
-		try {
-			is = url.openStream();
+		try (InputStream is = url.openStream()) {
 			byte[] byteChunk = new byte[4096]; // Or whatever size you want to read in at a time.
 			int n;
 
@@ -76,10 +74,6 @@ public class RemoteClassLoader extends ClassLoader {
 		} catch (IOException e) {
 			e.printStackTrace();
 			// Perform any other exception handling that's appropriate.
-		} finally {
-			if (is != null) {
-				is.close();
-			}
 		}
 		return baos.toByteArray();
 	}

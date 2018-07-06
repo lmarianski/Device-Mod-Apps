@@ -1,7 +1,6 @@
 package io.github.lukas2005.DeviceModApps;
 
 import com.mrcrayfish.device.api.app.IIcon;
-import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.core.client.LaptopFontRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.relauncher.Side;

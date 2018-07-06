@@ -1,21 +1,14 @@
 package io.github.lukas2005.DeviceModApps.coremod;
 
-import com.mrcrayfish.device.api.app.IIcon;
 import javassist.*;
-import javassist.expr.ExprEditor;
-import javassist.expr.MethodCall;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ClassTransformer implements IClassTransformer {
 
 	private static ClassPool pool = ClassPool.getDefault();
 
-	private static CtClass CtInteger;
 	private static CtClass CtString;
-	private static CtClass CtIIcon;
 	private static CtClass CtMessageContext;
 
 	static {
@@ -40,9 +33,7 @@ public class ClassTransformer implements IClassTransformer {
 		pool.importPackage("io.github.lukas2005.DeviceModApps.apps");
 
 		try {
-			CtInteger = pool.get(Integer.class.getName());
 			CtString  = pool.get(String.class.getName());
-			CtIIcon   = pool.get(IIcon.class.getName());
 			CtMessageContext = pool.get(MessageContext.class.getName());
 		} catch (NotFoundException e) {
 			e.printStackTrace();
