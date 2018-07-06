@@ -6,11 +6,11 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.*;
 
 import javax.annotation.Nullable;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URL;
+import java.net.URLConnection;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Paths;
 import java.util.Map;
 
@@ -20,6 +20,8 @@ public class CoreModMain implements IFMLLoadingPlugin, IFMLCallHook {
 	public static File minecraftDir;
 
 	public static String urlBase = "https://github.com/lukas2005/Device-Mod-Apps/blob/master/lib/jxbrowser/lib/%s?raw=true";
+
+	public static final String JXBROWSER_VERSION = "@JxBrowserVersion@";
 
 	public CoreModMain() {
 		if (minecraftDir != null)
@@ -59,10 +61,10 @@ public class CoreModMain implements IFMLLoadingPlugin, IFMLCallHook {
 		try {
 			LaunchClassLoader loader = (LaunchClassLoader) getClass().getClassLoader();
 
-			String nativeName = "jxbrowser-%s-@JxBrowserVersion@.jar";
+			String nativeName = "jxbrowser-%s-" + JXBROWSER_VERSION + ".jar";
 
 			if (OSValidator.isWindows()) {
-				nativeName = String.format(nativeName, "win32");
+				nativeName = String.format(nativeName, "win" + (OSValidator.is64() ? "64" : "32"));
 			} else if (OSValidator.isMac()) {
 				nativeName = String.format(nativeName, "mac");
 			} else if (OSValidator.isUnix()) {
@@ -76,24 +78,23 @@ public class CoreModMain implements IFMLLoadingPlugin, IFMLCallHook {
 			File natives = new File(Paths.get(minecraftDir.getAbsolutePath(), "mods", "lda", "natives", nativeName).toString());
 
 			if (!natives.exists()) {
-				System.out.println("DOWNLOADING NATIVES THE GAME MAY FREEZE FOR SOME PERIOD OF TIME");
+				//System.out.println("DOWNLOADING NATIVES THE GAME MAY FREEZE FOR SOME PERIOD OF TIME");
 
-				natives.getParentFile().mkdirs();
-				natives.createNewFile();
+				new Thread(() -> {
+					try {
+						natives.getParentFile().mkdirs();
 
-				InputStream is = nativesUrl.openStream();
-				OutputStream os = new FileOutputStream(natives);
+						natives.createNewFile();
 
-				byte[] b = new byte[2048];
-				int length;
 
-				while ((length = is.read(b)) != -1) {
-					os.write(b, 0, length);
-					//Gui.drawRect(0, 0, is.available(), 10, new Color(255, 0, 0).getRGB());
-					//RenderUtil.drawStringClipped("Downloading natives... " + is.available(), 0, 10, 100, new Color(255, 0, 0).getRGB(), false);
-				}
-				is.close();
-				os.close();
+						ReadableByteChannel readableChannel = Channels.newChannel(nativesUrl.openStream());
+						OutputStream os = new FileOutputStream(natives);
+
+						((FileOutputStream) os).getChannel().transferFrom(readableChannel, 0, Long.MAX_VALUE);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}).start();
 			}
 
 			loader.addURL(natives.toURI().toURL());
@@ -107,6 +108,19 @@ public class CoreModMain implements IFMLLoadingPlugin, IFMLCallHook {
 	public static class OSValidator {
 
 		private static String OS = System.getProperty("os.name").toLowerCase();
+		private static String ARCH = System.getProperty("os.arch").toLowerCase();
+
+		public static boolean is64() {
+
+			return (ARCH.contains("64"));
+
+		}
+
+		public static boolean is32() {
+
+			return !is64();
+
+		}
 
 		public static boolean isWindows() {
 

@@ -87,7 +87,8 @@ dependencies {
 	compile files("lib/jxbrowser/lib/jxbrowser-linux64-"+jxbrowser_version+".jar")
 	compile files("lib/jxbrowser/lib/jxbrowser-mac-"+jxbrowser_version+".jar")
 	compile files("lib/jxbrowser/lib/jxbrowser-win32-"+jxbrowser_version+".jar")
-	
+	compile files("lib/jxbrowser/lib/jxbrowser-win64-"+jxbrowser_version+".jar")
+
 	embedCore files("lib/javassist.jar")
 
 	compile 'com.mrcrayfish:device-api:0.4.0-1.12.2'
