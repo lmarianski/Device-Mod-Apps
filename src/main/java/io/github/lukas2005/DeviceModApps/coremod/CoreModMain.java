@@ -3,12 +3,16 @@ package io.github.lukas2005.DeviceModApps.coremod;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.relauncher.*;
+import net.minecraftforge.fml.relauncher.FMLInjectionData;
+import net.minecraftforge.fml.relauncher.IFMLCallHook;
+import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
 import javax.annotation.Nullable;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Paths;
@@ -19,7 +23,7 @@ public class CoreModMain implements IFMLLoadingPlugin, IFMLCallHook {
 
 	public static File minecraftDir;
 
-	public static String urlBase = "https://github.com/lukas2005/Device-Mod-Apps/blob/master/lib/jxbrowser/lib/%s?raw=true";
+	public static String urlBase = "http://maven.teamdev.com/repository/products/com/teamdev/jxbrowser/jxbrowser-%s/%s/jxbrowser-%1$s-%2$s.jar";
 
 	public static final String JXBROWSER_VERSION = "@JxBrowserVersion@";
 
@@ -61,26 +65,26 @@ public class CoreModMain implements IFMLLoadingPlugin, IFMLCallHook {
 		try {
 			LaunchClassLoader loader = (LaunchClassLoader) getClass().getClassLoader();
 
-			String nativeName = "jxbrowser-%s-" + JXBROWSER_VERSION + ".jar";
+			String nativeArch;
 
+			String arch = (OSValidator.is64() ? "64" : "32");
 			if (OSValidator.isWindows()) {
-				nativeName = String.format(nativeName, "win" + (OSValidator.is64() ? "64" : "32"));
+				nativeArch = "win"   + arch;
 			} else if (OSValidator.isMac()) {
-				nativeName = String.format(nativeName, "mac");
+				nativeArch = "mac";
 			} else if (OSValidator.isUnix()) {
-				nativeName = String.format(nativeName, "linux64");
+				nativeArch = "linux" + arch;
 			} else {
-				System.err.println("----------------ERROR UNKNOWN OS: NO NATIVE BINARY AVAILABLE----------------");
-				throw new Exception();
+				throw new Exception("ERROR UNKNOWN OS: NO NATIVE BINARY AVAILABLE");
 			}
 
-			URL nativesUrl = new URL(String.format(urlBase, nativeName));
-			File natives = new File(Paths.get(minecraftDir.getAbsolutePath(), "mods", "lda", "natives", nativeName).toString());
+			URL nativesUrl = new URL(String.format(urlBase, nativeArch, JXBROWSER_VERSION));
+			File natives = new File(Paths.get(minecraftDir.getAbsolutePath(), "mods", "lda", "natives", "jxbrowser-"+nativeArch+"-"+JXBROWSER_VERSION+".jar").toString());
 
 			if (!natives.exists()) {
 				//System.out.println("DOWNLOADING NATIVES THE GAME MAY FREEZE FOR SOME PERIOD OF TIME");
 
-				new Thread(() -> {
+				//new Thread(() -> {
 					try {
 						natives.getParentFile().mkdirs();
 
@@ -91,13 +95,15 @@ public class CoreModMain implements IFMLLoadingPlugin, IFMLCallHook {
 						OutputStream os = new FileOutputStream(natives);
 
 						((FileOutputStream) os).getChannel().transferFrom(readableChannel, 0, Long.MAX_VALUE);
+
+						loader.addURL(natives.toURI().toURL());
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-				}).start();
-			}
 
-			loader.addURL(natives.toURI().toURL());
+
+				//}).start();
+			}
 		} catch (Exception e) {
 			System.err.println("----------------ERROR DURING THE DOWNLOAD OF NATIVES----------------");
 			e.printStackTrace();

@@ -42,7 +42,7 @@ public class ModApps {
 		ApplicationBase app = (ApplicationBase) ApplicationManager.registerApplication(identifier, clazz);
 		APPS.put(identifier, app);
 		if (needsDataDir) {
-			File appDataDir = Paths.get(Main.modDataDir.getAbsolutePath(), identifier.getResourceDomain(), identifier.getResourcePath()).toFile();
+			File appDataDir = Paths.get(Main.modDataDir.getAbsolutePath(), identifier.getResourcePath()).toFile();
 			if (!appDataDir.exists()) appDataDir.mkdirs();
 			if (app != null) {
 				app.appDataDir = appDataDir;

@@ -11,9 +11,11 @@ import com.mrcrayfish.device.core.Laptop;
 import io.github.lukas2005.DeviceModApps.utils.sound.Sound;
 import io.github.lukas2005.DeviceModApps.utils.sound.SoundPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import org.apache.tika.Tika;
 
 import javax.annotation.Nullable;
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.io.File;
@@ -32,15 +34,14 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 	public SoundPlayer soundThread;
 	Thread progressBarUpdateThread;
 
-	ItemList<Sound> playList = new ItemList<>(5, 5, 75, 6);
-
-	private static Tika tika = new Tika();
-
+	ItemList<Sound> playList;
 
 	@Override
 	public void init(NBTTagCompound nbt) {
 		Layout main = new Layout();
 		setCurrentLayout(main);
+
+		if (playList == null) playList = new ItemList<>(5, 5, 75, 6);
 
 		for (Sound e : defaultRecords) {
 			if (!playList.getItems().contains(e)) {
@@ -87,7 +88,7 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 			if (playList.getSelectedItem() != null) {
 				if (soundThread == null) {
 
-					soundThread = new SoundPlayer(playList.getSelectedItem(), Laptop.getPos());
+					soundThread = new SoundPlayer(playList.getSelectedItem());
 					soundThread.addEndListener(() -> {
 						soundThread = null;
 						isPlaying = false;
@@ -151,7 +152,9 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 	@Override
 	public void load(NBTTagCompound nbt) {
 		NBTTagCompound songList = nbt.getCompoundTag("songList");
-		//playList.removeAll();
+
+		playList = new ItemList<>(5, 5, 75, 6);
+
 		for (String key : songList.getKeySet()) {
 			try {
 				playList.addItem(new Sound(key, songList.getString(key)));
@@ -228,19 +231,17 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 						try {
 							URL url1 = new URL(s);
 
-							String mime = tika.detect(url1);
+							AudioSystem.getAudioFileFormat(url1);
 
-							if (mime.contains("audio")) {
-								String[] urlSplit = s.split("/");
-								musicPlayer.playList.addItem(new Sound(urlSplit[urlSplit.length-1], url1));
-							} else {
-								openDialog(new Dialog.Message("Error: URL must point to a audio file!"));
-							}
+							String[] urlSplit = s.split("/");
+							musicPlayer.playList.addItem(new Sound(urlSplit[urlSplit.length-1], url1));
 						} catch (MalformedURLException e) {
 							openDialog(new Dialog.Message("Error: Malformed URL!"));
 						} catch (IOException e) {
 							e.printStackTrace();
 							openDialog(new Dialog.Message("Error: "+e.getMessage()));
+						} catch (UnsupportedAudioFileException e) {
+							openDialog(new Dialog.Message("Error: URL doesn't point at a valid audio file or the format is unsupported!"));
 						}
 					}
 					this.close();
@@ -255,13 +256,21 @@ public class ApplicationMusicPlayer extends ApplicationBase {
 				fc.setFileFilter(new FileFilter() {
 					@Override
 					public boolean accept(File f) {
-						try {
-							return !f.isFile() || tika.detect(f).contains("audio");
-						} catch (FileNotFoundException ignored) {
-						} catch (IOException e) {
-							e.printStackTrace();
+						// For some reason compressed file formats get picked up by AudioSystem.getAudioFileFormat as .mp3 files
+						if (f.isFile()) {
+							if (f.toString().endsWith(".zip") || f.toString().endsWith(".jar") || f.toString().endsWith(".7z") || f.toString().endsWith(".rar")) return false;
+							try {
+								AudioSystem.getAudioFileFormat(f);
+								return true;
+							} catch (UnsupportedAudioFileException | FileNotFoundException e) {
+								return false;
+							} catch (IOException e) {
+								e.printStackTrace();
+								return false;
+							}
+						} else {
+							return true;
 						}
-						return false;
 					}
 
 					@Override

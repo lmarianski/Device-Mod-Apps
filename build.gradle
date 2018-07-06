@@ -33,7 +33,8 @@ compileJava {
 repositories {
 	maven { url 'https://jitpack.io' }
 	maven { url 'http://repo.jenkins-ci.org/releases' }
-	maven { url = "https://mrcrayfish.com/maven" }
+	maven { url "https://mrcrayfish.com/maven" }
+	maven { url "http://maven.teamdev.com/repository/products" }
 }
 
 minecraft {
@@ -82,18 +83,13 @@ dependencies {
 	embed files("lib/jogg-0.0.7.jar")
 	
 	embed files("lib/jxbrowser/licence.jar")
-	embed files("lib/jxbrowser/lib/jxbrowser-"+jxbrowser_version+".jar")
 
-	compile files("lib/jxbrowser/lib/jxbrowser-linux64-"+jxbrowser_version+".jar")
-	compile files("lib/jxbrowser/lib/jxbrowser-mac-"+jxbrowser_version+".jar")
-	compile files("lib/jxbrowser/lib/jxbrowser-win32-"+jxbrowser_version+".jar")
-	compile files("lib/jxbrowser/lib/jxbrowser-win64-"+jxbrowser_version+".jar")
+	embed 'com.teamdev.jxbrowser:jxbrowser:'+jxbrowser_version
+	compile 'com.teamdev.jxbrowser:jxbrowser-cross-platform:'+jxbrowser_version
 
 	embedCore files("lib/javassist.jar")
 
 	compile 'com.mrcrayfish:device-api:0.4.0-1.12.2'
-
-    embed 'org.apache.tika:tika-core:1.18'
 
 	// https://mvnrepository.com/artifact/org.kohsuke/github-api
 	embed ('org.kohsuke:github-api:1.90') {

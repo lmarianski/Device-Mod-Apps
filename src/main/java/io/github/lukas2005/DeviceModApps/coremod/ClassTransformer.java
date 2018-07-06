@@ -74,75 +74,46 @@ public class ClassTransformer implements IClassTransformer {
 
 					break;
 				}
-				case "com.mrcrayfish.device.network.Router": {
-					// Get the first (and only) constructor
-					CtConstructor[] consts = cc.getDeclaredConstructors();
-					CtConstructor constructor = consts[0];
-
-					// Inject this line of code
-					constructor.insertAfter("ApplicationHackPrinters.routers.add(new WeakReference(this));");
-
-					break;
-				}
-				case "com.mrcrayfish.device.tileentity.TileEntityRouter": {
-					// Get the first (and only) constructor
-					CtConstructor[] consts = cc.getDeclaredConstructors();
-					CtConstructor constructor = consts[0];
-
-					// Inject this line of code
-					constructor.insertAfter("ApplicationHackPrinters.tileEntityRouters.add(new WeakReference(this));");
-
-//                CtMethod readFromNbt = cc.getDeclaredMethod("readFromNBT", new CtClass[] {ReflectionManager.pool.get(ResourceLocation.class.toString()) });
+//				case "com.mrcrayfish.device.network.Router": {
+//					// Get the first (and only) constructor
+//					CtConstructor[] consts = cc.getDeclaredConstructors();
+//					CtConstructor constructor = consts[0];
 //
-//                readFromNbt.insertAt(85, "PacketHandler.INSTANCE.sendToServer(new MessageSyncBlock(pos));");
-
-					break;
-				}
-				case "com.mrcrayfish.device.network.task.MessageSyncApplications": {
-					// Get the method to inject
-					CtMethod onMessage = cc.getDeclaredMethod("onMessage", new CtClass[]{cc, CtMessageContext});
-
-					// Replace the method body with my own one
-
-					String code = "{ \n" +
-							"ArrayList apps = new ArrayList($1.allowedApps); \n" +
-							"apps.addAll(Main.alwaysAvailableApps); \n" +
-							"ReflectionHelper.setPrivateValue(CommonProxy.class, MrCrayfishDeviceMod.proxy, apps, new String[]{\"allowedApps\"}); \n" +
-							"return null; \n" +
-							"}";
-					onMessage.setBody(code);
-
-					break;
-				}
-				case "com.mrcrayfish.device.api.ApplicationManager": {
-
-					CtField f = cc.getDeclaredField("APP_INFO");
-					f.setModifiers(f.getModifiers() & ~Modifier.FINAL);
-
-					break;
-				}
-//				case "com.mrcrayfish.device.core.Laptop": {
-//					CtMethod onGuiClosed;
-//					try {
-//						onGuiClosed = cc.getDeclaredMethod("onGuiClosed");
-//					} catch (NotFoundException e) {
-//						try {
-//							onGuiClosed = cc.getDeclaredMethod("func_146281_b");
-//						} catch (NotFoundException e1) {
-//							throw e;
-//						}
-//					}
+//					// Inject this line of code
+//					constructor.insertAfter("ApplicationHackPrinters.routers.add(new WeakReference(this));");
 //
-//					onGuiClosed.instrument(new ExprEditor() {
-//						@Override
-//						public void edit(MethodCall m) throws CannotCompileException {
-//							String s = m.getMethodName();
-//							String w = m.getClassName();
-//							if (m.getMethodName().equals("close") && m.getClassName().equals("com.mrcrayfish.device.core.Window")) {
-//								m.replace("{}");
-//							}
-//						}
-//					});
+//					break;
+//				}
+//				case "com.mrcrayfish.device.tileentity.TileEntityRouter": {
+//					// Get the first (and only) constructor
+//					CtConstructor[] consts = cc.getDeclaredConstructors();
+//					CtConstructor constructor = consts[0];
+//
+//					// Inject this line of code
+//					constructor.insertAfter("ApplicationHackPrinters.tileEntityRouters.add(new WeakReference(this));");
+//
+//					break;
+//				}
+//				case "com.mrcrayfish.device.network.task.MessageSyncApplications": {
+//					// Get the method to inject
+//					CtMethod onMessage = cc.getDeclaredMethod("onMessage", new CtClass[]{cc, CtMessageContext});
+//
+//					// Replace the method body with my own one
+//
+//					String code = "{ \n" +
+//							"ArrayList apps = new ArrayList($1.allowedApps); \n" +
+//							"apps.addAll(Main.alwaysAvailableApps); \n" +
+//							"ReflectionHelper.setPrivateValue(CommonProxy.class, MrCrayfishDeviceMod.proxy, apps, new String[]{\"allowedApps\"}); \n" +
+//							"return null; \n" +
+//							"}";
+//					onMessage.setBody(code);
+//
+//					break;
+//				}
+//				case "com.mrcrayfish.device.api.ApplicationManager": {
+//
+//					CtField f = cc.getDeclaredField("APP_INFO");
+//					f.setModifiers(f.getModifiers() & ~Modifier.FINAL);
 //
 //					break;
 //				}

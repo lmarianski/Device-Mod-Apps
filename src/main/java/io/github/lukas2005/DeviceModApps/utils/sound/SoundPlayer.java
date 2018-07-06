@@ -29,7 +29,7 @@ public class SoundPlayer implements Closeable {
 
 	FloatControl gain;
 
-	ExecutorService executor = Executors.newFixedThreadPool(10);
+	ExecutorService executor = Executors.newFixedThreadPool(50);
 	Thread setupThread;
 
 	private ArrayList<Runnable> endListeners = new ArrayList<>();
@@ -38,7 +38,7 @@ public class SoundPlayer implements Closeable {
 	private ArrayList<Runnable> startListeners = new ArrayList<>();
 	private ArrayList<Runnable> pauseListeners = new ArrayList<>();
 
-	public SoundPlayer(Sound sound, @Nullable BlockPos pos) {
+	public SoundPlayer(Sound sound) {
 		this.sound = sound;
 
 		setupThread = new Thread(() -> {
@@ -65,28 +65,14 @@ public class SoundPlayer implements Closeable {
 			while (!Thread.currentThread().isInterrupted()) {
 				try {
 					float volume = Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.RECORDS);
-					double mult = 1;
-					if (pos != null) {
-						BlockPos playerPos = Minecraft.getMinecraft().player.getPosition();
-						double distance = Utils.distance(playerPos, pos);
-						if (distance <= 10) {
-							mult = Utils.map(distance, 0, 10, 1, 0);
-						} else {
-							mult = 0;
-						}
-					}
-					if (gain != null) gain.setValue(20f * (float) Math.log10(volume*mult));
-					Thread.sleep(700);
+					if (gain != null) gain.setValue(20f * (float) Math.log10(volume));
+					Thread.sleep(100);
 				} catch (InterruptedException e) {
 					Thread.currentThread().interrupt();
 				}
 			}
 		});
 
-	}
-
-	public SoundPlayer(Sound sound) {
-		this(sound, null);
 	}
 
 	public long getTime() {
